@@ -585,6 +585,9 @@ module.exports.getTilesInBoundingBoxWebZoom = function(geopackage, table, webZoo
 };
 
 module.exports.getFeatureTileFromXYZ = function(geopackage, table, x, y, z, width, height, callback) {
+  x = Number(x);
+  y = Number(y);
+  z = Number(z);
   geopackage.getFeatureDaoWithTableName(table, function(err, featureDao) {
     if (err || !featureDao) return callback(err);
     var ft = new FeatureTile(featureDao, width, height);
