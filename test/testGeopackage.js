@@ -11,6 +11,8 @@ var path = require('path')
 
 describe('GeoPackageAPI tests', function() {
 
+  this.timeout(5000);
+
   var existingPath = path.join(__dirname, 'fixtures', 'rivers.gpkg');
   var geopackageToCreate = path.join(__dirname, 'tmp', 'tmp.gpkg');
   var tilePath = path.join(__dirname, 'fixtures', 'tiles', '0', '0', '0.png');
