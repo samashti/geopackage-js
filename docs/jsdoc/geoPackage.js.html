@@ -350,8 +350,7 @@ GeoPackage.prototype.hasAttributeTable = function(attributeTableName) {
 }
 
 /**
- *  Get the tile tables
- *  @param {callback} callback called with an error if one occurred and the array of {TileTable} names
+ * @returns {string[]} table names from {@link module:tiles/matrixset~TileMatrixSetDao#getTileTables}
  */
 GeoPackage.prototype.getTileTables = function () {
   var tms = this.getTileMatrixSetDao();
@@ -362,9 +361,11 @@ GeoPackage.prototype.getTileTables = function () {
 };
 
 /**
- * Checks if the tile table exists in the GeoPackage
- * @param  {String} tileTableName name of the table to query for
- * @param  {Function} callback   called with an error if one occurred and true or false for the existence of the table
+ * Check if a table with the given name exists in this GeoPackage, and is a
+ * [tile table]{@link module:tiles/user/tileTable~TileTable}.
+ *
+ * @param {String} tileTableName name of the tile table
+ * @returns {boolean} `true` if the table exists and is a tile table, `false` otherwise
  */
 GeoPackage.prototype.hasTileTable = function(tileTableName) {
   var tables = this.getTileTables();
@@ -372,10 +373,11 @@ GeoPackage.prototype.hasTileTable = function(tileTableName) {
 };
 
 /**
- * Checks if the feature table exists in the GeoPackage
- * @param  {GeoPackage}   geopackage open GeoPackage object
- * @param  {String} featureTableName name of the table to query for
- * @param  {Function} callback   called with an error if one occurred and true or false for the existence of the table
+ * Checks if a table with the given name exists in this GeoPackage, and is a
+ * [feature table]{@link module:features/user/featureTable~FeatureTable}.
+ *
+ * @param {String} featureTableName name of the feature table
+ * @returns {boolean} `true` if the table exists and is a feature table, `false` otherwise
  */
 GeoPackage.prototype.hasFeatureTable = function(featureTableName) {
   var tables = this.getFeatureTables();
@@ -383,8 +385,7 @@ GeoPackage.prototype.hasFeatureTable = function(featureTableName) {
 };
 
 /**
- *  Get the feature tables
- *  @param {callback} callback called with an error if one occurred and the array of {FeatureTable} names
+ * @returns {string[]} feature table names from {@link module:features/columns~GeometryColumnsDao#getFeatureTables}
  */
 GeoPackage.prototype.getFeatureTables = function () {
   var gcd = this.getGeometryColumnsDao();
@@ -394,14 +395,27 @@ GeoPackage.prototype.getFeatureTables = function () {
   return gcd.getFeatureTables();
 };
 
+/**
+ * @returns {boolean} `true` if this GeoPackage has a table with the given name, `false` otherwise
+ */
 GeoPackage.prototype.isTable = function(tableName) {
   return !!this.connection.tableExists(tableName);
 }
 
+/**
+ * @param {string} type a table [data type]{@link module:core/contents~Contents#data_type} name
+ * @param {string} tableName [table name]{@link module:core/contents~Contents#table_name}
+ * @return {boolean} `true` if the given table name has a row in the [contents]{@link module:core/contents~Contents} table AND is the given {@link #getTableType}, `false` otherwise
+ */
 GeoPackage.prototype.isTableType = function(type, tableName) {
   return type === this.getTableType(tableName);
 }
 
+/**
+ * @param {string} tableName [table name]{@link module:core/contents~Contents#table_name}
+ * @return {string} the [data type]{@link module:core/contents~Contents#data_type}
+ * of the table with the given name
+ */
 GeoPackage.prototype.getTableType = function(tableName) {
   var contents = this.getTableContents(tableName);
   if (contents) {
@@ -409,12 +423,24 @@ GeoPackage.prototype.getTableType = function(tableName) {
   }
 }
 
+/**
+ * @param {string} tableName [table name]{@link module:core/contents~Contents#table_name}
+ * @return {module:core/contents~Contents} the contents information for the given table name
+ */
 GeoPackage.prototype.getTableContents = function(tableName) {
   return this.getContentsDao().queryForId(tableName);
 }
 
+/**
+ * Drop the table with the given name from this GeoPackage.  This simply drops
+ * the table and does not take any steps to ensure referential integrity by
+ * deleting associated rows in other tables.
+ *
+ * @param {string} tableName the name of the table to drop
+ * @returns {boolean} result from {@link module:db/geoPackageConnection~GeoPackageConnection#dropTable}
+ */
 GeoPackage.prototype.deleteTable = function(tableName) {
-  this.connection.dropTable(tableName);
+  return this.connection.dropTable(tableName);
 }
 
 GeoPackage.prototype.getTableCreator = function() {
@@ -947,7 +973,7 @@ GeoPackage.prototype.getInfoForTable = function (tableDao) {
 	</div>
 	<footer>
 				<div class="footer-option"><span class="site-footer-owner"><a href="https://github.com/ngageoint/GeoPackage">GeoPackage</a> is maintained by:</span><br><a href="https://github.com/ngageoint"><img src="http://ngageoint.github.io/GeoPackage/images/NGA_Logo.png" align="middle" height="60">National Geospatial-Intelligence Agency</a><a style="padding-left: 30px;" href="http://www.bit-sys.com/"><img src="http://ngageoint.github.io/GeoPackage/images/BITSystems_Logo.png" align="middle" height="40"></a><br></div>
-			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 29th Jan 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
+			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 1st Feb 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
 	</footer>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>

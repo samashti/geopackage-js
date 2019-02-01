@@ -484,33 +484,19 @@
 </dd>
 											<hr/>
 											<dt class="symbol-title function public">
-			<h4 id="getTileTables" class="function public"><span class="name">getTileTables</span><span class="signature-params">( <span class="signature-param">callback</span>&nbsp;)</span><span class="signature-type"></span></h4>
+			<h4 id="getTileTables" class="function public"><span class="name">getTileTables</span><span class="signature-params">()</span><span class="signature-type"> &rarr;&nbsp;{Array.&lt;string>}</span></h4>
 		</dt>
 <dd class="symbol-details function public">
 	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Get the tile tables</p></div>
-			</div>			<div class="callout callout-info">
-				<h5>Parameters</h5>
-				<table class="params table table-striped">
-					<thead>
-					<tr>
-							<th>Name</th>
-						<th>Type</th>
-						<th class="last">Description</th>
-					</tr>
-					</thead>
-					<tbody>
-						<tr>
-								<td><code>callback</code></td>
-							<td><span class="param-type">callback</span></td>
-							<td class="last">
-									<p>called with an error if one occurred and the array of {TileTable} names</p>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">Array.&lt;string></span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><p>table names from <a href="module-tiles_matrixset-TileMatrixSetDao.html#getTileTables"><code>module:tiles/matrixset~TileMatrixSetDao#getTileTables</code></a></p></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
 			
 			
 			
@@ -530,7 +516,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-260">line 260</a></p>
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-259">line 259</a></p>
 								</div>
 							</div>
 			
@@ -542,11 +528,12 @@
 </dd>
 											<hr/>
 											<dt class="symbol-title function public">
-			<h4 id="hasTileTable" class="function public"><span class="name">hasTileTable</span><span class="signature-params">( <span class="signature-param">tileTableName</span>, <span class="signature-param">callback</span>&nbsp;)</span><span class="signature-type"></span></h4>
+			<h4 id="hasTileTable" class="function public"><span class="name">hasTileTable</span><span class="signature-params">( <span class="signature-param">tileTableName</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{boolean}</span></h4>
 		</dt>
 <dd class="symbol-details function public">
 	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Checks if the tile table exists in the GeoPackage</p></div>
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Check if a table with the given name exists in this GeoPackage, and is a
+			<a href="module-tiles_user_tileTable-TileTable.html"><code>tile table</code></a>.</p></div>
 			</div>			<div class="callout callout-info">
 				<h5>Parameters</h5>
 				<table class="params table table-striped">
@@ -562,20 +549,21 @@
 								<td><code>tileTableName</code></td>
 							<td><span class="param-type">String</span></td>
 							<td class="last">
-									<p>name of the table to query for</p>
-							</td>
-						</tr>
-						<tr>
-								<td><code>callback</code></td>
-							<td><span class="param-type">function</span></td>
-							<td class="last">
-									<p>called with an error if one occurred and true or false for the existence of the table</p>
+									<p>name of the tile table</p>
 							</td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
-			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">boolean</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><p><code>true</code> if the table exists and is a tile table, <code>false</code> otherwise</p></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
 			
 			
 			
@@ -595,7 +583,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-273">line 273</a></p>
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-274">line 274</a></p>
 								</div>
 							</div>
 			
@@ -607,11 +595,12 @@
 </dd>
 											<hr/>
 											<dt class="symbol-title function public">
-			<h4 id="hasFeatureTable" class="function public"><span class="name">hasFeatureTable</span><span class="signature-params">( <span class="signature-param">geopackage</span>, <span class="signature-param">featureTableName</span>, <span class="signature-param">callback</span>&nbsp;)</span><span class="signature-type"></span></h4>
+			<h4 id="hasFeatureTable" class="function public"><span class="name">hasFeatureTable</span><span class="signature-params">( <span class="signature-param">featureTableName</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{boolean}</span></h4>
 		</dt>
 <dd class="symbol-details function public">
 	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Checks if the feature table exists in the GeoPackage</p></div>
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Checks if a table with the given name exists in this GeoPackage, and is a
+			<a href="module-features_user_featureTable-FeatureTable.html"><code>feature table</code></a>.</p></div>
 			</div>			<div class="callout callout-info">
 				<h5>Parameters</h5>
 				<table class="params table table-striped">
@@ -623,31 +612,25 @@
 					</tr>
 					</thead>
 					<tbody>
-						<tr>
-								<td><code>geopackage</code></td>
-							<td><span class="param-type">GeoPackage</span></td>
-							<td class="last">
-									<p>open GeoPackage object</p>
-							</td>
-						</tr>
 						<tr>
 								<td><code>featureTableName</code></td>
 							<td><span class="param-type">String</span></td>
 							<td class="last">
-									<p>name of the table to query for</p>
-							</td>
-						</tr>
-						<tr>
-								<td><code>callback</code></td>
-							<td><span class="param-type">function</span></td>
-							<td class="last">
-									<p>called with an error if one occurred and true or false for the existence of the table</p>
+									<p>name of the feature table</p>
 							</td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
-			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">boolean</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><p><code>true</code> if the table exists and is a feature table, <code>false</code> otherwise</p></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
 			
 			
 			
@@ -667,7 +650,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-284">line 284</a></p>
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-286">line 286</a></p>
 								</div>
 							</div>
 			
@@ -679,11 +662,304 @@
 </dd>
 											<hr/>
 											<dt class="symbol-title function public">
-			<h4 id="getFeatureTables" class="function public"><span class="name">getFeatureTables</span><span class="signature-params">( <span class="signature-param">callback</span>&nbsp;)</span><span class="signature-type"></span></h4>
+			<h4 id="getFeatureTables" class="function public"><span class="name">getFeatureTables</span><span class="signature-params">()</span><span class="signature-type"> &rarr;&nbsp;{Array.&lt;string>}</span></h4>
 		</dt>
 <dd class="symbol-details function public">
 	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Get the feature tables</p></div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">Array.&lt;string></span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><p>feature table names from <a href="module-features_columns-GeometryColumnsDao.html#getFeatureTables"><code>module:features/columns~GeometryColumnsDao#getFeatureTables</code></a></p></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-294">line 294</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public">
+			<h4 id="isTable" class="function public"><span class="name">isTable</span><span class="signature-params">()</span><span class="signature-type"> &rarr;&nbsp;{boolean}</span></h4>
+		</dt>
+<dd class="symbol-details function public">
+	<div class="symbol-details-inner">
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">boolean</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><p><code>true</code> if this GeoPackage has a table with the given name, <code>false</code> otherwise</p></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-305">line 305</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public">
+			<h4 id="isTableType" class="function public"><span class="name">isTableType</span><span class="signature-params">( <span class="signature-param">type</span>, <span class="signature-param">tableName</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{boolean}</span></h4>
+		</dt>
+<dd class="symbol-details function public">
+	<div class="symbol-details-inner">
+			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>type</code></td>
+							<td><span class="param-type">string</span></td>
+							<td class="last">
+									<p>a table <a href="module-core_contents-Contents.html#data_type"><code>data type</code></a> name</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>tableName</code></td>
+							<td><span class="param-type">string</span></td>
+							<td class="last">
+									<p><a href="module-core_contents-Contents.html#table_name"><code>table name</code></a></p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">boolean</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><p><code>true</code> if the given table name has a row in the <a href="module-core_contents-Contents.html"><code>contents</code></a> table AND is the given <code>#getTableType</code>, <code>false</code> otherwise</p></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-314">line 314</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public">
+			<h4 id="getTableType" class="function public"><span class="name">getTableType</span><span class="signature-params">( <span class="signature-param">tableName</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{string}</span></h4>
+		</dt>
+<dd class="symbol-details function public">
+	<div class="symbol-details-inner">
+			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>tableName</code></td>
+							<td><span class="param-type">string</span></td>
+							<td class="last">
+									<p><a href="module-core_contents-Contents.html#table_name"><code>table name</code></a></p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">string</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><p>the <a href="module-core_contents-Contents.html#data_type"><code>data type</code></a>
+			of the table with the given name</p></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-323">line 323</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public">
+			<h4 id="getTableContents" class="function public"><span class="name">getTableContents</span><span class="signature-params">( <span class="signature-param">tableName</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{<a href="module-core_contents-Contents.html">module:core/contents~Contents</a>}</span></h4>
+		</dt>
+<dd class="symbol-details function public">
+	<div class="symbol-details-inner">
+			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>tableName</code></td>
+							<td><span class="param-type">string</span></td>
+							<td class="last">
+									<p><a href="module-core_contents-Contents.html#table_name"><code>table name</code></a></p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type"><a href="module-core_contents-Contents.html">module:core/contents~Contents</a></span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><p>the contents information for the given table name</p></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-334">line 334</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public">
+			<h4 id="deleteTable" class="function public"><span class="name">deleteTable</span><span class="signature-params">( <span class="signature-param">tableName</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{boolean}</span></h4>
+		</dt>
+<dd class="symbol-details function public">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Drop the table with the given name from this GeoPackage.  This simply drops
+			the table and does not take any steps to ensure referential integrity by
+			deleting associated rows in other tables.</p></div>
 			</div>			<div class="callout callout-info">
 				<h5>Parameters</h5>
 				<table class="params table table-striped">
@@ -696,16 +972,24 @@
 					</thead>
 					<tbody>
 						<tr>
-								<td><code>callback</code></td>
-							<td><span class="param-type">callback</span></td>
+								<td><code>tableName</code></td>
+							<td><span class="param-type">string</span></td>
 							<td class="last">
-									<p>called with an error if one occurred and the array of {FeatureTable} names</p>
+									<p>the name of the table to drop</p>
 							</td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
-			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">boolean</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><p>result from <a href="module-db_geoPackageConnection-GeoPackageConnection.html#dropTable"><code>module:db/geoPackageConnection~GeoPackageConnection#dropTable</code></a></p></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
 			
 			
 			
@@ -725,7 +1009,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-293">line 293</a></p>
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-346">line 346</a></p>
 								</div>
 							</div>
 			
@@ -790,7 +1074,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-363">line 363</a></p>
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-389">line 389</a></p>
 								</div>
 							</div>
 			
@@ -855,7 +1139,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-379">line 379</a></p>
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-405">line 405</a></p>
 								</div>
 							</div>
 			
@@ -920,7 +1204,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-390">line 390</a></p>
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-416">line 416</a></p>
 								</div>
 							</div>
 			
@@ -992,7 +1276,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-405">line 405</a></p>
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-431">line 431</a></p>
 								</div>
 							</div>
 			
@@ -1071,7 +1355,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-422">line 422</a></p>
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-448">line 448</a></p>
 								</div>
 							</div>
 			
@@ -1129,7 +1413,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-431">line 431</a></p>
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-457">line 457</a></p>
 								</div>
 							</div>
 			
@@ -1194,7 +1478,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-444">line 444</a></p>
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-470">line 470</a></p>
 								</div>
 							</div>
 			
@@ -1259,7 +1543,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-455">line 455</a></p>
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-481">line 481</a></p>
 								</div>
 							</div>
 			
@@ -1275,7 +1559,7 @@
 		</dt>
 <dd class="symbol-details function public">
 	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Create the given <a href="module-features_user_featureTable.html#~FeatureTable"><code>module:features/user/featureTable~FeatureTable</code></a></p></div>
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Create the given <a href="module-features_user_featureTable-FeatureTable.html"><code>module:features/user/featureTable~FeatureTable</code></a></p></div>
 			</div>			<div class="callout callout-info">
 				<h5>Parameters</h5>
 				<table class="params table table-striped">
@@ -1317,7 +1601,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-499">line 499</a></p>
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-525">line 525</a></p>
 								</div>
 							</div>
 			
@@ -1375,7 +1659,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-547">line 547</a></p>
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-573">line 573</a></p>
 								</div>
 							</div>
 			
@@ -1433,7 +1717,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-559">line 559</a></p>
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-585">line 585</a></p>
 								</div>
 							</div>
 			
@@ -1498,7 +1782,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-573">line 573</a></p>
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-599">line 599</a></p>
 								</div>
 							</div>
 			
@@ -1592,7 +1876,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-587">line 587</a></p>
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-613">line 613</a></p>
 								</div>
 							</div>
 			
@@ -1696,7 +1980,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-639">line 639</a></p>
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-665">line 665</a></p>
 								</div>
 							</div>
 			
@@ -1782,7 +2066,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-674">line 674</a></p>
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-700">line 700</a></p>
 								</div>
 							</div>
 			
@@ -1840,7 +2124,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-688">line 688</a></p>
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-714">line 714</a></p>
 								</div>
 							</div>
 			
@@ -1898,7 +2182,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-700">line 700</a></p>
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-726">line 726</a></p>
 								</div>
 							</div>
 			
@@ -1956,7 +2240,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-752">line 752</a></p>
+									<p class="form-control-static"><a href="geoPackage.js.html">geoPackage.js</a>, <a href="geoPackage.js.html#line-778">line 778</a></p>
 								</div>
 							</div>
 			
@@ -1977,7 +2261,7 @@
 	</div>
 	<footer>
 				<div class="footer-option"><span class="site-footer-owner"><a href="https://github.com/ngageoint/GeoPackage">GeoPackage</a> is maintained by:</span><br><a href="https://github.com/ngageoint"><img src="http://ngageoint.github.io/GeoPackage/images/NGA_Logo.png" align="middle" height="60">National Geospatial-Intelligence Agency</a><a style="padding-left: 30px;" href="http://www.bit-sys.com/"><img src="http://ngageoint.github.io/GeoPackage/images/BITSystems_Logo.png" align="middle" height="40"></a><br></div>
-			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 29th Jan 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
+			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 1st Feb 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
 	</footer>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
