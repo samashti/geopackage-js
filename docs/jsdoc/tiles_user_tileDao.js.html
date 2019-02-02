@@ -314,22 +314,20 @@ TileDao.prototype.getTileMatrixWithZoomLevel = function (zoomLevel) {
 };
 
 /**
- * Query for a tile
+ * Query for a tile.  Return null if the tile row does not exist.
+ *
  * @param  {Number} column    column
  * @param  {Number} row       row
  * @param  {Number} zoomLevel zoom level
- * @param {Function}           callback called with an error if one occurred and the TileDao
+ * @return {?module:tiles/user/tileRow~TileRow} or null
  */
 TileDao.prototype.queryForTile = function (column, row, zoomLevel) {
   var fieldValues = new ColumnValues();
   fieldValues.addColumn(TileColumn.COLUMN_TILE_COLUMN, column);
   fieldValues.addColumn(TileColumn.COLUMN_TILE_ROW, row);
   fieldValues.addColumn(TileColumn.COLUMN_ZOOM_LEVEL, zoomLevel);
-  var tileRow;
-  for (var row of this.queryForFieldValues(fieldValues)) {
-    tileRow = this.getRow(row);
-  }
-  return tileRow;
+  const record = this.queryForFirstFieldValues(fieldValues);
+  return record ? this.getRow(record) : null;
 };
 
 TileDao.prototype.queryForTilesWithZoomLevel = function (zoomLevel, tileCallback) {

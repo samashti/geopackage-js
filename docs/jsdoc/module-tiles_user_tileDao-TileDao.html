@@ -1988,79 +1988,6 @@
 			</div>	</div>
 </dd>
 											<hr/>
-											<dt class="symbol-title function public inherited">
-			<h4 id="queryForFieldValues" class="function public inherited"><span class="name">queryForFieldValues</span><span class="signature-params">( <span class="signature-param">fieldValues</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Iterable.Object}</span></h4>
-		</dt>
-<dd class="symbol-details function public inherited">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Iterate all objects in thet able that match the ColumnValues passed in</p></div>
-			</div>			<div class="callout callout-info">
-				<h5>Parameters</h5>
-				<table class="params table table-striped">
-					<thead>
-					<tr>
-							<th>Name</th>
-						<th>Type</th>
-						<th class="last">Description</th>
-					</tr>
-					</thead>
-					<tbody>
-						<tr>
-								<td><code>fieldValues</code></td>
-							<td><span class="param-type"><a href="module-dao_columnValues-ColumnValues.html">module:dao/columnValues~ColumnValues</a></span></td>
-							<td class="last">
-									<p>ColumnValues to query for</p>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
-							<div class="form-group">
-								<label class="col-sm-3 control-label returns-type"><span class="param-type">Iterable.Object</span></label>
-								<div class="col-sm-9">
-									<div class="form-control-static returns-description"></div>
-								</div>
-							</div>
-					</form>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-			
-			
-			
-			
-			
-							<!-- inherits -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Inherited From</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="module-dao_dao-Dao.html#queryForFieldValues">module:dao/dao~Dao#queryForFieldValues</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-189">line 189</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
 											<dt class="symbol-title function public">
 			<h4 id="newRowWithColumnTypes" class="function public"><span class="name">newRowWithColumnTypes</span><span class="signature-params">( <span class="signature-param">columnTypes</span>, <span class="signature-param">values</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{TileRow}</span></h4>
 		</dt>
@@ -2136,6 +2063,86 @@
 			
 			
 			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public inherited">
+			<h4 id="queryForFieldValues" class="function public inherited"><span class="name">queryForFieldValues</span><span class="signature-params">( <span class="signature-param">fieldValues</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Iterable.&lt;object>}</span></h4>
+		</dt>
+<dd class="symbol-details function public inherited">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Iterate all rows in the table that match the given values.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>fieldValues</code></td>
+							<td><span class="param-type"><a href="module-dao_columnValues-ColumnValues.html">module:dao/columnValues~ColumnValues</a></span></td>
+							<td class="last">
+									<p>column values to match</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">Iterable.&lt;object></span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+							<!-- inherits -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Inherited From</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="module-dao_dao-Dao.html#queryForFieldValues">module:dao/dao~Dao#queryForFieldValues</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-191">line 191</a></p>
+								</div>
+							</div>
+			
+			
+			
+							<!-- todo -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">To Do</label>
+								<div class="col-sm-9">
+										<p class="form-control-static">this method will throw an error if the iterator is not exhausted</p>
+								</div>
+							</div>
 			
 					</form>
 			</div>	</div>
@@ -2260,11 +2267,11 @@
 </dd>
 											<hr/>
 											<dt class="symbol-title function public inherited">
-			<h4 id="queryJoinWhereWithArgs" class="function public inherited"><span class="name">queryJoinWhereWithArgs</span><span class="signature-params">( <span class="signature-param">join</span>, <span class="signature-param">where</span>, <span class="signature-param">whereArgs</span>, <span class="signature-param">columns</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Iterable.&lt;Object>}</span></h4>
+			<h4 id="queryForFirstFieldValues" class="function public inherited"><span class="name">queryForFirstFieldValues</span><span class="signature-params">( <span class="signature-param">fieldValues</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{object}</span></h4>
 		</dt>
 <dd class="symbol-details function public inherited">
 	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Iterate all matching objects</p></div>
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Query for and return the first row that matches the given values.</p></div>
 			</div>			<div class="callout callout-info">
 				<h5>Parameters</h5>
 				<table class="params table table-striped">
@@ -2277,31 +2284,10 @@
 					</thead>
 					<tbody>
 						<tr>
-								<td><code>join</code></td>
-							<td><span class="param-type">string</span></td>
+								<td><code>fieldValues</code></td>
+							<td><span class="param-type"><a href="module-dao_columnValues-ColumnValues.html">module:dao/columnValues~ColumnValues</a></span></td>
 							<td class="last">
-									<p>join clause</p>
-							</td>
-						</tr>
-						<tr>
-								<td><code>where</code></td>
-							<td><span class="param-type">string</span></td>
-							<td class="last">
-									<p>where clause</p>
-							</td>
-						</tr>
-						<tr>
-								<td><code>whereArgs</code></td>
-							<td><span class="param-type">Array.&lt;Object></span></td>
-							<td class="last">
-									<p>array of where query values</p>
-							</td>
-						</tr>
-						<tr>
-								<td><code>columns</code></td>
-							<td><span class="param-type">Array.&lt;string></span></td>
-							<td class="last">
-									<p>columns to query for</p>
+									<p>column values to match</p>
 							</td>
 						</tr>
 					</tbody>
@@ -2309,9 +2295,9 @@
 			</div>
 			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
 							<div class="form-group">
-								<label class="col-sm-3 control-label returns-type"><span class="param-type">Iterable.&lt;Object></span></label>
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">object</span></label>
 								<div class="col-sm-9">
-									<div class="form-control-static returns-description"></div>
+									<div class="form-control-static returns-description"><p>the first matching row or null</p></div>
 								</div>
 							</div>
 					</form>
@@ -2326,7 +2312,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Inherited From</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="module-dao_dao-Dao.html#queryJoinWhereWithArgs">module:dao/dao~Dao#queryJoinWhereWithArgs</a></p>
+									<p class="form-control-static"><a href="module-dao_dao-Dao.html#queryForFirstFieldValues">module:dao/dao~Dao#queryForFirstFieldValues</a></p>
 								</div>
 							</div>
 			
@@ -2342,7 +2328,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-205">line 205</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-204">line 204</a></p>
 								</div>
 							</div>
 			
@@ -2459,86 +2445,6 @@
 </dd>
 											<hr/>
 											<dt class="symbol-title function public inherited">
-			<h4 id="queryWhereWithArgsDistinct" class="function public inherited"><span class="name">queryWhereWithArgsDistinct</span><span class="signature-params">( <span class="signature-param">where</span>, <span class="signature-param">whereArgs</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Iterable.&lt;Object>}</span></h4>
-		</dt>
-<dd class="symbol-details function public inherited">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Iterate all distinct matching rows in the table</p></div>
-			</div>			<div class="callout callout-info">
-				<h5>Parameters</h5>
-				<table class="params table table-striped">
-					<thead>
-					<tr>
-							<th>Name</th>
-						<th>Type</th>
-						<th class="last">Description</th>
-					</tr>
-					</thead>
-					<tbody>
-						<tr>
-								<td><code>where</code></td>
-							<td><span class="param-type">string</span></td>
-							<td class="last">
-									<p>where clause</p>
-							</td>
-						</tr>
-						<tr>
-								<td><code>whereArgs</code></td>
-							<td><span class="param-type">Array.&lt;Object></span></td>
-							<td class="last">
-									<p>array of where query values</p>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
-							<div class="form-group">
-								<label class="col-sm-3 control-label returns-type"><span class="param-type">Iterable.&lt;Object></span></label>
-								<div class="col-sm-9">
-									<div class="form-control-static returns-description"></div>
-								</div>
-							</div>
-					</form>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-			
-			
-			
-			
-			
-							<!-- inherits -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Inherited From</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="module-dao_dao-Dao.html#queryWhereWithArgsDistinct">module:dao/dao~Dao#queryWhereWithArgsDistinct</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-217">line 217</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title function public inherited">
 			<h4 id="getLinkedSimpleAttributes" class="function public inherited"><span class="name">getLinkedSimpleAttributes</span><span class="signature-params">( <span class="signature-param">userRow</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Array.&lt;module:extension/relatedTables~SimpleAttributeRow>}</span></h4>
 		</dt>
 <dd class="symbol-details function public inherited">
@@ -2611,12 +2517,106 @@
 			</div>	</div>
 </dd>
 											<hr/>
+											<dt class="symbol-title function public inherited">
+			<h4 id="queryJoinWhereWithArgs" class="function public inherited"><span class="name">queryJoinWhereWithArgs</span><span class="signature-params">( <span class="signature-param">join</span>, <span class="signature-param">where</span>, <span class="signature-param">whereArgs</span>, <span class="signature-param">columns</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Iterable.&lt;Object>}</span></h4>
+		</dt>
+<dd class="symbol-details function public inherited">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Iterate all matching objects</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>join</code></td>
+							<td><span class="param-type">string</span></td>
+							<td class="last">
+									<p>join clause</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>where</code></td>
+							<td><span class="param-type">string</span></td>
+							<td class="last">
+									<p>where clause</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>whereArgs</code></td>
+							<td><span class="param-type">Array.&lt;Object></span></td>
+							<td class="last">
+									<p>array of where query values</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>columns</code></td>
+							<td><span class="param-type">Array.&lt;string></span></td>
+							<td class="last">
+									<p>columns to query for</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">Iterable.&lt;Object></span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+							<!-- inherits -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Inherited From</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="module-dao_dao-Dao.html#queryJoinWhereWithArgs">module:dao/dao~Dao#queryJoinWhereWithArgs</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-219">line 219</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
 											<dt class="symbol-title function public">
-			<h4 id="queryForTile" class="function public"><span class="name">queryForTile</span><span class="signature-params">( <span class="signature-param">column</span>, <span class="signature-param">row</span>, <span class="signature-param">zoomLevel</span>, <span class="signature-param">callback</span>&nbsp;)</span><span class="signature-type"></span></h4>
+			<h4 id="queryForTile" class="function public"><span class="name">queryForTile</span><span class="signature-params">( <span class="signature-param">column</span>, <span class="signature-param">row</span>, <span class="signature-param">zoomLevel</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{<a href="module-tiles_user_tileRow.html#~TileRow">module:tiles/user/tileRow~TileRow</a>}</span></h4>
 		</dt>
 <dd class="symbol-details function public">
 	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Query for a tile</p></div>
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Query for a tile.  Return null if the tile row does not exist.</p></div>
 			</div>			<div class="callout callout-info">
 				<h5>Parameters</h5>
 				<table class="params table table-striped">
@@ -2649,17 +2649,18 @@
 									<p>zoom level</p>
 							</td>
 						</tr>
-						<tr>
-								<td><code>callback</code></td>
-							<td><span class="param-type">function</span></td>
-							<td class="last">
-									<p>called with an error if one occurred and the TileDao</p>
-							</td>
-						</tr>
 					</tbody>
 				</table>
 			</div>
-			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type"><a href="module-tiles_user_tileRow.html#~TileRow">module:tiles/user/tileRow~TileRow</a></span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><p>or null</p></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
 			
 			
 			
@@ -2679,7 +2680,160 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="tiles_user_tileDao.js.html">tiles/user/tileDao.js</a>, <a href="tiles_user_tileDao.js.html#line-227">line 227</a></p>
+									<p class="form-control-static"><a href="tiles_user_tileDao.js.html">tiles/user/tileDao.js</a>, <a href="tiles_user_tileDao.js.html#line-228">line 228</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public inherited">
+			<h4 id="queryWhereWithArgsDistinct" class="function public inherited"><span class="name">queryWhereWithArgsDistinct</span><span class="signature-params">( <span class="signature-param">where</span>, <span class="signature-param">whereArgs</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Iterable.&lt;Object>}</span></h4>
+		</dt>
+<dd class="symbol-details function public inherited">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Iterate all distinct matching rows in the table</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>where</code></td>
+							<td><span class="param-type">string</span></td>
+							<td class="last">
+									<p>where clause</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>whereArgs</code></td>
+							<td><span class="param-type">Array.&lt;Object></span></td>
+							<td class="last">
+									<p>array of where query values</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">Iterable.&lt;Object></span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+							<!-- inherits -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Inherited From</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="module-dao_dao-Dao.html#queryWhereWithArgsDistinct">module:dao/dao~Dao#queryWhereWithArgsDistinct</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-231">line 231</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public inherited">
+			<h4 id="getLinkedFeatures" class="function public inherited"><span class="name">getLinkedFeatures</span><span class="signature-params">( <span class="signature-param">userRow</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Array.&lt;<a href="module-features_user_featureRow.html#~FeatureRow">module:features/user/featureRow~FeatureRow</a>>}</span></h4>
+		</dt>
+<dd class="symbol-details function public inherited">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Get all feature rows that are linked to this user row</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>userRow</code></td>
+							<td><span class="param-type"><a href="module-user_userRow-UserRow.html">module:user/userRow~UserRow</a></span></td>
+							<td class="last">
+									<p>user row</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">Array.&lt;<a href="module-features_user_featureRow.html#~FeatureRow">module:features/user/featureRow~FeatureRow</a>></span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+							<!-- inherits -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Inherited From</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="module-user_userDao-UserDao.html#getLinkedFeatures">module:user/userDao~UserDao#getLinkedFeatures</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="user_userDao.js.html">user/userDao.js</a>, <a href="user_userDao.js.html#line-240">line 240</a></p>
 								</div>
 							</div>
 			
@@ -2794,80 +2948,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-233">line 233</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title function public inherited">
-			<h4 id="getLinkedFeatures" class="function public inherited"><span class="name">getLinkedFeatures</span><span class="signature-params">( <span class="signature-param">userRow</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Array.&lt;<a href="module-features_user_featureRow.html#~FeatureRow">module:features/user/featureRow~FeatureRow</a>>}</span></h4>
-		</dt>
-<dd class="symbol-details function public inherited">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Get all feature rows that are linked to this user row</p></div>
-			</div>			<div class="callout callout-info">
-				<h5>Parameters</h5>
-				<table class="params table table-striped">
-					<thead>
-					<tr>
-							<th>Name</th>
-						<th>Type</th>
-						<th class="last">Description</th>
-					</tr>
-					</thead>
-					<tbody>
-						<tr>
-								<td><code>userRow</code></td>
-							<td><span class="param-type"><a href="module-user_userRow-UserRow.html">module:user/userRow~UserRow</a></span></td>
-							<td class="last">
-									<p>user row</p>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
-							<div class="form-group">
-								<label class="col-sm-3 control-label returns-type"><span class="param-type">Array.&lt;<a href="module-features_user_featureRow.html#~FeatureRow">module:features/user/featureRow~FeatureRow</a>></span></label>
-								<div class="col-sm-9">
-									<div class="form-control-static returns-description"></div>
-								</div>
-							</div>
-					</form>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-			
-			
-			
-			
-			
-							<!-- inherits -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Inherited From</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="module-user_userDao-UserDao.html#getLinkedFeatures">module:user/userDao~UserDao#getLinkedFeatures</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="user_userDao.js.html">user/userDao.js</a>, <a href="user_userDao.js.html#line-240">line 240</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-247">line 247</a></p>
 								</div>
 							</div>
 			
@@ -2940,80 +3021,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-243">line 243</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title function public inherited">
-			<h4 id="buildPkWhereArgs" class="function public inherited"><span class="name">buildPkWhereArgs</span><span class="signature-params">( <span class="signature-param">idValue</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Array.&lt;Object>}</span></h4>
-		</dt>
-<dd class="symbol-details function public inherited">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Get the primary key where args</p></div>
-			</div>			<div class="callout callout-info">
-				<h5>Parameters</h5>
-				<table class="params table table-striped">
-					<thead>
-					<tr>
-							<th>Name</th>
-						<th>Type</th>
-						<th class="last">Description</th>
-					</tr>
-					</thead>
-					<tbody>
-						<tr>
-								<td><code>idValue</code></td>
-							<td><span class="param-type">Object</span></td>
-							<td class="last">
-									<p>id</p>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
-							<div class="form-group">
-								<label class="col-sm-3 control-label returns-type"><span class="param-type">Array.&lt;Object></span></label>
-								<div class="col-sm-9">
-									<div class="form-control-static returns-description"><p>where args</p></div>
-								</div>
-							</div>
-					</form>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-			
-			
-			
-			
-			
-							<!-- inherits -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Inherited From</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="module-dao_dao-Dao.html#buildPkWhereArgs">module:dao/dao~Dao#buildPkWhereArgs</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-260">line 260</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-257">line 257</a></p>
 								</div>
 							</div>
 			
@@ -3137,7 +3145,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="tiles_user_tileDao.js.html">tiles/user/tileDao.js</a>, <a href="tiles_user_tileDao.js.html#line-267">line 267</a></p>
+									<p class="form-control-static"><a href="tiles_user_tileDao.js.html">tiles/user/tileDao.js</a>, <a href="tiles_user_tileDao.js.html#line-265">line 265</a></p>
 								</div>
 							</div>
 			
@@ -3201,6 +3209,79 @@
 </dd>
 											<hr/>
 											<dt class="symbol-title function public inherited">
+			<h4 id="buildPkWhereArgs" class="function public inherited"><span class="name">buildPkWhereArgs</span><span class="signature-params">( <span class="signature-param">idValue</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Array.&lt;Object>}</span></h4>
+		</dt>
+<dd class="symbol-details function public inherited">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Get the primary key where args</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>idValue</code></td>
+							<td><span class="param-type">Object</span></td>
+							<td class="last">
+									<p>id</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">Array.&lt;Object></span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><p>where args</p></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+							<!-- inherits -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Inherited From</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="module-dao_dao-Dao.html#buildPkWhereArgs">module:dao/dao~Dao#buildPkWhereArgs</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-274">line 274</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public inherited">
 			<h4 id="getMediaRelations" class="function public inherited"><span class="name">getMediaRelations</span><span class="signature-params">()</span><span class="signature-type"> &rarr;&nbsp;{Array.&lt;Object>}</span></h4>
 		</dt>
 <dd class="symbol-details function public inherited">
@@ -3242,86 +3323,6 @@
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
 									<p class="form-control-static"><a href="user_userDao.js.html">user/userDao.js</a>, <a href="user_userDao.js.html#line-277">line 277</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title function public inherited">
-			<h4 id="buildWhereLike" class="function public inherited"><span class="name">buildWhereLike</span><span class="signature-params">( <span class="signature-param">fields</span>, <span class="signature-param">operation</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{string}</span></h4>
-		</dt>
-<dd class="symbol-details function public inherited">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Build where (or selection) LIKE statement for fields</p></div>
-			</div>			<div class="callout callout-info">
-				<h5>Parameters</h5>
-				<table class="params table table-striped">
-					<thead>
-					<tr>
-							<th>Name</th>
-						<th>Type</th>
-						<th class="last">Description</th>
-					</tr>
-					</thead>
-					<tbody>
-						<tr>
-								<td><code>fields</code></td>
-							<td><span class="param-type"><a href="module-dao_columnValues-ColumnValues.html">module:dao/columnValues~ColumnValues</a></span></td>
-							<td class="last">
-									<p>columns and values</p>
-							</td>
-						</tr>
-						<tr>
-								<td><code>operation</code></td>
-							<td><span class="param-type">string</span></td>
-							<td class="last">
-									<p>AND or OR</p>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
-							<div class="form-group">
-								<label class="col-sm-3 control-label returns-type"><span class="param-type">string</span></label>
-								<div class="col-sm-9">
-									<div class="form-control-static returns-description"><p>where clause</p></div>
-								</div>
-							</div>
-					</form>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-			
-			
-			
-			
-			
-							<!-- inherits -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Inherited From</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="module-dao_dao-Dao.html#buildWhereLike">module:dao/dao~Dao#buildWhereLike</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-278">line 278</a></p>
 								</div>
 							</div>
 			
@@ -3405,6 +3406,86 @@
 </dd>
 											<hr/>
 											<dt class="symbol-title function public inherited">
+			<h4 id="buildWhereLike" class="function public inherited"><span class="name">buildWhereLike</span><span class="signature-params">( <span class="signature-param">fields</span>, <span class="signature-param">operation</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{string}</span></h4>
+		</dt>
+<dd class="symbol-details function public inherited">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Build where (or selection) LIKE statement for fields</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>fields</code></td>
+							<td><span class="param-type"><a href="module-dao_columnValues-ColumnValues.html">module:dao/columnValues~ColumnValues</a></span></td>
+							<td class="last">
+									<p>columns and values</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>operation</code></td>
+							<td><span class="param-type">string</span></td>
+							<td class="last">
+									<p>AND or OR</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">string</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><p>where clause</p></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+							<!-- inherits -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Inherited From</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="module-dao_dao-Dao.html#buildWhereLike">module:dao/dao~Dao#buildWhereLike</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-292">line 292</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public inherited">
 			<h4 id="getRelations" class="function public inherited"><span class="name">getRelations</span><span class="signature-params">()</span><span class="signature-type"> &rarr;&nbsp;{Array.&lt;Object>}</span></h4>
 		</dt>
 <dd class="symbol-details function public inherited">
@@ -3446,6 +3527,158 @@
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
 									<p class="form-control-static"><a href="user_userDao.js.html">user/userDao.js</a>, <a href="user_userDao.js.html#line-294">line 294</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public">
+			<h4 id="queryForTilesInColumn" class="function public"><span class="name">queryForTilesInColumn</span><span class="signature-params">( <span class="signature-param">column</span>, <span class="signature-param">zoomLevel</span>, <span class="signature-param">tileCallback</span>, <span class="signature-param">doneCallback</span>&nbsp;)</span><span class="signature-type"></span></h4>
+		</dt>
+<dd class="symbol-details function public">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Query for tiles at a zoom level and column</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>column</code></td>
+							<td><span class="param-type">Number</span></td>
+							<td class="last">
+									<p>column</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>zoomLevel</code></td>
+							<td><span class="param-type">Number</span></td>
+							<td class="last">
+									<p>zoom level</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>tileCallback</code></td>
+							<td><span class="param-type">function</span></td>
+							<td class="last">
+									<p>called for each tile</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>doneCallback</code></td>
+							<td><span class="param-type">function</span></td>
+							<td class="last">
+									<p>called when all tiles have been retrieved</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="tiles_user_tileDao.js.html">tiles/user/tileDao.js</a>, <a href="tiles_user_tileDao.js.html#line-295">line 295</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public inherited">
+			<h4 id="getRows" class="function public inherited"><span class="name">getRows</span><span class="signature-params">( <span class="signature-param">ids</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Array.&lt;Object>}</span></h4>
+		</dt>
+<dd class="symbol-details function public inherited">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Gets the rows in this table by id</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>ids</code></td>
+							<td><span class="param-type">Array.&lt;Number></span></td>
+							<td class="last">
+									<p>ids to query for</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">Array.&lt;Object></span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+							<!-- inherits -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Inherited From</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="module-user_userDao-UserDao.html#getRows">module:user/userDao~UserDao#getRows</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="user_userDao.js.html">user/userDao.js</a>, <a href="user_userDao.js.html#line-303">line 303</a></p>
 								</div>
 							</div>
 			
@@ -3531,159 +3764,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-296">line 296</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title function public">
-			<h4 id="queryForTilesInColumn" class="function public"><span class="name">queryForTilesInColumn</span><span class="signature-params">( <span class="signature-param">column</span>, <span class="signature-param">zoomLevel</span>, <span class="signature-param">tileCallback</span>, <span class="signature-param">doneCallback</span>&nbsp;)</span><span class="signature-type"></span></h4>
-		</dt>
-<dd class="symbol-details function public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Query for tiles at a zoom level and column</p></div>
-			</div>			<div class="callout callout-info">
-				<h5>Parameters</h5>
-				<table class="params table table-striped">
-					<thead>
-					<tr>
-							<th>Name</th>
-						<th>Type</th>
-						<th class="last">Description</th>
-					</tr>
-					</thead>
-					<tbody>
-						<tr>
-								<td><code>column</code></td>
-							<td><span class="param-type">Number</span></td>
-							<td class="last">
-									<p>column</p>
-							</td>
-						</tr>
-						<tr>
-								<td><code>zoomLevel</code></td>
-							<td><span class="param-type">Number</span></td>
-							<td class="last">
-									<p>zoom level</p>
-							</td>
-						</tr>
-						<tr>
-								<td><code>tileCallback</code></td>
-							<td><span class="param-type">function</span></td>
-							<td class="last">
-									<p>called for each tile</p>
-							</td>
-						</tr>
-						<tr>
-								<td><code>doneCallback</code></td>
-							<td><span class="param-type">function</span></td>
-							<td class="last">
-									<p>called when all tiles have been retrieved</p>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="tiles_user_tileDao.js.html">tiles/user/tileDao.js</a>, <a href="tiles_user_tileDao.js.html#line-297">line 297</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title function public inherited">
-			<h4 id="getRows" class="function public inherited"><span class="name">getRows</span><span class="signature-params">( <span class="signature-param">ids</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Array.&lt;Object>}</span></h4>
-		</dt>
-<dd class="symbol-details function public inherited">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Gets the rows in this table by id</p></div>
-			</div>			<div class="callout callout-info">
-				<h5>Parameters</h5>
-				<table class="params table table-striped">
-					<thead>
-					<tr>
-							<th>Name</th>
-						<th>Type</th>
-						<th class="last">Description</th>
-					</tr>
-					</thead>
-					<tbody>
-						<tr>
-								<td><code>ids</code></td>
-							<td><span class="param-type">Array.&lt;Number></span></td>
-							<td class="last">
-									<p>ids to query for</p>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
-							<div class="form-group">
-								<label class="col-sm-3 control-label returns-type"><span class="param-type">Array.&lt;Object></span></label>
-								<div class="col-sm-9">
-									<div class="form-control-static returns-description"></div>
-								</div>
-							</div>
-					</form>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-			
-			
-			
-			
-			
-							<!-- inherits -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Inherited From</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="module-user_userDao-UserDao.html#getRows">module:user/userDao~UserDao#getRows</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="user_userDao.js.html">user/userDao.js</a>, <a href="user_userDao.js.html#line-303">line 303</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-310">line 310</a></p>
 								</div>
 							</div>
 			
@@ -3814,7 +3895,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="tiles_user_tileDao.js.html">tiles/user/tileDao.js</a>, <a href="tiles_user_tileDao.js.html#line-334">line 334</a></p>
+									<p class="form-control-static"><a href="tiles_user_tileDao.js.html">tiles/user/tileDao.js</a>, <a href="tiles_user_tileDao.js.html#line-332">line 332</a></p>
 								</div>
 							</div>
 			
@@ -3961,7 +4042,86 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-342">line 342</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-356">line 356</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public">
+			<h4 id="queryByTileGrid" class="function public"><span class="name">queryByTileGrid</span><span class="signature-params">( <span class="signature-param">tileGrid</span>, <span class="signature-param">zoomLevel</span>, <span class="signature-param">tileCallback</span>, <span class="signature-param">doneCallback</span>&nbsp;)</span><span class="signature-type"></span></h4>
+		</dt>
+<dd class="symbol-details function public">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Query by tile grid and zoom level</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>tileGrid</code></td>
+							<td><span class="param-type">TileGrid</span></td>
+							<td class="last">
+									<p>tile grid</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>zoomLevel</code></td>
+							<td><span class="param-type">Number</span></td>
+							<td class="last">
+									<p>zoom level</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>tileCallback</code></td>
+							<td><span class="param-type">function</span></td>
+							<td class="last">
+									<p>called for each tile</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>doneCallback</code></td>
+							<td><span class="param-type">function</span></td>
+							<td class="last">
+									<p>called when all tiles have been retrieved</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="tiles_user_tileDao.js.html">tiles/user/tileDao.js</a>, <a href="tiles_user_tileDao.js.html#line-369">line 369</a></p>
 								</div>
 							</div>
 			
@@ -4068,86 +4228,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-362">line 362</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title function public">
-			<h4 id="queryByTileGrid" class="function public"><span class="name">queryByTileGrid</span><span class="signature-params">( <span class="signature-param">tileGrid</span>, <span class="signature-param">zoomLevel</span>, <span class="signature-param">tileCallback</span>, <span class="signature-param">doneCallback</span>&nbsp;)</span><span class="signature-type"></span></h4>
-		</dt>
-<dd class="symbol-details function public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Query by tile grid and zoom level</p></div>
-			</div>			<div class="callout callout-info">
-				<h5>Parameters</h5>
-				<table class="params table table-striped">
-					<thead>
-					<tr>
-							<th>Name</th>
-						<th>Type</th>
-						<th class="last">Description</th>
-					</tr>
-					</thead>
-					<tbody>
-						<tr>
-								<td><code>tileGrid</code></td>
-							<td><span class="param-type">TileGrid</span></td>
-							<td class="last">
-									<p>tile grid</p>
-							</td>
-						</tr>
-						<tr>
-								<td><code>zoomLevel</code></td>
-							<td><span class="param-type">Number</span></td>
-							<td class="last">
-									<p>zoom level</p>
-							</td>
-						</tr>
-						<tr>
-								<td><code>tileCallback</code></td>
-							<td><span class="param-type">function</span></td>
-							<td class="last">
-									<p>called for each tile</p>
-							</td>
-						</tr>
-						<tr>
-								<td><code>doneCallback</code></td>
-							<td><span class="param-type">function</span></td>
-							<td class="last">
-									<p>called when all tiles have been retrieved</p>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="tiles_user_tileDao.js.html">tiles/user/tileDao.js</a>, <a href="tiles_user_tileDao.js.html#line-371">line 371</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-376">line 376</a></p>
 								</div>
 							</div>
 			
@@ -4230,7 +4311,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-375">line 375</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-389">line 389</a></p>
 								</div>
 							</div>
 			
@@ -4321,7 +4402,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-403">line 403</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-417">line 417</a></p>
 								</div>
 							</div>
 			
@@ -4412,7 +4493,61 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-414">line 414</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-428">line 428</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public">
+			<h4 id="dropTable" class="function public"><span class="name">dropTable</span><span class="signature-params">()</span><span class="signature-type"></span></h4>
+		</dt>
+<dd class="symbol-details function public">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Drop the <a href="module-tiles_user_tileTable-TileTable.html"><code>user tile pyramid table</code></a>
+			and delete its associated <a href="module-tiles_matrixset-TileMatrixSet.html"><code>tile matrix set</code></a>
+			and <a href="module-tiles_matrix-TileMatrix.html"><code>tile matrix</code></a> records.</p></div>
+			</div>			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><p>result of <a href="module-user_userDao-UserDao.html#dropTable"><code>module:user/userDao~UserDao#dropTable</code></a></p></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+							<!-- overrides -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Overrides</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="module-user_userDao-UserDao.html#dropTable">module:user/userDao~UserDao#dropTable</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="tiles_user_tileDao.js.html">tiles/user/tileDao.js</a>, <a href="tiles_user_tileDao.js.html#line-436">line 436</a></p>
 								</div>
 							</div>
 			
@@ -4485,7 +4620,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-423">line 423</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-437">line 437</a></p>
 								</div>
 							</div>
 			
@@ -4558,61 +4693,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-435">line 435</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title function public">
-			<h4 id="dropTable" class="function public"><span class="name">dropTable</span><span class="signature-params">()</span><span class="signature-type"></span></h4>
-		</dt>
-<dd class="symbol-details function public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Drop the <a href="module-tiles_user_tileTable-TileTable.html"><code>user tile pyramid table</code></a>
-			and delete its associated <a href="module-tiles_matrixset-TileMatrixSet.html"><code>tile matrix set</code></a>
-			and <a href="module-tiles_matrix-TileMatrix.html"><code>tile matrix</code></a> records.</p></div>
-			</div>			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
-							<div class="form-group">
-								<label class="col-sm-3 control-label returns-type"></label>
-								<div class="col-sm-9">
-									<div class="form-control-static returns-description"><p>result of <a href="module-user_userDao-UserDao.html#dropTable"><code>module:user/userDao~UserDao#dropTable</code></a></p></div>
-								</div>
-							</div>
-					</form>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-			
-			
-			
-			
-			
-			
-							<!-- overrides -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Overrides</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="module-user_userDao-UserDao.html#dropTable">module:user/userDao~UserDao#dropTable</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="tiles_user_tileDao.js.html">tiles/user/tileDao.js</a>, <a href="tiles_user_tileDao.js.html#line-438">line 438</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-449">line 449</a></p>
 								</div>
 							</div>
 			
@@ -4685,7 +4766,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-447">line 447</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-461">line 461</a></p>
 								</div>
 							</div>
 			
@@ -4765,7 +4846,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-460">line 460</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-474">line 474</a></p>
 								</div>
 							</div>
 			
@@ -4817,7 +4898,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-468">line 468</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-482">line 482</a></p>
 								</div>
 							</div>
 			
@@ -4890,7 +4971,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-477">line 477</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-491">line 491</a></p>
 								</div>
 							</div>
 			
@@ -4977,7 +5058,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-490">line 490</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-504">line 504</a></p>
 								</div>
 							</div>
 			
@@ -5050,7 +5131,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-500">line 500</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-514">line 514</a></p>
 								</div>
 							</div>
 			
@@ -5123,7 +5204,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-520">line 520</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-534">line 534</a></p>
 								</div>
 							</div>
 			

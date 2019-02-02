@@ -1483,11 +1483,11 @@
 </dd>
 											<hr/>
 											<dt class="symbol-title function public inherited">
-			<h4 id="queryForFieldValues" class="function public inherited"><span class="name">queryForFieldValues</span><span class="signature-params">( <span class="signature-param">fieldValues</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Iterable.Object}</span></h4>
+			<h4 id="queryForFieldValues" class="function public inherited"><span class="name">queryForFieldValues</span><span class="signature-params">( <span class="signature-param">fieldValues</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Iterable.&lt;object>}</span></h4>
 		</dt>
 <dd class="symbol-details function public inherited">
 	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Iterate all objects in thet able that match the ColumnValues passed in</p></div>
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Iterate all rows in the table that match the given values.</p></div>
 			</div>			<div class="callout callout-info">
 				<h5>Parameters</h5>
 				<table class="params table table-striped">
@@ -1503,7 +1503,7 @@
 								<td><code>fieldValues</code></td>
 							<td><span class="param-type"><a href="module-dao_columnValues-ColumnValues.html">module:dao/columnValues~ColumnValues</a></span></td>
 							<td class="last">
-									<p>ColumnValues to query for</p>
+									<p>column values to match</p>
 							</td>
 						</tr>
 					</tbody>
@@ -1511,7 +1511,7 @@
 			</div>
 			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
 							<div class="form-group">
-								<label class="col-sm-3 control-label returns-type"><span class="param-type">Iterable.Object</span></label>
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">Iterable.&lt;object></span></label>
 								<div class="col-sm-9">
 									<div class="form-control-static returns-description"></div>
 								</div>
@@ -1544,7 +1544,87 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-189">line 189</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-191">line 191</a></p>
+								</div>
+							</div>
+			
+			
+			
+							<!-- todo -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">To Do</label>
+								<div class="col-sm-9">
+										<p class="form-control-static">this method will throw an error if the iterator is not exhausted</p>
+								</div>
+							</div>
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public inherited">
+			<h4 id="queryForFirstFieldValues" class="function public inherited"><span class="name">queryForFirstFieldValues</span><span class="signature-params">( <span class="signature-param">fieldValues</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{object}</span></h4>
+		</dt>
+<dd class="symbol-details function public inherited">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Query for and return the first row that matches the given values.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>fieldValues</code></td>
+							<td><span class="param-type"><a href="module-dao_columnValues-ColumnValues.html">module:dao/columnValues~ColumnValues</a></span></td>
+							<td class="last">
+									<p>column values to match</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">object</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><p>the first matching row or null</p></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+							<!-- inherits -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Inherited From</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="module-dao_dao-Dao.html#queryForFirstFieldValues">module:dao/dao~Dao#queryForFirstFieldValues</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-204">line 204</a></p>
 								</div>
 							</div>
 			
@@ -1638,7 +1718,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-205">line 205</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-219">line 219</a></p>
 								</div>
 							</div>
 			
@@ -1718,7 +1798,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-217">line 217</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-231">line 231</a></p>
 								</div>
 							</div>
 			
@@ -1833,7 +1913,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-233">line 233</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-247">line 247</a></p>
 								</div>
 							</div>
 			
@@ -1906,7 +1986,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-243">line 243</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-257">line 257</a></p>
 								</div>
 							</div>
 			
@@ -1979,7 +2059,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-260">line 260</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-274">line 274</a></p>
 								</div>
 							</div>
 			
@@ -2059,7 +2139,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-278">line 278</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-292">line 292</a></p>
 								</div>
 							</div>
 			
@@ -2145,7 +2225,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-296">line 296</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-310">line 310</a></p>
 								</div>
 							</div>
 			
@@ -2240,7 +2320,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-342">line 342</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-356">line 356</a></p>
 								</div>
 							</div>
 			
@@ -2347,7 +2427,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-362">line 362</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-376">line 376</a></p>
 								</div>
 							</div>
 			
@@ -2430,7 +2510,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-375">line 375</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-389">line 389</a></p>
 								</div>
 							</div>
 			
@@ -2521,7 +2601,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-403">line 403</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-417">line 417</a></p>
 								</div>
 							</div>
 			
@@ -2612,7 +2692,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-414">line 414</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-428">line 428</a></p>
 								</div>
 							</div>
 			
@@ -2685,7 +2765,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-423">line 423</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-437">line 437</a></p>
 								</div>
 							</div>
 			
@@ -2758,7 +2838,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-435">line 435</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-449">line 449</a></p>
 								</div>
 							</div>
 			
@@ -2831,7 +2911,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-447">line 447</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-461">line 461</a></p>
 								</div>
 							</div>
 			
@@ -2911,7 +2991,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-460">line 460</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-474">line 474</a></p>
 								</div>
 							</div>
 			
@@ -2963,7 +3043,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-468">line 468</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-482">line 482</a></p>
 								</div>
 							</div>
 			
@@ -3036,7 +3116,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-477">line 477</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-491">line 491</a></p>
 								</div>
 							</div>
 			
@@ -3123,7 +3203,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-490">line 490</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-504">line 504</a></p>
 								</div>
 							</div>
 			
@@ -3196,7 +3276,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-500">line 500</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-514">line 514</a></p>
 								</div>
 							</div>
 			
@@ -3269,7 +3349,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-520">line 520</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-534">line 534</a></p>
 								</div>
 							</div>
 			
@@ -3321,7 +3401,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-533">line 533</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-547">line 547</a></p>
 								</div>
 							</div>
 			
