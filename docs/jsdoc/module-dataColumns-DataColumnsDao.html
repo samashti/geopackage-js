@@ -65,6 +65,7 @@
 				<ul class="nav navbar-nav">
 							<li><a href="global.html">Globals</a></li>
 							<li><a href="list_class.html">Classes</a></li>
+							<li><a href="list_interface.html">Interfaces</a></li>
 							<li><a href="list_module.html">Modules</a></li>
 							<li><a href="list_tutorial.html">Tutorials</a></li>
 				</ul>
@@ -2883,7 +2884,7 @@
 </dd>
 											<hr/>
 											<dt class="symbol-title function public inherited">
-			<h4 id="create" class="function public inherited"><span class="name">create</span><span class="signature-params">( <span class="signature-param">object</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Number}</span></h4>
+			<h4 id="create" class="function public inherited"><span class="name">create</span><span class="signature-params">( <span class="signature-param">object</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{<a href="module-db_adapter.html#~ROWID">module:db/adapter~ROWID</a>}</span></h4>
 		</dt>
 <dd class="symbol-details function public inherited">
 	<div class="symbol-details-inner">
@@ -2911,7 +2912,7 @@
 			</div>
 			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
 							<div class="form-group">
-								<label class="col-sm-3 control-label returns-type"><span class="param-type">Number</span></label>
+								<label class="col-sm-3 control-label returns-type"><span class="param-type"><a href="module-db_adapter.html#~ROWID">module:db/adapter~ROWID</a></span></label>
 								<div class="col-sm-9">
 									<div class="form-control-static returns-description"><p>id of the inserted object</p></div>
 								</div>
@@ -2956,7 +2957,7 @@
 </dd>
 											<hr/>
 											<dt class="symbol-title function public inherited">
-			<h4 id="updateWithValues" class="function public inherited"><span class="name">updateWithValues</span><span class="signature-params">( <span class="signature-param">values</span>, <span class="signature-param">where</span>, <span class="signature-param">whereArgs</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Number}</span></h4>
+			<h4 id="updateWithValues" class="function public inherited"><span class="name">updateWithValues</span><span class="signature-params">( <span class="signature-param">values</span>, <span class="signature-param">where</span>, <span class="signature-param">whereArgs</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{<a href="module-db_adapter.html#~DBWriteResult">module:db/adapter~DBWriteResult</a>}</span></h4>
 		</dt>
 <dd class="symbol-details function public inherited">
 	<div class="symbol-details-inner">
@@ -2998,9 +2999,9 @@
 			</div>
 			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
 							<div class="form-group">
-								<label class="col-sm-3 control-label returns-type"><span class="param-type">Number</span></label>
+								<label class="col-sm-3 control-label returns-type"><span class="param-type"><a href="module-db_adapter.html#~DBWriteResult">module:db/adapter~DBWriteResult</a></span></label>
 								<div class="col-sm-9">
-									<div class="form-control-static returns-description"><p>number of objects updated</p></div>
+									<div class="form-control-static returns-description"><p>from <code><code>GeoPackageConnection.run()</code></code></p></div>
 								</div>
 							</div>
 					</form>
@@ -3043,7 +3044,7 @@
 </dd>
 											<hr/>
 											<dt class="symbol-title function public inherited">
-			<h4 id="update" class="function public inherited"><span class="name">update</span><span class="signature-params">( <span class="signature-param">object</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Number}</span></h4>
+			<h4 id="update" class="function public inherited"><span class="name">update</span><span class="signature-params">( <span class="signature-param">object</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{<a href="module-db_adapter.html#~DBWriteResult">module:db/adapter~DBWriteResult</a>}</span></h4>
 		</dt>
 <dd class="symbol-details function public inherited">
 	<div class="symbol-details-inner">
@@ -3071,9 +3072,9 @@
 			</div>
 			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
 							<div class="form-group">
-								<label class="col-sm-3 control-label returns-type"><span class="param-type">Number</span></label>
+								<label class="col-sm-3 control-label returns-type"><span class="param-type"><a href="module-db_adapter.html#~DBWriteResult">module:db/adapter~DBWriteResult</a></span></label>
 								<div class="col-sm-9">
-									<div class="form-control-static returns-description"><p>number of objects updated</p></div>
+									<div class="form-control-static returns-description"><p>from <code><code>GeoPackageConnection.run()</code></code></p></div>
 								</div>
 							</div>
 					</form>
@@ -3116,11 +3117,15 @@
 </dd>
 											<hr/>
 											<dt class="symbol-title function public inherited">
-			<h4 id="createOrUpdate" class="function public inherited"><span class="name">createOrUpdate</span><span class="signature-params">( <span class="signature-param">object</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Number}</span></h4>
+			<h4 id="createOrUpdate" class="function public inherited"><span class="name">createOrUpdate</span><span class="signature-params">( <span class="signature-param">object</span>&nbsp;)</span><span class="signature-type"></span></h4>
 		</dt>
 <dd class="symbol-details function public inherited">
 	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Queries for the object by id, and if it exists, updates it, otherwise creates a new object</p></div>
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Query for the given object by ID, and if it exists, update its database
+			record.  Otherwise, create a new database record from the given object.
+			Return a <a href="module-db_adapter.html#~DBWriteResult"><code><code>DBWriteResult</code></code></a> if an
+			update occurs, or a <a href="module-db_adapter.html#~ROWID"><code><code>ROWID</code></code></a> if a new record
+			is created.</p></div>
 			</div>			<div class="callout callout-info">
 				<h5>Parameters</h5>
 				<table class="params table table-striped">
@@ -3144,9 +3149,9 @@
 			</div>
 			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
 							<div class="form-group">
-								<label class="col-sm-3 control-label returns-type"><span class="param-type">Number</span></label>
+								<label class="col-sm-3 control-label returns-type"></label>
 								<div class="col-sm-9">
-									<div class="form-control-static returns-description"><p>number of objects modified</p></div>
+									<div class="form-control-static returns-description"><p>({module:db/adapter~ROWID | {module:db/adapter~DBWriteResult})</p></div>
 								</div>
 							</div>
 					</form>
@@ -3177,12 +3182,19 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-534">line 534</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-540">line 540</a></p>
 								</div>
 							</div>
 			
 			
 			
+							<!-- todo -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">To Do</label>
+								<div class="col-sm-9">
+										<p class="form-control-static">return only one type of value</p>
+								</div>
+							</div>
 			
 					</form>
 			</div>	</div>
@@ -3229,7 +3241,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-547">line 547</a></p>
+									<p class="form-control-static"><a href="dao_dao.js.html">dao/dao.js</a>, <a href="dao_dao.js.html#line-553">line 553</a></p>
 								</div>
 							</div>
 			
@@ -3250,7 +3262,7 @@
 	</div>
 	<footer>
 				<div class="footer-option"><span class="site-footer-owner"><a href="https://github.com/ngageoint/GeoPackage">GeoPackage</a> is maintained by:</span><br><a href="https://github.com/ngageoint"><img src="http://ngageoint.github.io/GeoPackage/images/NGA_Logo.png" align="middle" height="60">National Geospatial-Intelligence Agency</a><a style="padding-left: 30px;" href="http://www.bit-sys.com/"><img src="http://ngageoint.github.io/GeoPackage/images/BITSystems_Logo.png" align="middle" height="40"></a><br></div>
-			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 1st Feb 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
+			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 27th Feb 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
 	</footer>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
