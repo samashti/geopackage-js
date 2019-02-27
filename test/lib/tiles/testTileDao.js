@@ -82,7 +82,7 @@ describe('TileDao tests', function() {
       should.exist(tileTable.getTileDataColumn);
     });
 
-    it.only('should query for a tile', function() {
+    it('should query for a tile', function() {
       var tileRow = tileDao.queryForTile(0, 0, 0);
       tileRow.getZoomLevel().should.be.equal(0);
       tileRow.getTileColumn().should.be.equal(0);
@@ -91,7 +91,7 @@ describe('TileDao tests', function() {
       should.exist(data);
     });
 
-    it.only('should return null querying for a tile that does not exist', function() {
+    it('should return null querying for a tile that does not exist', function() {
       const tile = tileDao.queryForTile(-1, -1, -1);
       should.not.exist(tile);
     });
