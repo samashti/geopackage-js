@@ -394,13 +394,16 @@ function readGeoPackage(geoPackage) {
   });
 }
 
-window.zoomTo = function(minX, minY, maxX, maxY, projection) {
+window.zoomTo = function(minX, minY, maxX, maxY, projection, maxZoom) {
+  var fitOpts = {
+    maxZoom: maxZoom ? maxZoom : map.getMaxZoom()
+  };
   try {
     var sw = proj4(projection, 'EPSG:4326', [minX, minY]);
     var ne = proj4(projection, 'EPSG:4326', [maxX, maxY]);
-    map.fitBounds([[sw[1], sw[0]], [ne[1], ne[0]]]);
+    map.flyToBounds([[sw[1], sw[0]], [ne[1], ne[0]]], fitOpts);
   } catch (e) {
-    map.fitBounds([[minY, minX], [maxY, maxX]]);
+    map.flyToBounds([[minY, minX], [maxY, maxX]], fitOpts);
   }
 }
 
