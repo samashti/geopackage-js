@@ -1,8 +1,9 @@
-var GeoPackageAPI = require('../../..')
-  , TileDao = require('../../../lib/tiles/user/tileDao')
+const GeoPackageAPI = require('../../..')
   , testSetup = require('../../fixtures/testSetup')
   , should = require('chai').should()
   , path = require('path');
+
+const fixturesDir = path.resolve(__dirname, '..', '..', 'fixtures');
 
 describe('TileDao tests', function() {
 
@@ -22,8 +23,8 @@ describe('TileDao tests', function() {
     }
     var filename;
     beforeEach('create the GeoPackage connection', function(done) {
-      var originalFilename = path.join(__dirname, '..', '..', 'fixtures', 'rivers.gpkg');
-      filename = path.join(__dirname, '..', '..', '..', 'fixtures', 'tmp', testSetup.createTempName());
+      var originalFilename = path.join(fixturesDir, 'rivers.gpkg');
+      filename = path.join(fixturesDir, 'tmp', testSetup.createTempName());
       copyGeopackage(originalFilename, filename, function() {
         GeoPackageAPI.open(filename, function(err, gp) {
           geoPackage = gp;
@@ -46,6 +47,11 @@ describe('TileDao tests', function() {
       tileDao.minZoom.should.be.equal(0);
       tileDao.maxZoom.should.be.equal(3);
       done();
+    });
+
+    it('should calculate the min/max web map zoom', function() {
+      tileDao.minWebMapZoom.should.equal(0);
+      tileDao.maxWebMapZoom.should.equal(3);
     });
 
     it('should get the bounding box for each zoom level', function() {
@@ -167,6 +173,44 @@ describe('TileDao tests', function() {
       var tileTables = geoPackage.getTileTables();
       tileTables[0].should.be.equal('Tiles');
     })
+  });
+
+  describe('wgs84.gpkg', function() {
+
+    let gpkg, tileDao;
+
+    beforeEach('open the geopackage', function() {
+      const gpkgPath = path.join(fixturesDir, 'wgs84.gpkg');
+      return GeoPackageAPI.open(gpkgPath).then(openGpkg => {
+        gpkg = openGpkg;
+        tileDao = gpkg.getTileDao('imagery');
+      });
+    });
+
+    it('caculates the min/max web map zoom', function() {
+
+      tileDao.minWebMapZoom.should.equal(4);
+      tileDao.maxWebMapZoom.should.equal(4);
+    });
+  });
+
+  describe('super.gpkg', function() {
+
+    let gpkg, tileDao;
+
+    beforeEach('open the geopackage', function() {
+      const gpkgPath = path.join(fixturesDir, 'super.gpkg');
+      return GeoPackageAPI.open(gpkgPath).then(openGpkg => {
+        gpkg = openGpkg;
+        tileDao = gpkg.getTileDao('point1_tiles');
+      });
+    });
+
+    it('caculates the min/max web map zoom', function() {
+
+      tileDao.minWebMapZoom.should.equal(17);
+      tileDao.maxWebMapZoom.should.equal(21);
+    });
   });
 
   describe.skip('Alaska GeoPackage tests', function() {
