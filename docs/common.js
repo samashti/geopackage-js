@@ -209,10 +209,11 @@ window.loadGeoPackage = function(files) {
         eventLabel: 'File Size',
         eventValue: array.byteLength
       });
-      loadByteArray(array, function() {
+      var after = function() {
         $('#choose-label').find('i').toggle();
         $('#download').removeClass('gone');
-      });
+      };
+      loadByteArray(array).then(after, after);
     }
     // if it is a GeoJSON file
     else if (f.name.lastIndexOf('json') > f.name.lastIndexOf('.')) {
@@ -355,14 +356,14 @@ function clearInfo() {
   $('#information').removeClass('hidden').addClass('visible');
 }
 
-function loadByteArray(array, callback) {
+function loadByteArray(array) {
   clearInfo();
 
   return GeoPackageAPI.open(array)
-  .then(function(gp) {
-    geoPackage = gp;
-    readGeoPackage(gp);
-  });
+    .then(function(gp) {
+      geoPackage = gp;
+      readGeoPackage(gp);
+    });
 }
 
 function readGeoPackage(geoPackage) {
