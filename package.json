@@ -1,7 +1,30 @@
 {
   "name": "@ngageoint/geopackage",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "GeoPackage JavaScript Library",
+  "umd:main": "dist/togeojson.umd.js",
+  "unpkg": "dist/togeojson.umd.js",
+  "browser": {
+    "sqlite3": false
+  },
+  "jsdelivr": "dist/togeojson.umd.js",
+  "module": "dist/togeojson.es.js",
+  "main": "dist/togeojson.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepare-it": "rollup -c rollup.config.js",
+    "release-it": "standard-version",
+    "clean": "rm -rf ./.test_run; rm -rf ./.nyc_output; rm -rf ./docs/coverage",
+    "test-sqlnode": "nyc --no-clean mocha",
+    "test-sqljs": "FORCE_SQLJS=true nyc --no-clean mocha",
+    "test": "npm run clean && npm run test-sqlnode && npm run test-sqljs && npm run report",
+    "report": "nyc report",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "predoc": "rm -rf docs/jsdoc/*; ./docs/tutorials/createTutorials.js",
+    "doc": "jsdoc --verbose -c jsdoc.conf"
+  },
   "keywords": [
     "NGA",
     "geopackage"
@@ -49,10 +72,9 @@
     "wkx": "0.4.4"
   },
   "devDependencies": {
-    "babel-polyfill": "^6.23.0",
-    "browserify": "^14.1.0",
-    "browserify-css": "^0.10.0",
-    "browserify-shim": "^3.8.12",
+    "babel-core": "^6.26.3",
+    "babel-jest": "^23.6.0",
+    "babel-preset-env": "^1.7.0",
     "canvas-compare": "^3.0.0",
     "chai": "^3.5.0",
     "coveralls": "^3.0.0",
@@ -64,6 +86,9 @@
     "mocha-lcov-reporter": "^1.3.0",
     "nock": "^10.0.2",
     "nyc": "^13.1.0",
+    "rollup": "^1.4.0",
+    "rollup-plugin-terser": "^4.0.4",
+    "standard-version": "^4.4.0",
     "uglify-es": "^3.0.27",
     "watchify": "^3.7.0",
     "webworkify": "^1.1.0",
@@ -73,36 +98,11 @@
     "chalk": "^1.1.3",
     "inquirer": "^1.0.2"
   },
-  "main": "index.js",
-  "files": [
-    "index.js",
-    "static/geopackage.js",
-    "cli",
-    "lib",
-    "converters",
-    "dist"
-  ],
-  "browser": {
-    "sqlite3": false
-  },
   "nyc": {
     "temp-dir": "./.test_run",
     "report-dir": "./docs/coverage",
     "reporter": [
       "lcov"
     ]
-  },
-  "scripts": {
-    "clean": "rm -rf ./.test_run; rm -rf ./.nyc_output; rm -rf ./docs/coverage",
-    "test-sqlnode": "nyc --no-clean mocha",
-    "test-sqljs": "FORCE_SQLJS=true nyc --no-clean mocha",
-    "test": "npm run clean && npm run test-sqlnode && npm run test-sqljs && npm run report",
-    "report": "nyc report",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "predoc": "rm -rf docs/jsdoc/*; ./docs/tutorials/createTutorials.js",
-    "doc": "jsdoc --verbose -c jsdoc.conf",
-    "build": "browserify -t browserify-css index.js --standalone geopackage --exclude sqlite3 --exclude inquirer -o static/geopackage.js",
-    "watch": "watchify -t browserify-css index.js -v --standalone geopackage --exclude sqlite3 --exclude inquirer -o static/geopackage.js",
-    "prepublish": "mkdir dist; browserify -t browserify-css index.js --standalone geopackage --exclude sqlite3 --exclude inquirer -o dist/geopackage.js && uglifyjs dist/geopackage.js > dist/geopackage.min.js"
   }
 }
