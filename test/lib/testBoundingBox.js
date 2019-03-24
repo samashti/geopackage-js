@@ -1,6 +1,9 @@
-var BoundingBox = require('../../lib/boundingBox.js');
+import BoundingBox from '../../lib/boundingBox'
+// var BoundingBox = require('../../lib/boundingBox.js').default;
+// var BoundingBox = require('../../dist/geopackage').BoundingBox
+// import { BoundingBox } from '../../dist/geopackage'
 
-describe('BoundingBox tests', function() {
+describe.only('BoundingBox tests', function() {
 
   it('should create a BoundingBox', function() {
     var bb = new BoundingBox(0, 1, 2, 3);

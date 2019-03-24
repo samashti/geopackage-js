@@ -50,13 +50,14 @@ describe('GeoPackage Tile table create tests', function() {
   describe('GeoPackage tile create tile matrix tests', function(done) {
 
     var tileMatrixSet;
-    var tileMatrixSetBoundingBox = new BoundingBox(-20037508.342789244, 20037508.342789244, -20037508.342789244, 20037508.342789244);
+    var tileMatrixSetBoundingBox;
 
     beforeEach(function() {
       var contentsBoundingBox = new BoundingBox(-180, 180, -85.0511287798066, 85.0511287798066);
       var contentsSrsId = 4326;
       var tileMatrixSetSrsId = 3857;
       geopackage.getSpatialReferenceSystemDao().createWebMercator();
+      tileMatrixSetBoundingBox = new BoundingBox(-20037508.342789244, 20037508.342789244, -20037508.342789244, 20037508.342789244);
       return geopackage.createTileTableWithTableName(tableName, contentsBoundingBox, contentsSrsId, tileMatrixSetBoundingBox, tileMatrixSetSrsId)
       .then(function(result) {
         tileMatrixSet = result;
@@ -142,7 +143,6 @@ describe('GeoPackage Tile table create tests', function() {
   describe('delete tile tests', function(done) {
 
     var tileMatrixSet;
-    var tileMatrixSetBoundingBox = new BoundingBox(-20037508.342789244, 20037508.342789244, -20037508.342789244, 20037508.342789244);
 
     beforeEach(function() {
       this.timeout(5000);
@@ -150,6 +150,7 @@ describe('GeoPackage Tile table create tests', function() {
       var contentsSrsId = 4326;
       var tileMatrixSetSrsId = 3857;
       geopackage.getSpatialReferenceSystemDao().createWebMercator();
+      var tileMatrixSetBoundingBox = new BoundingBox(-20037508.342789244, 20037508.342789244, -20037508.342789244, 20037508.342789244);
       return geopackage.createTileTableWithTableName(tableName, contentsBoundingBox, contentsSrsId, tileMatrixSetBoundingBox, tileMatrixSetSrsId)
       .then(function(result) {
         tileMatrixSet = result;

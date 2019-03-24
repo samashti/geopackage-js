@@ -1,21 +1,21 @@
 {
   "name": "@ngageoint/geopackage",
-  "version": "2.0.8",
+  "version": "2.0.7",
   "description": "GeoPackage JavaScript Library",
-  "umd:main": "dist/togeojson.umd.js",
-  "unpkg": "dist/togeojson.umd.js",
+  "umd:main": "dist/geopackage.umd.js",
+  "unpkg": "dist/geopackage.umd.js",
   "browser": {
     "sqlite3": false
   },
-  "jsdelivr": "dist/togeojson.umd.js",
-  "module": "dist/togeojson.es.js",
-  "main": "dist/togeojson.js",
+  "jsdelivr": "dist/geoapckage.umd.js",
+  "module": "dist/geoapckage.es.js",
+  "main": "dist/geopackage.js",
   "files": [
     "dist"
   ],
   "scripts": {
     "prepare-it": "rollup -c rollup.config.js",
-    "release-it": "standard-version",
+    "release-it": "standard-version --dry-run",
     "clean": "rm -rf ./.test_run; rm -rf ./.nyc_output; rm -rf ./docs/coverage",
     "test-sqlnode": "nyc --no-clean mocha",
     "test-sqljs": "FORCE_SQLJS=true nyc --no-clean mocha",
@@ -72,9 +72,12 @@
     "wkx": "0.4.4"
   },
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-jest": "^23.6.0",
-    "babel-preset-env": "^1.7.0",
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/register": "^7.0.0",
+    "@babel/preset-env": "^7.2.3",
+    "@babel/plugin-proposal-class-properties": "^7.0.0",
+    "babel-plugin-istanbul": "^4.1.6",
     "canvas-compare": "^3.0.0",
     "chai": "^3.5.0",
     "coveralls": "^3.0.0",
@@ -103,6 +106,9 @@
     "report-dir": "./docs/coverage",
     "reporter": [
       "lcov"
+    ],
+    "require": [
+      "@babel/register"
     ]
   }
 }

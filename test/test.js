@@ -1,4 +1,4 @@
-var polyfill = require('babel-polyfill');
+// var polyfill = require('babel-polyfill');
 
 require('chai').should();
 

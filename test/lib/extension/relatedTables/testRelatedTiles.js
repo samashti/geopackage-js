@@ -47,7 +47,6 @@ describe('Related Tile tests', function() {
   });
 
   var tileMatrixSet;
-  var tileMatrixSetBoundingBox = new BoundingBox(-20037508.342789244, 20037508.342789244, -20037508.342789244, 20037508.342789244);
   var tileTableName = 'OSM';
 
   function validateContents(tileTable, contents) {
@@ -63,6 +62,7 @@ describe('Related Tile tests', function() {
     var contentsSrsId = 4326;
     var tileMatrixSetSrsId = 3857;
     geoPackage.getSpatialReferenceSystemDao().createWebMercator();
+    var tileMatrixSetBoundingBox = new BoundingBox(-20037508.342789244, 20037508.342789244, -20037508.342789244, 20037508.342789244);
     return geoPackage.createTileTableWithTableName(tileTableName, contentsBoundingBox, contentsSrsId, tileMatrixSetBoundingBox, tileMatrixSetSrsId)
     .then(function(result) {
       tileMatrixSet = result;

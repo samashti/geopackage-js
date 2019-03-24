@@ -1,6 +1,8 @@
+// import * as GeoPackage from '../index.js'
+
 var GeoPackage = require('../index.js')
-  , BoundingBox = require('../lib/boundingBox.js')
-  , testSetup = require('./fixtures/testSetup');
+  var BoundingBox = require('../lib/boundingBox.js')
+  , testSetup = require('./fixtures/testSetup.js');
 
 var path = require('path')
   , fs = require('fs')
