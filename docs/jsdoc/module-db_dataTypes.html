@@ -65,6 +65,7 @@
 				<ul class="nav navbar-nav">
 							<li><a href="global.html">Globals</a></li>
 							<li><a href="list_class.html">Classes</a></li>
+							<li><a href="list_interface.html">Interfaces</a></li>
 							<li><a href="list_module.html">Modules</a></li>
 							<li><a href="list_tutorial.html">Tutorials</a></li>
 				</ul>
@@ -101,8 +102,7 @@
 			<dt class="symbol-title "></dt>
 			<dd class="symbol-details ">
 				<div class="symbol-details-inner">
-					<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Data Types module.</p></div>
-					</div>					<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+					<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
 					
 					
 					
@@ -138,18 +138,146 @@
 									<dl class="symbol">
 											<hr/>
 											<dt class="symbol-title member public">
-			<h4 id=".GPKG_DT_BOOLEAN_NAME" class="member public"><span class="signature-attribs">&lt;static> </span><span class="name">GPKG_DT_BOOLEAN_NAME</span><span class="signature-type"> :String</span></h4>
+			<h4 id=".GPKGDataType" class="member public"><span class="signature-attribs">&lt;static, readonly> </span><span class="name">GPKGDataType</span><span class="signature-type"> :number</span></h4>
 		</dt>
 <dd class="symbol-details member public">
 	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>A boolean value representing true or false.</p></div>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p><code>GPKGDataType</code> is an enum hash of constant values that represent the column
+			types found in GeoPackage SQLite database tables.</p></div>
+			</div>			<div class="callout callout-info">
+				<h5>Properties</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+							<th>Default</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>GPKG_DT_BOOLEAN</code></td>
+							<td><span class="param-type">number</span></td>
+								<td>0</td>
+							<td class="last">
+									<p>A boolean value representing true or false.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>GPKG_DT_TINYINT</code></td>
+							<td><span class="param-type">number</span></td>
+								<td>1</td>
+							<td class="last">
+									<p>8-bit signed two’s complement integer.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>GPKG_DT_SMALLINT</code></td>
+							<td><span class="param-type">number</span></td>
+								<td>2</td>
+							<td class="last">
+									<p>16-bit signed two’s complement integer.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>GPKG_DT_MEDIUMINT</code></td>
+							<td><span class="param-type">number</span></td>
+								<td>3</td>
+							<td class="last">
+									<p>32-bit signed two’s complement integer.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>GPKG_DT_INT</code></td>
+							<td><span class="param-type">number</span></td>
+								<td>4</td>
+							<td class="last">
+									<p>64-bit signed two’s complement integer.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>GPKG_DT_INTEGER</code></td>
+							<td><span class="param-type">number</span></td>
+								<td>5</td>
+							<td class="last">
+									<p>64-bit signed two’s complement integer.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>GPKG_DT_FLOAT</code></td>
+							<td><span class="param-type">number</span></td>
+								<td>6</td>
+							<td class="last">
+									<p>32-bit IEEE floating point number.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>GPKG_DT_DOUBLE</code></td>
+							<td><span class="param-type">number</span></td>
+								<td>7</td>
+							<td class="last">
+									<p>64-bit IEEE floating point number.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>GPKG_DT_REAL</code></td>
+							<td><span class="param-type">number</span></td>
+								<td>8</td>
+							<td class="last">
+									<p>64-bit IEEE floating point number.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>GPKG_DT_TEXT</code></td>
+							<td><span class="param-type">number</span></td>
+								<td>9</td>
+							<td class="last">
+									<p>TEXT{(maxchar_count)}: Variable length string encoded in either UTF-8 or UTF-16, determined by PRAGMA encoding; see http://<a href="http://www.sqlite.org/pragma.html#pragma_encoding">www.sqlite.org/pragma.html#pragma_encoding</a>.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>GPKG_DT_BLOB</code></td>
+							<td><span class="param-type">number</span></td>
+								<td>10</td>
+							<td class="last">
+									<p>BLOB{(max_size)}: Variable length binary data.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>GPKG_DT_DATE</code></td>
+							<td><span class="param-type">number</span></td>
+								<td>11</td>
+							<td class="last">
+									<p>ISO-8601 date string in the form YYYY-MM-DD encoded in either UTF-8 or UTF-16.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>GPKG_DT_DATETIME</code></td>
+							<td><span class="param-type">number</span></td>
+								<td>12</td>
+							<td class="last">
+									<p>ISO-8601 date/time string in the form YYYY-MM-DDTHH:MM:SS.SSSZ with T separator character and Z suffix for coordinated universal time (UTC) encoded in either UTF-8 or UTF-16.</p>
+							</td>
+						</tr>
+						<tr>
+								<td><code>GPKG_DT_GEOMETRY</code></td>
+							<td><span class="param-type">number</span></td>
+								<td>13</td>
+							<td class="last">
+									<p>The <code>GEOMETRY</code> column type</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
 			
 							<!-- type -->
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Type</label>
 								<div class="col-sm-9">
-									<div class="form-control-static type-names"><span class="param-type">String</span></div>
+									<div class="form-control-static type-names"><span class="param-type">number</span></div>
 								</div>
 							</div>
 			
@@ -170,535 +298,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_dataTypes.js.html">db/dataTypes.js</a>, <a href="db_dataTypes.js.html#line-10">line 10</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title member public">
-			<h4 id=".GPKG_DT_TINYINT_NAME" class="member public"><span class="signature-attribs">&lt;static> </span><span class="name">GPKG_DT_TINYINT_NAME</span><span class="signature-type"> :String</span></h4>
-		</dt>
-<dd class="symbol-details member public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>8-bit signed two’s complement integer.</p></div>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-							<!-- type -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Type</label>
-								<div class="col-sm-9">
-									<div class="form-control-static type-names"><span class="param-type">String</span></div>
-								</div>
-							</div>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_dataTypes.js.html">db/dataTypes.js</a>, <a href="db_dataTypes.js.html#line-15">line 15</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title member public">
-			<h4 id=".GPKG_DT_SMALLINT_NAME" class="member public"><span class="signature-attribs">&lt;static> </span><span class="name">GPKG_DT_SMALLINT_NAME</span><span class="signature-type"> :String</span></h4>
-		</dt>
-<dd class="symbol-details member public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>16-bit signed two’s complement integer.</p></div>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-							<!-- type -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Type</label>
-								<div class="col-sm-9">
-									<div class="form-control-static type-names"><span class="param-type">String</span></div>
-								</div>
-							</div>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_dataTypes.js.html">db/dataTypes.js</a>, <a href="db_dataTypes.js.html#line-20">line 20</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title member public">
-			<h4 id=".GPKG_DT_MEDIUMINT_NAME" class="member public"><span class="signature-attribs">&lt;static> </span><span class="name">GPKG_DT_MEDIUMINT_NAME</span><span class="signature-type"> :String</span></h4>
-		</dt>
-<dd class="symbol-details member public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>32-bit signed two’s complement integer.</p></div>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-							<!-- type -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Type</label>
-								<div class="col-sm-9">
-									<div class="form-control-static type-names"><span class="param-type">String</span></div>
-								</div>
-							</div>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_dataTypes.js.html">db/dataTypes.js</a>, <a href="db_dataTypes.js.html#line-25">line 25</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title member public">
-			<h4 id=".GPKG_DT_INT_NAME" class="member public"><span class="signature-attribs">&lt;static> </span><span class="name">GPKG_DT_INT_NAME</span><span class="signature-type"> :String</span></h4>
-		</dt>
-<dd class="symbol-details member public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>64-bit signed two’s complement integer.</p></div>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-							<!-- type -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Type</label>
-								<div class="col-sm-9">
-									<div class="form-control-static type-names"><span class="param-type">String</span></div>
-								</div>
-							</div>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_dataTypes.js.html">db/dataTypes.js</a>, <a href="db_dataTypes.js.html#line-30">line 30</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title member public">
-			<h4 id=".GPKG_DT_INTEGER_NAME" class="member public"><span class="signature-attribs">&lt;static> </span><span class="name">GPKG_DT_INTEGER_NAME</span><span class="signature-type"> :String</span></h4>
-		</dt>
-<dd class="symbol-details member public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>64-bit signed two’s complement integer.</p></div>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-							<!-- type -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Type</label>
-								<div class="col-sm-9">
-									<div class="form-control-static type-names"><span class="param-type">String</span></div>
-								</div>
-							</div>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_dataTypes.js.html">db/dataTypes.js</a>, <a href="db_dataTypes.js.html#line-35">line 35</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title member public">
-			<h4 id=".GPKG_DT_FLOAT_NAME" class="member public"><span class="signature-attribs">&lt;static> </span><span class="name">GPKG_DT_FLOAT_NAME</span><span class="signature-type"> :String</span></h4>
-		</dt>
-<dd class="symbol-details member public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>32-bit IEEE floating point number.</p></div>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-							<!-- type -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Type</label>
-								<div class="col-sm-9">
-									<div class="form-control-static type-names"><span class="param-type">String</span></div>
-								</div>
-							</div>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_dataTypes.js.html">db/dataTypes.js</a>, <a href="db_dataTypes.js.html#line-40">line 40</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title member public">
-			<h4 id=".GPKG_DT_DOUBLE_NAME" class="member public"><span class="signature-attribs">&lt;static> </span><span class="name">GPKG_DT_DOUBLE_NAME</span><span class="signature-type"> :String</span></h4>
-		</dt>
-<dd class="symbol-details member public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>64-bit IEEE floating point number.</p></div>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-							<!-- type -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Type</label>
-								<div class="col-sm-9">
-									<div class="form-control-static type-names"><span class="param-type">String</span></div>
-								</div>
-							</div>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_dataTypes.js.html">db/dataTypes.js</a>, <a href="db_dataTypes.js.html#line-45">line 45</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title member public">
-			<h4 id=".GPKG_DT_REAL_NAME" class="member public"><span class="signature-attribs">&lt;static> </span><span class="name">GPKG_DT_REAL_NAME</span><span class="signature-type"> :String</span></h4>
-		</dt>
-<dd class="symbol-details member public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>64-bit IEEE floating point number.</p></div>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-							<!-- type -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Type</label>
-								<div class="col-sm-9">
-									<div class="form-control-static type-names"><span class="param-type">String</span></div>
-								</div>
-							</div>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_dataTypes.js.html">db/dataTypes.js</a>, <a href="db_dataTypes.js.html#line-50">line 50</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title member public">
-			<h4 id=".GPKG_DT_TEXT_NAME" class="member public"><span class="signature-attribs">&lt;static> </span><span class="name">GPKG_DT_TEXT_NAME</span><span class="signature-type"> :String</span></h4>
-		</dt>
-<dd class="symbol-details member public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>TEXT{(maxchar_count)}: Variable length string encoded in either UTF-8 or UTF-16, determined by PRAGMA encoding; see http://<a href="http://www.sqlite.org/pragma.html#pragma_encoding">www.sqlite.org/pragma.html#pragma_encoding</a>.</p></div>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-							<!-- type -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Type</label>
-								<div class="col-sm-9">
-									<div class="form-control-static type-names"><span class="param-type">String</span></div>
-								</div>
-							</div>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_dataTypes.js.html">db/dataTypes.js</a>, <a href="db_dataTypes.js.html#line-55">line 55</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title member public">
-			<h4 id=".GPKG_DT_BLOB_NAME" class="member public"><span class="signature-attribs">&lt;static> </span><span class="name">GPKG_DT_BLOB_NAME</span><span class="signature-type"> :String</span></h4>
-		</dt>
-<dd class="symbol-details member public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>BLOB{(max_size)}: Variable length binary data.</p></div>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-							<!-- type -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Type</label>
-								<div class="col-sm-9">
-									<div class="form-control-static type-names"><span class="param-type">String</span></div>
-								</div>
-							</div>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_dataTypes.js.html">db/dataTypes.js</a>, <a href="db_dataTypes.js.html#line-60">line 60</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title member public">
-			<h4 id=".GPKG_DT_DATE_NAME" class="member public"><span class="signature-attribs">&lt;static> </span><span class="name">GPKG_DT_DATE_NAME</span><span class="signature-type"> :String</span></h4>
-		</dt>
-<dd class="symbol-details member public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>ISO-8601 date string in the form YYYY-MM-DD encoded in either UTF-8 or UTF-16.</p></div>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-							<!-- type -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Type</label>
-								<div class="col-sm-9">
-									<div class="form-control-static type-names"><span class="param-type">String</span></div>
-								</div>
-							</div>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_dataTypes.js.html">db/dataTypes.js</a>, <a href="db_dataTypes.js.html#line-65">line 65</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title member public">
-			<h4 id=".GPKG_DT_DATETIME_NAME" class="member public"><span class="signature-attribs">&lt;static> </span><span class="name">GPKG_DT_DATETIME_NAME</span><span class="signature-type"> :String</span></h4>
-		</dt>
-<dd class="symbol-details member public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>ISO-8601 date/time string in the form YYYY-MM-DDTHH:MM:SS.SSSZ with T separator character and Z suffix for coordinated universal time (UTC) encoded in either UTF-8 or UTF-16.</p></div>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-							<!-- type -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Type</label>
-								<div class="col-sm-9">
-									<div class="form-control-static type-names"><span class="param-type">String</span></div>
-								</div>
-							</div>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_dataTypes.js.html">db/dataTypes.js</a>, <a href="db_dataTypes.js.html#line-70">line 70</a></p>
+									<p class="form-control-static"><a href="db_dataTypes.js.html">db/dataTypes.js</a>, <a href="db_dataTypes.js.html#line-12">line 12</a></p>
 								</div>
 							</div>
 			
@@ -717,7 +317,7 @@
 		</dt>
 <dd class="symbol-details function public">
 	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Returns the {string} from this data type</p></div>
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Return the name of the given data type.</p></div>
 			</div>			<div class="callout callout-info">
 				<h5>Parameters</h5>
 				<table class="params table table-striped">
@@ -731,7 +331,7 @@
 					<tbody>
 						<tr>
 								<td><code>dataType</code></td>
-							<td><span class="param-type"><a href="module-db_dataTypes.html#~GPKGDataType">module:db/dataTypes~GPKGDataType</a></span></td>
+							<td><span class="param-type">module:db/dataTypes~GPKGDataType</span></td>
 							<td class="last">
 									<p>the enum to retrieve the name for</p>
 							</td>
@@ -743,7 +343,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label returns-type"><span class="param-type">String</span></label>
 								<div class="col-sm-9">
-									<div class="form-control-static returns-description"><p>the string corresponding to the enum</p></div>
+									<div class="form-control-static returns-description"><p>the string name of the given data type enum</p></div>
 								</div>
 							</div>
 					</form>
@@ -767,7 +367,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_dataTypes.js.html">db/dataTypes.js</a>, <a href="db_dataTypes.js.html#line-114">line 114</a></p>
+									<p class="form-control-static"><a href="db_dataTypes.js.html">db/dataTypes.js</a>, <a href="db_dataTypes.js.html#line-107">line 107</a></p>
 								</div>
 							</div>
 			
@@ -779,11 +379,11 @@
 </dd>
 											<hr/>
 											<dt class="symbol-title function public">
-			<h4 id=".fromName" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">fromName</span><span class="signature-params">( <span class="signature-param">name</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{<a href="module-db_dataTypes.html#~GPKGDataType">module:db/dataTypes~GPKGDataType</a>}</span></h4>
+			<h4 id=".fromName" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">fromName</span><span class="signature-params">( <span class="signature-param">name</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{module:db/dataTypes~GPKGDataType}</span></h4>
 		</dt>
 <dd class="symbol-details function public">
 	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Get the Data Type from the name, ignoring case</p></div>
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Return the data type enum value for the given name, ignoring case.</p></div>
 			</div>			<div class="callout callout-info">
 				<h5>Parameters</h5>
 				<table class="params table table-striped">
@@ -799,7 +399,7 @@
 								<td><code>name</code></td>
 							<td><span class="param-type">String</span></td>
 							<td class="last">
-									<p>the name of the enum</p>
+									<p>the name of the data type enum</p>
 							</td>
 						</tr>
 					</tbody>
@@ -807,7 +407,7 @@
 			</div>
 			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
 							<div class="form-group">
-								<label class="col-sm-3 control-label returns-type"><span class="param-type"><a href="module-db_dataTypes.html#~GPKGDataType">module:db/dataTypes~GPKGDataType</a></span></label>
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">module:db/dataTypes~GPKGDataType</span></label>
 								<div class="col-sm-9">
 									<div class="form-control-static returns-description"><p>the enum value</p></div>
 								</div>
@@ -833,54 +433,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_dataTypes.js.html">db/dataTypes.js</a>, <a href="db_dataTypes.js.html#line-170">line 170</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-									</dl>
-									<h3>Type Definitions</h3>
-									<dl class="symbol">
-											<hr/>
-											<dt class="symbol-title typedef public">
-			<h4 id="~GPKGDataType" class="typedef public"><span class="name">GPKGDataType</span></h4>
-		</dt>
-<dd class="symbol-details typedef public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>DataType enumeration</p></div>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-							<!-- type -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Type</label>
-								<div class="col-sm-9">
-									<div class="form-control-static type-names"><span class="param-type">object</span></div>
-								</div>
-							</div>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_dataTypes.js.html">db/dataTypes.js</a>, <a href="db_dataTypes.js.html#line-73">line 73</a></p>
+									<p class="form-control-static"><a href="db_dataTypes.js.html">db/dataTypes.js</a>, <a href="db_dataTypes.js.html#line-146">line 146</a></p>
 								</div>
 							</div>
 			
@@ -901,7 +454,7 @@
 	</div>
 	<footer>
 				<div class="footer-option"><span class="site-footer-owner"><a href="https://github.com/ngageoint/GeoPackage">GeoPackage</a> is maintained by:</span><br><a href="https://github.com/ngageoint"><img src="http://ngageoint.github.io/GeoPackage/images/NGA_Logo.png" align="middle" height="60">National Geospatial-Intelligence Agency</a><a style="padding-left: 30px;" href="http://www.bit-sys.com/"><img src="http://ngageoint.github.io/GeoPackage/images/BITSystems_Logo.png" align="middle" height="40"></a><br></div>
-			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 10th Oct 2018 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
+			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 28th Feb 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
 	</footer>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>

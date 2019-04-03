@@ -37,7 +37,7 @@
     <div style="padding-top: 7px; padding-right: 100px; padding-left: 4px; padding-bottom: 7px;">
       <div style="font-size: 14px; font-weight: bold;">
         <div style="padding: 7px;">
-          <a href="./jsdoc/module-geoPackage-GeoPackage.html" target="_blank">API Documentation</a>
+          <a href="./jsdoc/module-api.html" target="_blank">API Documentation</a>
         </div>
       </div>
 
@@ -246,7 +246,7 @@
         <span class="onoffswitch-switch"></span>
       </label>
     </div>
-    <div id="tile-{{tableName}}" class="table-name" style="display: inline-block;">Tile Table: {{tableName}} (<span>Zoom: {{minWebMapZoom}} - {{maxWebMapZoom}}</span>) <a href="javascript:void(0);" onclick="$(this).parent().next().toggle()">details</a> <a id="zoom-{{tableName}}" style="padding-left: 7px" href="javascript:void(0);" onclick="zoomTo({{contents.minX}}, {{contents.minY}}, {{contents.maxX}}, {{contents.maxY}}, '{{contents.srs.organization}}:{{contents.srs.organization_coordsys_id}}')">zoom to</a></div>
+    <div id="tile-{{tableName}}" class="table-name" style="display: inline-block;">Tile Table: {{tableName}} (<span>Zoom: {{minWebMapZoom}} - {{maxWebMapZoom}}</span>) <a href="javascript:void(0);" onclick="$(this).parent().next().toggle()">details</a> <a id="zoom-{{tableName}}" style="padding-left: 7px" href="javascript:void(0);" onclick="zoomTo({{contents.minX}}, {{contents.minY}}, {{contents.maxX}}, {{contents.maxY}}, '{{contents.srs.organization}}:{{contents.srs.organization_coordsys_id}}', {{minWebMapZoom}})">zoom to</a></div>
     <div class="table-info" style="display: none;">
       <div class="tab metadata-tab active" style="display: inline-block;" onclick="$(this).parent().find('.metadata').show(); $(this).parent().find('.tileListing').hide(); $(this).parent().find('.metadata-tab').addClass('active'); $(this).parent().find('.tile-tab').removeClass('active'); unregisterTileTable('{{tableName}}')">Metadata</div>
       <div class="tab tile-tab" style="display: inline-block;" onclick="$(this).parent().find('.tileListing').show(); $(this).parent().find('.metadata').hide(); loadZooms('{{tableName}}', $(this).parent().find('.tileListing')); $(this).parent().find('.tile-tab').addClass('active'); $(this).parent().find('.metadata-tab').removeClass('active'); registerTileTable('{{tableName}}', $(this).parent().find('.tileListing'));">Tiles</div>

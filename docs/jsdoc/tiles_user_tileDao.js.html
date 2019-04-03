@@ -66,6 +66,7 @@
 				<ul class="nav navbar-nav">
 							<li><a href="global.html">Globals</a></li>
 							<li><a href="list_class.html">Classes</a></li>
+							<li><a href="list_interface.html">Interfaces</a></li>
 							<li><a href="list_module.html">Modules</a></li>
 							<li><a href="list_tutorial.html">Tutorials</a></li>
 				</ul>
@@ -103,6 +104,7 @@ var UserDao = require('../../user/userDao')
   , TileGrid = require('../tileGrid')
   , TileRow = require('./tileRow')
   , TileMatrixSetDao = require('../matrixset').TileMatrixSetDao
+  , TileMatrixDao = require('../matrix').TileMatrixDao
   , ContentsDao = require('../../core/contents').ContentsDao
   , BoundingBox = require('../../boundingBox')
   , BoundingBoxUtils = require('../tileBoundingBoxUtils')
@@ -117,14 +119,15 @@ var util = require('util')
 proj4 = 'default' in proj4 ? proj4['default'] : proj4;
 
 /**
- * Tile DAO for reading tile user tables
+ * `TileDao` is a {@link module:dao/dao~Dao} subclass for reading
+ * [user tile tables]{@link module:tiles/user/tileTable~TileTable}.
+ *
  * @class TileDao
  * @extends {module:user/userDao~UserDao}
- * @param  {GeoPackageConnection} connection              database connection
- * @param  {TileTable} table           feature table
- * @param  {TileMatrixSet} tileMatrixSet tile matrix set
- * @param  {Array} tileMatrices      tile matrices
- * @param  {Function} callback  called when the tile is initialized
+ * @param  {GeoPackageConnection} connection
+ * @param  {TileTable} table
+ * @param  {TileMatrixSet} tileMatrixSet
+ * @param  {TileMatrix[]} tileMatrices
  */
 var TileDao = function(geoPackage, table, tileMatrixSet, tileMatrices) {
   UserDao.call(this, geoPackage, table);
@@ -197,9 +200,9 @@ TileDao.prototype.setWebMapZoomLevels = function() {
     var proj4Projection = proj4(this.projection, 'EPSG:4326');
     var ne = proj4Projection.forward([tileBox.maxLongitude, tileBox.maxLatitude]);
     var sw = proj4Projection.forward([tileBox.minLongitude, tileBox.minLatitude]);
-    var width = (ne[0] - sw[0]);
-    var height = (ne[1] - sw[1]);
-    var zoom = Math.ceil(Math.log2(360/width));
+    var degPerTile = (ne[0] - sw[0]);
+    var globeTileCount = 360.0 / degPerTile;
+    var zoom = Math.round(Math.log2(globeTileCount));
     if (this.minWebMapZoom > zoom) {
       this.minWebMapZoom = zoom;
     }
@@ -208,13 +211,6 @@ TileDao.prototype.setWebMapZoomLevels = function() {
     }
     this.webZoomToGeoPackageZooms[zoom] = tileMatrix.zoom_level;
   }
-}
-
-function precision(a) {
-  if (!isFinite(a)) return 0;
-  var e = 1, p = 0;
-  while (Math.round(a * e) / e !== a) { e *= 10; p++; }
-  return p;
 }
 
 TileDao.prototype.determineGeoPackageZoomLevel = function(webMercatorBoundingBox, zoom) {
@@ -319,22 +315,20 @@ TileDao.prototype.getTileMatrixWithZoomLevel = function (zoomLevel) {
 };
 
 /**
- * Query for a tile
+ * Query for a tile.  Return null if the tile row does not exist.
+ *
  * @param  {Number} column    column
  * @param  {Number} row       row
  * @param  {Number} zoomLevel zoom level
- * @param {Function}           callback called with an error if one occurred and the TileDao
+ * @return {?module:tiles/user/tileRow~TileRow} or null
  */
 TileDao.prototype.queryForTile = function (column, row, zoomLevel) {
   var fieldValues = new ColumnValues();
   fieldValues.addColumn(TileColumn.COLUMN_TILE_COLUMN, column);
   fieldValues.addColumn(TileColumn.COLUMN_TILE_ROW, row);
   fieldValues.addColumn(TileColumn.COLUMN_ZOOM_LEVEL, zoomLevel);
-  var tileRow;
-  for (var row of this.queryForFieldValues(fieldValues)) {
-    tileRow = this.getRow(row);
-  }
-  return tileRow;
+  const record = this.queryForFirstFieldValues(fieldValues);
+  return record ? this.getRow(record) : null;
 };
 
 TileDao.prototype.queryForTilesWithZoomLevel = function (zoomLevel, tileCallback) {
@@ -529,6 +523,60 @@ TileDao.prototype.getSrs = function() {
   return this.geoPackage.getContentsDao().getSrs(this.tileMatrixSet);
 };
 
+/**
+ * Drop the [user tile pyramid table]{@link module:tiles/user/tileTable~TileTable}
+ * and delete its associated [tile matrix set]{@link module:tiles/matrixset~TileMatrixSet}
+ * and [tile matrix]{@link module:tiles/matrix~TileMatrix} records.
+ *
+ * @return result of {@link module:user/userDao~UserDao#dropTable}
+ */
+TileDao.prototype.dropTable = function() {
+  var tileMatrixDao = this.geoPackage.getTileMatrixDao();
+  var dropResult = UserDao.prototype.dropTable.call(this);
+
+  var tileMatrixSetDao = this.geoPackage.getTileMatrixSetDao();
+  tileMatrixSetDao.delete(this.tileMatrixSet);
+
+  for (var i = this.tileMatrices.length-1; i >= 0; i--) {
+    var tileMatrix = this.tileMatrices[i];
+    tileMatrixDao.delete(tileMatrix);
+  }
+
+  var dao = this.geoPackage.getContentsDao();
+  dao.deleteById(this.gpkgTableName);
+  return dropResult;
+}
+
+TileDao.prototype.rename = function(newName) {
+  UserDao.prototype.rename.call(this, newName);
+
+  var oldName = this.tileMatrixSet.table_name;
+
+  var values = {};
+  values[TileMatrixSetDao.COLUMN_TABLE_NAME] = newName;
+
+  var where = this.buildWhereWithFieldAndValue(TileMatrixSetDao.COLUMN_TABLE_NAME, oldName);
+  var whereArgs = this.buildWhereArgs([oldName]);
+
+  var contentsDao = this.geoPackage.getContentsDao();
+  var contents = contentsDao.queryForId(oldName);
+  contents.table_name = newName;
+  contents.identifier = newName;
+  contentsDao.create(contents);
+
+  var tileMatrixSetDao = this.geoPackage.getTileMatrixSetDao();
+  tileMatrixSetDao.updateWithValues(values, where, whereArgs);
+
+  var tileMatrixDao = this.geoPackage.getTileMatrixDao();
+  var tileMatrixUpdate = {};
+  tileMatrixUpdate[TileMatrixDao.COLUMN_TABLE_NAME] = newName;
+  var tileMatrixWhere = this.buildWhereWithFieldAndValue(TileMatrixDao.COLUMN_TABLE_NAME, oldName);
+
+  tileMatrixDao.updateWithValues(tileMatrixUpdate, tileMatrixWhere, whereArgs);
+
+  contentsDao.deleteById(oldName);
+}
+
 module.exports = TileDao;
 </code></pre>
 		</section>
@@ -537,7 +585,7 @@ module.exports = TileDao;
 	</div>
 	<footer>
 				<div class="footer-option"><span class="site-footer-owner"><a href="https://github.com/ngageoint/GeoPackage">GeoPackage</a> is maintained by:</span><br><a href="https://github.com/ngageoint"><img src="http://ngageoint.github.io/GeoPackage/images/NGA_Logo.png" align="middle" height="60">National Geospatial-Intelligence Agency</a><a style="padding-left: 30px;" href="http://www.bit-sys.com/"><img src="http://ngageoint.github.io/GeoPackage/images/BITSystems_Logo.png" align="middle" height="40"></a><br></div>
-			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 10th Oct 2018 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
+			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 28th Feb 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
 	</footer>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>

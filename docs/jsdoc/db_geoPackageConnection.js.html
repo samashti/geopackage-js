@@ -66,6 +66,7 @@
 				<ul class="nav navbar-nav">
 							<li><a href="global.html">Globals</a></li>
 							<li><a href="list_class.html">Classes</a></li>
+							<li><a href="list_interface.html">Interfaces</a></li>
 							<li><a href="list_module.html">Modules</a></li>
 							<li><a href="list_tutorial.html">Tutorials</a></li>
 				</ul>
@@ -116,6 +117,7 @@ if (typeof(process) !== 'undefined' &amp;&amp; process.version &amp;&amp; !proce
  * @class
  * @param  {string} filePath path to the sqlite file
  * @return {Promise&lt;module:db/geoPackageConnection~GeoPackageConnection>}
+ * @todo change this constructor to return an actual `GeoPackageConnection` instance instead of a `Promise`
  */
 var GeoPackageConnection = function(filePath) {
   if (typeof(process) !== 'undefined' &amp;&amp; process.version &amp;&amp; !process.env.FORCE_SQLJS) {
@@ -187,27 +189,27 @@ GeoPackageConnection.prototype.registerFunction = function(name, functionDefinit
  * @param  {Array|Object} [params] array of substitution parameters
  * @return {object}
  */
-GeoPackageConnection.prototype.get = function (sql, params) {
+GeoPackageConnection.prototype.get = function(sql, params) {
   return this.adapter.get(sql, params);
 };
 
 /**
- * Runs the sql provided and returns the results
+ * Run the given SQL and return the results.
  * @param  {string} sql    sql to run
  * @param  {Array|Object} [params] array of substitution parameters
- * @return {object}
+ * @return {@module:db/adapter~DBWriteResult}
  */
-GeoPackageConnection.prototype.run = function (sql, params) {
+GeoPackageConnection.prototype.run = function(sql, params) {
   return this.adapter.run(sql, params)
 };
 
 /**
  * Executes the query and returns all results in an array
- * @param  {string} sql    sql to run
- * @param  {Array|Object} [params] Array of substitution parameters
+ * @param  {string} sql sql to run
+ * @param  {Array|Object} [params] substitution parameters
  * @return {Object[]}
  */
-GeoPackageConnection.prototype.all = function (sql, params) {
+GeoPackageConnection.prototype.all = function(sql, params) {
   return this.adapter.all(sql, params);
 };
 
@@ -217,7 +219,7 @@ GeoPackageConnection.prototype.all = function (sql, params) {
  * @param  {Array|Object} [params] substitution parameters
  * @return {Iterable&lt;Object>}
  */
-GeoPackageConnection.prototype.each = function (sql, params) {
+GeoPackageConnection.prototype.each = function(sql, params) {
   return this.adapter.each(sql, params);
 };
 
@@ -273,19 +275,20 @@ GeoPackageConnection.prototype.count = function(table, where, whereArgs) {
 };
 
 /**
- * Executes an insert statement and returns the last id inserted
- * @param  {string} sql    sql to insert
+ * Execute the given `INSERT` statement and return the ID of the last row
+ * inserted.
+ * @param  {string} sql SQL insert statement
  * @param  {Array|Object} params substitution parameters
- * @return {Object} last row id inserted
+ * @return {module:db/adapter~ROWID} ID of the last row inserted
  */
-GeoPackageConnection.prototype.insert = function (sql, params) {
+GeoPackageConnection.prototype.insert = function(sql, params) {
   return this.adapter.insert(sql, params);
 };
 
 /**
- * Delete from the table
+ * Delete rows from the table of the given name.
  * @param  {string} tableName table name to delete from
- * @param  {string} [where]     where clause
+ * @param  {string} [where] where clause
  * @param  {Array|Object} [whereArgs] substitution parameters
  * @return {Number} number of rows deleted
  */
@@ -300,7 +303,7 @@ GeoPackageConnection.prototype.delete = function(tableName, where, whereArgs) {
 };
 
 /**
- * Drops the table specified
+ * Drop the table with the given name.
  * @param  {string} tableName table to drop
  * @return {Boolean} results of table drop
  */
@@ -359,7 +362,7 @@ module.exports = GeoPackageConnection;
  * @see {module:db/sqliteAdapter~Adapter}
  * @see {module:db/sqljsAdapter~Adapter}
  * @param  {string|Buffer} filePath string path to an existing file or a path to where a new file will be created or a Buffer containing the contents of the file, if undefined, an in memory database is created
- * @return {Promise}
+ * @return {Promise} that resolves
  */
 GeoPackageConnection.connect = function(filePath) {
   return new GeoPackageConnection(filePath);
@@ -383,7 +386,7 @@ GeoPackageConnection.connectWithDatabase = function(db) {
 	</div>
 	<footer>
 				<div class="footer-option"><span class="site-footer-owner"><a href="https://github.com/ngageoint/GeoPackage">GeoPackage</a> is maintained by:</span><br><a href="https://github.com/ngageoint"><img src="http://ngageoint.github.io/GeoPackage/images/NGA_Logo.png" align="middle" height="60">National Geospatial-Intelligence Agency</a><a style="padding-left: 30px;" href="http://www.bit-sys.com/"><img src="http://ngageoint.github.io/GeoPackage/images/BITSystems_Logo.png" align="middle" height="40"></a><br></div>
-			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 10th Oct 2018 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
+			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 28th Feb 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
 	</footer>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>

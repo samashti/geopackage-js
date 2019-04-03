@@ -66,6 +66,7 @@
 				<ul class="nav navbar-nav">
 							<li><a href="global.html">Globals</a></li>
 							<li><a href="list_class.html">Classes</a></li>
+							<li><a href="list_interface.html">Interfaces</a></li>
 							<li><a href="list_module.html">Modules</a></li>
 							<li><a href="list_tutorial.html">Tutorials</a></li>
 				</ul>
@@ -95,13 +96,18 @@
 		<section class="source-section">
 			<article></article>
 			<pre class="prettyprint source language-javascript line-numbers"><code class="language-javascript">/**
- * This adapter uses better-sqlite3 to execute queries against the GeoPackage database
+ * This adapter uses [better-sqlite3](https://github.com/JoshuaWise/better-sqlite3)
+ * to interact with a SQLite database.  The module exports an implementation of
+ * [`DBAdapterFactory`]{@link module:db/adapter~DBAdapterFactory}.
+ *
  * @module db/sqliteAdapter
- * @see {@link https://github.com/JoshuaWise/better-sqlite3|better-sqlite3}
+ * @implements {module:db/adapter~DBAdapterFactory}
  */
 
 var fs = require('fs')
   , path = require('path')
+  , http = require('http')
+  , Buffer = require('buffer')
   , os = require('os');
 
 /**
@@ -110,45 +116,76 @@ var fs = require('fs')
  * @return {Promise&lt;module:db/sqliteAdapter~Adapter>}
  */
 module.exports.createAdapter = function(filePath) {
-  var promise = new Promise(function(resolve, reject) {
+  return new Promise(function(resolve, reject) {
     var Database = require('better-sqlite3');
     try {
-      var db;
-      if (filePath &amp;&amp; typeof filePath === 'string') {
-        db = new Database(filePath);
-      } else if (filePath) {
+      if (!filePath) {
+        console.log('create in memory');
+        const db = new Database("memory", {
+          memory: !filePath
+        });
+        const adapter = new Adapter(db);
+        adapter.filePath = filePath;
+        return resolve(adapter);
+      }
+      if (typeof filePath === 'string') {
+        if (filePath.indexOf('http') === 0) {
+          http.get(filePath, function(response) {
+            if (response.statusCode !== 200) {
+              return reject(new Error('Unable to reach url: ' + filePath));
+            }
+            const tmpPath = path.join(os.tmpDir(), Date.now() + '.gpkg');
+            const writeStream = fs.createWriteStream(tmpPath);
+            response.pipe(writeStream);
+            writeStream.on('close', function() {
+              try {
+                const db = new Database(tmpPath);
+                // verify that this is an actual database
+                db.pragma('application_id');
+                db.pragma('journal_mode = WAL');
+                const adapter = new Adapter(db);
+                adapter.filePath = tmpPath;
+                return resolve(adapter);
+              } catch (err) {
+                console.log('error', err);
+                return reject(err);
+              }
+            });
+          });
+        } else {
+          const db = new Database(filePath);
+          const adapter = new Adapter(db);
+          adapter.filePath = filePath;
+          return resolve(adapter);
+        }
+      } else {
         // write this byte array to a file then open it
-        var byteArray = filePath;
-        var tmpPath = path.join(os.tmpDir(), Date.now() + '.gpkg');
+        const byteArray = filePath;
+        const tmpPath = path.join(os.tmpDir(), Date.now() + '.gpkg');
         return fs.writeFile(tmpPath, byteArray, function(err) {
-          db = new Database(tmpPath);
+          if (err) {
+            console.log('error writing GeoPackage temp file at ' + tmpPath, err);
+            return reject(err);
+          }
+          const db = new Database(tmpPath);
           // verify that this is an actual database
           try {
-            var applicationId = db.pragma('application_id');
+            db.pragma('application_id');
             db.pragma('journal_mode = WAL');
           } catch (err) {
             console.log('error', err);
             return reject(err);
           }
-          var adapter = new Adapter(db);
+          const adapter = new Adapter(db);
           adapter.filePath = tmpPath;
-          resolve(adapter);
-        });
-      } else {
-        console.log('create in memory');
-        db = new Database("memory", {
-          memory: !filePath
+          return resolve(adapter);
         });
       }
-      var adapter = new Adapter(db);
-      adapter.filePath = filePath;
-      resolve(adapter);
     } catch (err) {
       console.log('Error opening database', err);
       return reject(err);
     }
   });
-  return promise;
 }
 /**
  * Creates an adapter from an already established better-sqlite3 database connection
@@ -236,7 +273,7 @@ Adapter.prototype.all = function (sql, params) {
 };
 
 /**
- * Returns an Iterable with results from the query
+ * Returns an `Iterable` with results from the query
  * @see {@link https://github.com/JoshuaWise/better-sqlite3/wiki/API#iteratebindparameters---iterator|better-sqlite3 iterate}
  * @param  {string} sql    statement to run
  * @param  {Object|Array} [params] bind parameters
@@ -252,11 +289,12 @@ Adapter.prototype.each = function (sql, params) {
 };
 
 /**
- * Runs the statement specified, returning information about what changed
+ * Run the given statement, returning information about what changed.
+ *
  * @see {@link https://github.com/JoshuaWise/better-sqlite3/wiki/API#runbindparameters---object|better-sqlite3}
  * @param  {string} sql    statement to run
  * @param  {Object|Array} [params] bind parameters
- * @return {Object} object containing a changes property indicating the number of rows changed and a lastInsertROWID indicating the last inserted row
+ * @return {@module:db/adapter~DBWriteResult}
  */
 Adapter.prototype.run = function(sql, params) {
   var statement = this.db.prepare(sql);
@@ -271,7 +309,7 @@ Adapter.prototype.run = function(sql, params) {
  * Runs the specified insert statement and returns the last inserted id or undefined if no insert happened
  * @param  {string} sql    statement to run
  * @param  {Object|Array} [params] bind parameters
- * @return {Number} last inserted row id
+ * @return {module:db/adapter~ROWID} last inserted `ROWID`
  */
 Adapter.prototype.insert = function(sql, params) {
   var statement = this.db.prepare(sql);
@@ -280,9 +318,9 @@ Adapter.prototype.insert = function(sql, params) {
 
 /**
  * Runs the specified delete statement and returns the number of deleted rows
- * @param  {string} sql    statement to run
- * @param  {Object|Array} params bind parameters
- * @return {number} deleted rows
+ * @param {string} sql statement to run
+ * @param {Object|Array} params bind parameters
+ * @return {number} count of deleted rows
  */
 Adapter.prototype.delete = function(sql, params) {
   var statement = this.db.prepare(sql);
@@ -298,6 +336,8 @@ Adapter.prototype.dropTable = function(table) {
   try {
     var statement = this.db.prepare('DROP TABLE IF EXISTS "' + table + '"');
     var result = statement.run();
+    var vacuum = this.db.prepare('VACUUM');
+    vacuum.run();
     return result.changes == 0;
   } catch (e) {
     console.log('Drop Table Error', e);
@@ -331,7 +371,7 @@ Adapter.prototype.count = function (tableName, where, whereArgs) {
 	</div>
 	<footer>
 				<div class="footer-option"><span class="site-footer-owner"><a href="https://github.com/ngageoint/GeoPackage">GeoPackage</a> is maintained by:</span><br><a href="https://github.com/ngageoint"><img src="http://ngageoint.github.io/GeoPackage/images/NGA_Logo.png" align="middle" height="60">National Geospatial-Intelligence Agency</a><a style="padding-left: 30px;" href="http://www.bit-sys.com/"><img src="http://ngageoint.github.io/GeoPackage/images/BITSystems_Logo.png" align="middle" height="40"></a><br></div>
-			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 10th Oct 2018 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
+			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 28th Feb 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
 	</footer>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>

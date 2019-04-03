@@ -209,10 +209,11 @@ window.loadGeoPackage = function(files) {
         eventLabel: 'File Size',
         eventValue: array.byteLength
       });
-      loadByteArray(array, function() {
+      var after = function() {
         $('#choose-label').find('i').toggle();
         $('#download').removeClass('gone');
-      });
+      };
+      loadByteArray(array).then(after, after);
     }
     // if it is a GeoJSON file
     else if (f.name.lastIndexOf('json') > f.name.lastIndexOf('.')) {
@@ -355,14 +356,14 @@ function clearInfo() {
   $('#information').removeClass('hidden').addClass('visible');
 }
 
-function loadByteArray(array, callback) {
+function loadByteArray(array) {
   clearInfo();
 
   return GeoPackageAPI.open(array)
-  .then(function(gp) {
-    geoPackage = gp;
-    readGeoPackage(gp);
-  });
+    .then(function(gp) {
+      geoPackage = gp;
+      readGeoPackage(gp);
+    });
 }
 
 function readGeoPackage(geoPackage) {
@@ -394,13 +395,16 @@ function readGeoPackage(geoPackage) {
   });
 }
 
-window.zoomTo = function(minX, minY, maxX, maxY, projection) {
+window.zoomTo = function(minX, minY, maxX, maxY, projection, maxZoom) {
+  var fitOpts = {
+    maxZoom: maxZoom ? maxZoom : map.getMaxZoom()
+  };
   try {
     var sw = proj4(projection, 'EPSG:4326', [minX, minY]);
     var ne = proj4(projection, 'EPSG:4326', [maxX, maxY]);
-    map.fitBounds([[sw[1], sw[0]], [ne[1], ne[0]]]);
+    map.flyToBounds([[sw[1], sw[0]], [ne[1], ne[0]]], fitOpts);
   } catch (e) {
-    map.fitBounds([[minY, minX], [maxY, maxX]]);
+    map.flyToBounds([[minY, minX], [maxY, maxX]], fitOpts);
   }
 }
 
