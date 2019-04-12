@@ -256,6 +256,8 @@ describe('GeoPackage Tile Retriever tests', function() {
   });
 
   describe('4326 tile tests', function() {
+    var geoPackage;
+    var tileDao;
 
     var defs = require('../../../lib/proj4Defs');
     for (var name in defs) {

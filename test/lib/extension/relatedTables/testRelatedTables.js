@@ -14,8 +14,6 @@ describe('Related Tables tests', function() {
   describe('Related Tables Read Tests', function() {
     var testGeoPackage;
     var testPath = path.join(__dirname, '..', '..', '..', 'fixtures', 'tmp');
-    var geopackage;
-
     var geoPackage;
 
     function copyGeopackage(orignal, copy, callback) {

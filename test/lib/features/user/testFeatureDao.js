@@ -658,7 +658,7 @@ describe('FeatureDao tests', function() {
       mediaRow.setData(tileBuffer);
       mediaRow.setContentType(contentType);
       RelatedTablesUtils.populateRow(mediaTable, mediaRow, MediaTable.requiredColumns());
-      mediaRowId = mediaDao.create(mediaRow);
+      var mediaRowId = mediaDao.create(mediaRow);
       mediaRowId.should.be.greaterThan(0);
       mediaRow = mediaDao.queryForId(mediaRowId);
 
@@ -685,7 +685,7 @@ describe('FeatureDao tests', function() {
       // Create simple attributes row
       var simpleRow = simpleDao.newRow();
       RelatedTablesUtils.populateRow(simpleTable, simpleRow, SimpleAttributesTable.requiredColumns());
-      simpleRowId = simpleDao.create(simpleRow);
+      var simpleRowId = simpleDao.create(simpleRow);
       simpleRowId.should.be.greaterThan(0);
       simpleRow = simpleDao.queryForId(simpleRowId);
 

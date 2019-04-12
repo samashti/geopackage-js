@@ -9,7 +9,7 @@ var GeoPackage = require('../../lib/geoPackage')
 describe('GeoPackage tests', function() {
   it('should get the feature table names', function(done) {
     GeoPackageConnection.connect(path.join(__dirname, '..', 'fixtures', 'gdal_sample.gpkg')).then(function(geoPackageConnection) {
-      connection = geoPackageConnection;
+      var connection = geoPackageConnection;
       should.exist(connection);
       var geoPackage = new GeoPackage('', '', connection);
       var tables = geoPackage.getFeatureTables();
@@ -41,7 +41,7 @@ describe('GeoPackage tests', function() {
   it('should get the features', function() {
     return GeoPackageConnection.connect(path.join(__dirname, '..', 'fixtures', 'gdal_sample.gpkg'))
     .then(function(geoPackageConnection) {
-      connection = geoPackageConnection;
+      var connection = geoPackageConnection;
       should.exist(connection);
       var geoPackage = new GeoPackage('', '', connection);
       var featureDao = geoPackage.getFeatureDao('point2d');
@@ -73,7 +73,7 @@ describe('GeoPackage tests', function() {
             continue;
           }
           var geom = geometry.geometry;
-          var geoJson = projectedJson = geom.toGeoJSON();
+          var geoJson = geom.toGeoJSON();
         }
       });
       connection.close();

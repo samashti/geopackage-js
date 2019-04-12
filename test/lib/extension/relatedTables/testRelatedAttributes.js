@@ -16,7 +16,7 @@ describe('Related Attributes tests', function() {
 
   var testGeoPackage;
   var testPath = path.join(__dirname, '..', '..', '..', 'fixtures', 'tmp');
-  var geopackage;
+  var geoPackage;
 
   function copyGeopackage(orignal, copy, callback) {
     if (typeof(process) !== 'undefined' && process.version) {
@@ -29,7 +29,6 @@ describe('Related Attributes tests', function() {
   }
   var filename;
   beforeEach('create the GeoPackage connection', function(done) {
-
     var originalFilename = path.join(__dirname, '..', '..', '..', 'fixtures', 'attributes.gpkg');
     filename = path.join(__dirname, '..', '..', '..', 'fixtures', 'tmp', testSetup.createTempName());
     copyGeopackage(originalFilename, filename, function() {
