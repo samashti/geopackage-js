@@ -9,7 +9,7 @@ var GeoPackageAPI = require('../../../..')
   , fs = require('fs')
   , path = require('path');
 
-describe.only('GeoPackage Contents Id Extension tests', function() {
+describe('GeoPackage Contents Id Extension tests', function() {
 
   describe('Create new index', function() {
     var geoPackage;
