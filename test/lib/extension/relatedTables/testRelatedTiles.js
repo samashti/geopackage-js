@@ -1,17 +1,18 @@
-var GeoPackageAPI = require('../../../../.')
-  , DataType = require('../../../../lib/db/dataTypes')
+var GeoPackageAPI = require('../../../../.').GeoPackage
+  , DataType = require('../../../../lib/db/dataTypes').default
   , Verification = require('../../../fixtures/verification')
   , ContentsDao = require('../../../../lib/core/contents').ContentsDao
-  , RelatedTablesExtension = require('../../../../lib/extension/relatedTables')
-  , UserMappingTable = require('../../../../lib/extension/relatedTables/userMappingTable')
-  , MediaTable = require('../../../../lib/extension/relatedTables/mediaTable')
-  , MediaRow = require('../../../../lib/extension/relatedTables/mediaRow')
+  , RelatedTablesExtension = require('../../../../lib/extension/relatedTables').default
+  , UserMappingTable = require('../../../../lib/extension/relatedTables/userMappingTable').default
+  , MediaTable = require('../../../../lib/extension/relatedTables/mediaTable').default
+  , MediaRow = require('../../../../lib/extension/relatedTables/mediaRow').default
   , testSetup = require('../../../fixtures/testSetup')
   , RelatedTablesUtils = require('./relatedTablesUtils')
-  , BoundingBox = require('../../../../lib/boundingBox')
   , should = require('chai').should()
   , wkx = require('wkx')
   , path = require('path');
+
+import BoundingBox from '../../../../lib/boundingBox'
 
 describe('Related Tile tests', function() {
 

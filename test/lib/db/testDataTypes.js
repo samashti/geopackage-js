@@ -1,4 +1,4 @@
-var DataTypes = require('../../../lib/db/dataTypes.js');
+var DataTypes = require('../../../lib/db/dataTypes.js').default;
 
 describe('DataTypes tests', function() {
 

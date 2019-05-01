@@ -3,11 +3,12 @@ var fs = require('fs')
   , crypto = require('crypto')
   , pureimage = require('pureimage')
   , CanvasCompare = require('canvas-compare')
-  , Duplex = require('stream').Duplex
-  , TableCreator = require('../../lib/db/tableCreator')
-  , GeoPackage = require('../../lib/geoPackage')
-  , GeoPackageAPI = require('../..')
-  , GeoPackageConnection = require('../../lib/db/geoPackageConnection');
+  , Duplex = require('stream').Duplex;
+
+import TableCreator from '../../lib/db/tableCreator'
+import GeoPackage from '../../lib/geoPackage'
+import {GeoPackage as GeoPackageAPI} from '../..'
+import {connect as GeoPackageConnection} from '../../lib/db/geoPackageConnection'
 
 module.exports.createTempName = function() {
   return 'gp_'+crypto.randomBytes(4).readUInt32LE(0)+'.gpkg';
@@ -32,7 +33,7 @@ module.exports.createBareGeoPackage = function(gppath, callback) {
   if (typeof(process) !== 'undefined' && process.version) {
     fs.mkdir(path.dirname(gppath), function() {
       fs.open(gppath, 'w', function() {
-        GeoPackageConnection.connect(gppath)
+        GeoPackageConnection(gppath)
         .then(function(connection) {
           var geopackage = new GeoPackage(path.basename(gppath), gppath, connection);
           callback(null, geopackage);

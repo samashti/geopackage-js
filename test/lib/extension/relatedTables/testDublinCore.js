@@ -1,5 +1,5 @@
-var DublinCoreMetadata = require('../../../../lib/extension/relatedTables/dublinCoreMetadata')
-  , DublinCoreType = require('../../../../lib/extension/relatedTables/dublinCoreType')
+var DublinCoreMetadata = require('../../../../lib/extension/relatedTables/dublinCoreMetadata').default
+  , DublinCoreType = require('../../../../lib/extension/relatedTables/dublinCoreType').default
   , should = require('chai').should();
 
 describe('Dublin Core tests', function() {

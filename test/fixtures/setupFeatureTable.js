@@ -1,7 +1,7 @@
-var FeatureColumn = require('../../lib/features/user/featureColumn')
-  , FeatureTable = require('../../lib/features/user/featureTable')
+var FeatureColumn = require('../../lib/features/user/featureColumn').default
+  , FeatureTable = require('../../lib/features/user/featureTable').default
   , GeometryColumns = require('../../lib/features/columns').GeometryColumns
-  , DataTypes = require('../../lib/db/dataTypes');
+  , DataTypes = require('../../lib/db/dataTypes').default;
 
 module.exports.buildFeatureTable = function(tableName, geometryColumn, geometryType) {
   var columns = [];

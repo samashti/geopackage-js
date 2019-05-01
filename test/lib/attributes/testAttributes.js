@@ -1,16 +1,15 @@
-var GeoPackageConnection = require('../../../lib/db/geoPackageConnection')
-  , GeoPackage = require('../../../lib/geoPackage')
-  , GeoPackageAPI = require('../../../.')
+var GeoPackage = require('../../../lib/geoPackage').default
+  , GeoPackageAPI = require('../../../.').GeoPackage
   , testSetup = require('../../fixtures/testSetup')
   , Verification = require('../../fixtures/verification')
   , DataColumns = require('../../../lib/dataColumns').DataColumns
   , DataColumnsDao = require('../../../lib/dataColumns').DataColumnsDao
-  , AttributeDao = require('../../../lib/attributes/attributeDao')
-  , AttributeTableReader = require('../../../lib/attributes/attributeTableReader')
-  , UserTableReader = require('../../../lib/user/userTableReader')
-  , AttributeTable = require('../../../lib/attributes/attributeTable')
-  , UserColumn = require('../../../lib/user/userColumn')
-  , DataTypes = require('../../../lib/db/dataTypes')
+  , AttributeDao = require('../../../lib/attributes/attributeDao').default
+  , AttributeTableReader = require('../../../lib/attributes/attributeTableReader').default
+  , UserTableReader = require('../../../lib/user/userTableReader').default
+  , AttributeTable = require('../../../lib/attributes/attributeTable').default
+  , UserColumn = require('../../../lib/user/userColumn').default
+  , DataTypes = require('../../../lib/db/dataTypes').default
   , should = require('chai').should()
   , path = require('path');
 

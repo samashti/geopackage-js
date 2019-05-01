@@ -1,7 +1,7 @@
 const
     Verification = require('../fixtures/verification')
-  , TileTable = require('../../lib/tiles/user/tileTable')
-  , BoundingBox = require('../../lib/boundingBox')
+  , TileTable = require('../../lib/tiles/user/tileTable').default
+  , BoundingBox = require('../../lib/boundingBox').default
   , path = require('path')
   , testSetup = require('../fixtures/testSetup');
 

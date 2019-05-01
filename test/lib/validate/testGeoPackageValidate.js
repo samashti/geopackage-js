@@ -1,6 +1,6 @@
-var GeoPackageValidate = require('../../../lib/validate/geoPackageValidate')
-  , GeoPackage = require('../../../lib/geoPackage')
-  , GeoPackageConnection = require('../../../lib/db/geoPackageConnection')
+var GeoPackageValidate = require('../../../lib/validate/geoPackageValidate').default
+  , GeoPackage = require('../../../lib/geoPackage').default
+  , GeoPackageConnection = require('../../../lib/db/geoPackageConnection').connect
   , should = require('chai').should()
   , path = require('path');
 
@@ -42,7 +42,7 @@ describe('GeoPackage Validate tests', function() {
   // });
 
   it('should not have the required minimum tables', function() {
-    return GeoPackageConnection.connect(path.join(__dirname, '..', '..', 'fixtures', 'test.gpkg'))
+    return GeoPackageConnection(path.join(__dirname, '..', '..', 'fixtures', 'test.gpkg'))
     .then(function(connection) {
       var geoPackage = new GeoPackage('', '', connection);
       return GeoPackageValidate.hasMinimumTables(geoPackage);
@@ -57,7 +57,7 @@ describe('GeoPackage Validate tests', function() {
   });
 
   it('should have the required minimum tables', function() {
-    GeoPackageConnection.connect(path.join(__dirname, '..', '..', 'fixtures', 'gdal_sample.gpkg'))
+    GeoPackageConnection(path.join(__dirname, '..', '..', 'fixtures', 'gdal_sample.gpkg'))
     .then(function(connection) {
       var geoPackage = new GeoPackage('', '', connection);
       return GeoPackageValidate.hasMinimumTables(geoPackage);

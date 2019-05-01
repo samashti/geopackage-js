@@ -1,6 +1,4 @@
-var GeoPackageConnection = require('../../../lib/db/geoPackageConnection')
-  , GeoPackage = require('../../../lib/geoPackage')
-  , Verification = require('../../fixtures/verification')
+var Verification = require('../../fixtures/verification')
   , testSetup = require('../../fixtures/testSetup')
   , should = require('chai').should()
   , path = require('path');

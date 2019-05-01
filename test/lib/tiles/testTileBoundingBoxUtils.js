@@ -1,7 +1,7 @@
 const
-    TileBoundingBoxUtils = require('../../../lib/tiles/tileBoundingBoxUtils')
-  , TileUtils = require('../../../lib/tiles/creator/tileUtilities')
-  , BoundingBox = require('../../../lib/boundingBox');
+    TileBoundingBoxUtils = require('../../../lib/tiles/tileBoundingBoxUtils').default
+  , TileUtils = require('../../../lib/tiles/creator/tileUtilities').default
+  , BoundingBox = require('../../../lib/boundingBox').default;
 
 require('chai').should();
 

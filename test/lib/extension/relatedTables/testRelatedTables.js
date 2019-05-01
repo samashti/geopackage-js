@@ -1,8 +1,8 @@
-var GeoPackageAPI = require('../../../../.')
+var GeoPackageAPI = require('../../../../.').GeoPackage
   , Verification = require('../../../fixtures/verification')
-  , RelatedTablesExtension = require('../../../../lib/extension/relatedTables')
-  , UserMappingTable = require('../../../../lib/extension/relatedTables/userMappingTable')
-  , SetupFeatureTable = require('../../../fixtures/setupFeatureTable')
+  , RelatedTablesExtension = require('../../../../lib/extension/relatedTables').default
+  , UserMappingTable = require('../../../../lib/extension/relatedTables/userMappingTable').default
+  , SetupFeatureTable = require('../../../fixtures/setupFeatureTable').default
   , testSetup = require('../../../fixtures/testSetup')
   , RelatedTablesUtils = require('./relatedTablesUtils')
   , should = require('chai').should()

@@ -1,4 +1,4 @@
-var BoundingBox = require('../../lib/boundingBox.js');
+var BoundingBox = require('../../lib/boundingBox').default;
 
 describe('BoundingBox tests', function() {
 

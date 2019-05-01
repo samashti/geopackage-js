@@ -1,6 +1,6 @@
-var GeoPackageTileRetriever = require('../../../lib/tiles/retriever')
-  , GeoPackageAPI = require('../../..')
-  , BoundingBox = require('../../../lib/boundingBox')
+var GeoPackageTileRetriever = require('../../../lib/tiles/retriever').default
+  , GeoPackageAPI = require('../../..').GeoPackage
+  , BoundingBox = require('../../../lib/boundingBox').default
   , testSetup = require('../../fixtures/testSetup')
   , proj4 = require('proj4')
   , fs = require('fs')

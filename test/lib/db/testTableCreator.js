@@ -1,8 +1,7 @@
-var GeoPackageConnection = require('../../../lib/db/geoPackageConnection')
-  , GeoPackage = require('../../../lib/geoPackage')
-  , TableCreator = require('../../../lib/db/tableCreator')
-  , TileTable = require('../../../lib/tiles/user/tileTable')
-  , TileDao = require('../../../lib/tiles/user/tileDao')
+var GeoPackage = require('../../../lib/geoPackage').default
+  , TableCreator = require('../../../lib/db/tableCreator').default
+  , TileTable = require('../../../lib/tiles/user/tileTable').default
+  , TileDao = require('../../../lib/tiles/user/tileDao').default
   , SetupFeatureTable = require('../../fixtures/setupFeatureTable.js')
   , Verification = require('../../fixtures/verification')
   , testSetup = require('../../fixtures/testSetup')
@@ -171,7 +170,7 @@ describe('TableCreator tests', function() {
   });
 
   it('should create a user feature table', function(done) {
-    var featureTable = SetupFeatureTable.buildFeatureTable('test_features', 'geom', wkx.Types.wkt.Point);
+    var featureTable = SetupFeatureTable.buildFeatureTable('test_features', 'geom', wkx.wkt.Point);
     var tc = new TableCreator(geopackage);
     var result = tc.createUserTable(featureTable);
     Verification.verifyTableExists(geopackage, 'test_features').should.be.equal(true);

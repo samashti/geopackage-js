@@ -1,6 +1,6 @@
-var GeoPackage = require('../index.js')
-  , BoundingBox = require('../lib/boundingBox.js')
-  , testSetup = require('./fixtures/testSetup');
+import { GeoPackage, BoundingBox, FeatureColumn, TileColumn, GeometryColumns, DataTypes } from '../index'
+
+var testSetup = require('./fixtures/testSetup');
 
 var path = require('path')
   , fs = require('fs')
@@ -431,6 +431,7 @@ describe('GeoPackageAPI tests', function() {
       fs.unlink(geopackageToCreate, function() {
         GeoPackage.create(geopackageToCreate, function(err, gp) {
           geopackage = gp;
+          should.exist(gp)
           done();
         });
       });
@@ -438,10 +439,6 @@ describe('GeoPackageAPI tests', function() {
 
     it('should create a feature table', function() {
       var columns = [];
-
-      var FeatureColumn = GeoPackage.FeatureColumn;
-      var GeometryColumns = GeoPackage.GeometryColumns;
-      var DataTypes = GeoPackage.DataTypes;
 
       var tableName = 'features';
 
@@ -522,10 +519,6 @@ describe('GeoPackageAPI tests', function() {
     it('should create a tile table', function() {
       var columns = [];
 
-      var TileColumn = GeoPackage.TileColumn;
-      var DataTypes = GeoPackage.DataTypes;
-      var BoundingBox = GeoPackage.BoundingBox;
-
       var tableName = 'tiles';
 
       var contentsBoundingBox = new BoundingBox(-180, 180, -80, 80);
@@ -605,8 +598,6 @@ describe('GeoPackageAPI tests', function() {
     });
 
     it('should add a tile to the tile table', function(done) {
-
-      var BoundingBox = GeoPackage.BoundingBox;
       var tableName = 'tiles_web_mercator_2';
       var contentsBoundingBox = new BoundingBox(-20037508.342789244, 20037508.342789244, -20037508.342789244, 20037508.342789244);
       var contentsSrsId = 3857;
@@ -630,10 +621,6 @@ describe('GeoPackageAPI tests', function() {
 
     it('should add a tile to the tile table and get it via xyz', function(done) {
       var columns = [];
-
-      var TileColumn = GeoPackage.TileColumn;
-      var DataTypes = GeoPackage.DataTypes;
-      var BoundingBox = GeoPackage.BoundingBox;
 
       var tableName = 'tiles_web_mercator_3';
 
@@ -661,10 +648,6 @@ describe('GeoPackageAPI tests', function() {
 
     it('should add a tile to the tile table and get it into a canvas via xyz', function(done) {
       var columns = [];
-
-      var TileColumn = GeoPackage.TileColumn;
-      var DataTypes = GeoPackage.DataTypes;
-      var BoundingBox = GeoPackage.BoundingBox;
 
       var tableName = 'tiles_web_mercator_4';
 

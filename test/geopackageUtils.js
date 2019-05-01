@@ -1,4 +1,5 @@
 var GeoPackageAPI = require('../index')
+  , GeoPackage = GeoPackageAPI.GeoPackage
   , DataTypes = GeoPackageAPI.DataTypes
   , GeometryColumns = GeoPackageAPI.GeometryColumns
   , GeometryData = GeoPackageAPI.GeometryData
@@ -150,21 +151,21 @@ GeoPackageUtils.createFeatures = function(geopackage) {
     name: 'NGA Visitor Center'
   };
 
-  return GeoPackageUtils.createFeatureTableAndAddFeatures(geopackage, 'point1', [point1], wkx.Types.wkt.Point)
+  return GeoPackageUtils.createFeatureTableAndAddFeatures(geopackage, 'point1', [point1], wkx.wkt.Point)
   .then(function() {
-    return GeoPackageUtils.createFeatureTableAndAddFeatures(geopackage, 'point2', [point2], wkx.Types.wkt.Point);
+    return GeoPackageUtils.createFeatureTableAndAddFeatures(geopackage, 'point2', [point2], wkx.wkt.Point);
   })
   .then(function() {
-    return GeoPackageUtils.createFeatureTableAndAddFeatures(geopackage, 'line1', [line1], wkx.Types.wkt.LineString);
+    return GeoPackageUtils.createFeatureTableAndAddFeatures(geopackage, 'line1', [line1], wkx.wkt.LineString);
   })
   .then(function() {
-    return GeoPackageUtils.createFeatureTableAndAddFeatures(geopackage, 'line2', [line2], wkx.Types.wkt.LineString);
+    return GeoPackageUtils.createFeatureTableAndAddFeatures(geopackage, 'line2', [line2], wkx.wkt.LineString);
   })
   .then(function() {
-    return GeoPackageUtils.createFeatureTableAndAddFeatures(geopackage, 'polygon1', [poly1], wkx.Types.wkt.Polygon);
+    return GeoPackageUtils.createFeatureTableAndAddFeatures(geopackage, 'polygon1', [poly1], wkx.wkt.Polygon);
   })
   .then(function() {
-    return GeoPackageUtils.createFeatureTableAndAddFeatures(geopackage, 'polygon2', [poly2], wkx.Types.wkt.Polygon);
+    return GeoPackageUtils.createFeatureTableAndAddFeatures(geopackage, 'polygon2', [poly2], wkx.wkt.Polygon);
   })
   .then(function() {
     return GeoPackageUtils.createFeatureTableAndAddFeatures(geopackage, 'geometry1', [point1, line1, poly1], 'GEOMETRY');
@@ -360,19 +361,23 @@ GeoPackageUtils.createGeometryIndexExtension = function(geopackage) {
     });
   }, Promise.resolve())
   .then(function() {
+    console.log('Done')
     return geopackage;
   });
 }
 
 GeoPackageUtils.createFeatureTileLinkExtension = function(geopackage) {
+  console.log('Skipping Feature Tile Link Extension')
   return geopackage;
 }
 
 GeoPackageUtils.createNonLinearGeometryTypesExtension = function(geopackage) {
+  console.log('Skipping non linear geometry extension')
   return geopackage;
 }
 
 GeoPackageUtils.createRTreeSpatialIndexExtension = function(geopackage) {
+  console.log('Creating RTree Extension')
   var tables = geopackage.getFeatureTables();
 
   return tables.reduce(function(sequence, table) {
@@ -388,6 +393,7 @@ GeoPackageUtils.createRTreeSpatialIndexExtension = function(geopackage) {
 }
 
 GeoPackageUtils.createRelatedTablesMediaExtension = function(geopackage) {
+  console.log('Creating Related Tables Media Extension')
   var relatedTables = geopackage.getRelatedTablesExtension();
   var mediaTable = MediaTable.create('media');
   relatedTables.createRelatedTable(mediaTable);
@@ -398,6 +404,7 @@ GeoPackageUtils.createRelatedTablesMediaExtension = function(geopackage) {
 
   return GeoPackageUtils.loadFile(path.join(__dirname, 'fixtures', 'BITSystems_Logo.png'))
   .then(function(bitsLogoBuffer) {
+    console.log('Create BITS Logo')
     var bitsLogo = mediaDao.newRow();
     bitsLogo.setContentType('image/png');
     bitsLogo.setData(bitsLogoBuffer);
@@ -418,8 +425,8 @@ GeoPackageUtils.createRelatedTablesMediaExtension = function(geopackage) {
     return GeoPackageUtils.loadFile(path.join(__dirname, 'fixtures', 'NGA_Logo.png'));
   })
   .then(function(ngaLogoBuffer) {
-
-    var ngaRowId = GeoPackageAPI.addMedia(geopackage, 'media', ngaLogoBuffer, 'image/png');
+    console.log('Create NGA Logo')
+    var ngaRowId = GeoPackage.addMedia(geopackage, 'media', ngaLogoBuffer, 'image/png');
     var ngaLogo = mediaDao.queryForId(ngaRowId);
 
     var featureDao = geopackage.getFeatureDao('geometry2');
@@ -428,9 +435,9 @@ GeoPackageUtils.createRelatedTablesMediaExtension = function(geopackage) {
     return rows.reduce(function(sequence, row) {
       return sequence.then(function() {
         var featureRow = featureDao.getRow(row);
-        GeoPackageAPI.linkMedia(geopackage, 'geometry2', featureRow.getId(), 'media', ngaRowId)
+        GeoPackage.linkMedia(geopackage, 'geometry2', featureRow.getId(), 'media', ngaRowId)
         .then(function() {
-          var relationships = GeoPackageAPI.getLinkedMedia(geopackage, 'geometry2', featureRow.getId());
+          var relationships = GeoPackage.getLinkedMedia(geopackage, 'geometry2', featureRow.getId());
           relationships.length.should.be.equal(1);
           relationships[0].id.should.be.equal(ngaRowId);
         });
@@ -444,6 +451,7 @@ GeoPackageUtils.createRelatedTablesMediaExtension = function(geopackage) {
 }
 
 GeoPackageUtils.createRelatedTablesFeaturesExtension = function(geopackage) {
+  console.log('Create Related Tables Features Extension')
   var point1FeatureDao = geopackage.getFeatureDao('point1');
   var polygon1FeatureDao = geopackage.getFeatureDao('polygon1');
   var point2FeatureDao = geopackage.getFeatureDao('point2');
@@ -480,6 +488,7 @@ GeoPackageUtils.createRelatedTablesFeaturesExtension = function(geopackage) {
 }
 
 GeoPackageUtils.createRelatedTablesSimpleAttributesExtension = function(geopackage) {
+  console.log('Skipping related tables Simple Attributes')
   return geopackage;
 }
 
@@ -510,6 +519,7 @@ GeoPackageUtils.loadFile = function(filePath) {
 }
 
 GeoPackageUtils.createTiles = function(geopackage) {
+  console.log('Creating tiles')
   return GeoPackageUtils.addWebMercatorTilesFromPath(geopackage, 'OSM', path.join(__dirname, 'fixtures', 'tiles'), 0, 3)
   .then(function() {
     return geopackage;
@@ -530,7 +540,6 @@ GeoPackageUtils.addWebMercatorTilesFromPath = function(geopackage, tableName, ti
     for (var i = minZoom; i <= maxZoom; i++) {
       zooms.push(i);
     }
-
     return zooms.reduce(function(zoomSequence, zoom) {
       return zoomSequence.then(function() {
         var xfilenames = fs.readdirSync(path.join(tileBaseDir, zoom.toString()));
@@ -543,6 +552,7 @@ GeoPackageUtils.addWebMercatorTilesFromPath = function(geopackage, tableName, ti
               return ySequence.then(function() {
                 var y = Number(yFilename.slice(0, yFilename.lastIndexOf('.')));
                 if (Number.isNaN(y)) return;
+                console.log('Load tile z: %s x: %s y: %s to %s', zoom, x, y, tableName);
                 return GeoPackageUtils.loadFile(path.join(__dirname, 'fixtures', 'tiles', zoom.toString(), x.toString(), y.toString()+'.png'))
                 .then(function(image) {
                   console.log('Adding tile z: %s x: %s y: %s to %s', zoom, x, y, tableName);
@@ -556,6 +566,7 @@ GeoPackageUtils.addWebMercatorTilesFromPath = function(geopackage, tableName, ti
     }, Promise.resolve());
   })
   .then(function() {
+    console.log('Added web mercator tiles')
     return geopackage;
   });
 }

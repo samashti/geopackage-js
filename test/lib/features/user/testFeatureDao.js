@@ -1,14 +1,14 @@
-var FeatureDao = require('../../../../lib/features/user/featureDao.js')
-  , FeatureColumn = require('../../../../lib/features/user/featureColumn')
-  , DataTypes = require('../../../../lib/db/dataTypes')
-  , GeoPackageAPI = require('../../../../index.js')
-  , BoundingBox = require('../../../../lib/boundingBox.js')
-  , GeometryData = require('../../../../lib/geom/geometryData')
+var FeatureDao = require('../../../../lib/features/user/featureDao').default
+  , FeatureColumn = require('../../../../lib/features/user/featureColumn').default
+  , DataTypes = require('../../../../lib/db/dataTypes').default
+  , GeoPackageAPI = require('../../../../index.js').GeoPackage
+  , BoundingBox = require('../../../../lib/boundingBox.js').default
+  , GeometryData = require('../../../../lib/geom/geometryData').default
   , testSetup = require('../../../fixtures/testSetup')
   , SetupFeatureTable = require('../../../fixtures/setupFeatureTable')
   , RelatedTablesUtils = require('../../extension/relatedTables/relatedTablesUtils')
-  , MediaTable = require('../../../../lib/extension/relatedTables/mediaTable')
-  , SimpleAttributesTable = require('../../../../lib/extension/relatedTables/simpleAttributesTable')
+  , MediaTable = require('../../../../lib/extension/relatedTables/mediaTable').default
+  , SimpleAttributesTable = require('../../../../lib/extension/relatedTables/simpleAttributesTable').default
   , wkx = require('wkx')
   , fs = require('fs')
   , path = require('path')
@@ -288,13 +288,13 @@ describe('FeatureDao tests', function() {
       testSetup.createGeoPackage(testGeoPackage, function(err, gp) {
         geopackage = gp;
 
-        var geometryColumns = SetupFeatureTable.buildGeometryColumns('QueryTest', 'geom', wkx.Types.wkt.GeometryCollection);
+        var geometryColumns = SetupFeatureTable.buildGeometryColumns('QueryTest', 'geom', wkx.wkt.GeometryCollection);
         var boundingBox = new BoundingBox(-180, 180, -80, 80);
 
         var columns = [];
 
         columns.push(FeatureColumn.createPrimaryKeyColumnWithIndexAndName(0, 'id'));
-        columns.push(FeatureColumn.createGeometryColumn(1, 'geom', wkx.Types.wkt.Point, false, null));
+        columns.push(FeatureColumn.createGeometryColumn(1, 'geom', wkx.wkt.Point, false, null));
         columns.push(FeatureColumn.createColumnWithIndex(2, 'name', DataTypes.GPKGDataType.GPKG_DT_TEXT, false, ""));
         columns.push(FeatureColumn.createColumnWithIndex(3, '_feature_id', DataTypes.GPKGDataType.GPKG_DT_TEXT, false, ""));
         columns.push(FeatureColumn.createColumnWithIndex(4, '_properties_id', DataTypes.GPKGDataType.GPKG_DT_TEXT, false, ""));

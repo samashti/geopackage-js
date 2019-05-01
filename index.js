@@ -1,30 +1,28 @@
+export { default as GeoPackage } from './lib/api'
+export { default as proj4Defs } from './lib/proj4Defs'
 
-module.exports = require('./lib/api');
-var proj4Defs = require('./lib/proj4Defs');
-module.exports.proj4Defs = proj4Defs;
+export { default as GeoPackageTileRetriever } from './lib/tiles/retriever'
+export { default as GeoPackageConnection } from './lib/db/geoPackageConnection'
+export { default as TableCreator } from './lib/db/tableCreator'
+export { default as MediaTable } from './lib/extension/relatedTables/mediaTable'
+export { default as UserMappingTable } from './lib/extension/relatedTables/userMappingTable'
+export { default as DublinCoreType } from './lib/extension/relatedTables/dublinCoreType'
 
-module.exports.GeoPackageTileRetriever = require('./lib/tiles/retriever');
-module.exports.GeoPackageConnection = require('./lib/db/geoPackageConnection');
-module.exports.TableCreator = require('./lib/db/tableCreator');
-module.exports.MediaTable = require('./lib/extension/relatedTables/mediaTable');
-module.exports.UserMappingTable = require('./lib/extension/relatedTables/userMappingTable');
-module.exports.DublinCoreType = require('./lib/extension/relatedTables/dublinCoreType');
-
-module.exports.TileColumn = require('./lib/tiles/user/tileColumn');
-module.exports.BoundingBox = require('./lib/boundingBox');
-module.exports.TileUtilities = require('./lib/tiles/creator/tileUtilities');
-module.exports.FeatureColumn = require('./lib/features/user/featureColumn');
-module.exports.UserColumn = require('./lib/user/userColumn');
-module.exports.GeometryColumns = require('./lib/features/columns').GeometryColumns;
-module.exports.GeometryData = require('./lib/geom/geometryData');
-module.exports.DataColumns = require('./lib/dataColumns').DataColumns;
-module.exports.DataTypes = require('./lib/db/dataTypes');
-module.exports.Metadata = require('./lib/metadata').Metadata;
-module.exports.MetadataReference = require('./lib/metadata/reference').MetadataReference;
-module.exports.RTreeIndex = require('./lib/extension/rtree').RTreeIndex;
-module.exports.CrsWktExtension = require('./lib/extension/crsWkt').CrsWktExtension;
-module.exports.SchemaExtension = require('./lib/extension/schema').SchemaExtension;
-module.exports.MetadataExtension = require('./lib/extension/metadata').MetadataExtension;
-module.exports.WebPExtension = require('./lib/extension/webp').WebPExtension;
-module.exports.DataColumnsDao = require('./lib/dataColumns').DataColumnsDao;
-module.exports.DataColumnConstraintsDao = require('./lib/dataColumnConstraints').DataColumnConstraintsDao;
+export { default as TileColumn } from './lib/tiles/user/tileColumn'
+export { default as BoundingBox } from './lib/boundingBox'
+export { default as TileUtilities } from './lib/tiles/creator/tileUtilities'
+export { default as FeatureColumn } from './lib/features/user/featureColumn'
+export { default as UserColumn } from './lib/user/userColumn'
+export * from './lib/features/columns'
+export { default as GeometryData } from './lib/geom/geometryData'
+export * from './lib/dataColumns'
+export { default as DataTypes } from './lib/db/dataTypes'
+export * from './lib/metadata'
+export * from './lib/metadata/reference'
+export * from './lib/extension/rtree'
+export * from './lib/extension/crsWkt'
+export * from './lib/extension/schema'
+export { default as MetadataExtension } from './lib/extension/metadata'
+export * from './lib/extension/webp'
+export * from './lib/dataColumns'
+export * from './lib/dataColumnConstraints'

@@ -1,7 +1,7 @@
 var fs = require('fs')
   , should = require('chai').should()
   , path = require('path')
-  , GeoPackage = require('../../../lib/geoPackage')
+  , GeoPackage = require('../../../lib/geoPackage').default
   , Metadata = require('../../../lib/metadata').Metadata
   , MetadataDao = require('../../../lib/metadata').MetadataDao;
 

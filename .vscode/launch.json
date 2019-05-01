@@ -7,17 +7,69 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Mocha Tests",
+            "name": "GeoPackage SQLite Tests",
             "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
             "args": [
-                "-u",
-                "tdd",
+                "-r",
+                "@babel/polyfill",
+                "-r",
+                "@babel/register",
                 "--timeout",
-                "999999",
+                "30000",
                 "--colors",
-                "${workspaceFolder}/test"
+                "'${workspaceFolder}/test/**/*.js'"
             ],
-            "internalConsoleOptions": "openOnSessionStart"
-        }
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "protocol": "inspector"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "GeoPackage SQL.js Tests",
+            "env": {
+                "FORCE_SQLJS": "true"
+            },
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "args": [
+                "-r",
+                "@babel/polyfill",
+                "-r",
+                "@babel/register",
+                "--timeout",
+                "30000",
+                "--colors",
+                "'${workspaceFolder}/test/**/*.js'"
+            ],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "protocol": "inspector"
+        },
+/*
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Kuato Server",
+            "program": "${workspaceFolder}/src/server.ts",
+            "preLaunchTask": "npm: tsc",
+            "outFiles": [ "${workspaceFolder}/dist/**/*.js" ],
+            "protocol": "inspector",
+            "console": "integratedTerminal",
+            "env": {
+                "KUATO_HOST": "localhost",
+                "KUATO_PORT": "5252",
+                "KUATO_TOKEN_PRIVATE_KEY_FILE": "${workspaceFolder}/test/test.key.pem",
+                "KUATO_TOKEN_PUBLIC_KEY_FILE": "${workspaceFolder}/test/test.crt.pem",
+                "KUATO_API_TOKEN_PROTECTION": "true",
+                "KUATO_API_TOKEN_SUBJECT": "urn:kuato:app:6d38bade-6084-11e9-86d6-4c3275928c5b",
+                "KUATO_API_TOKEN_ASSERTION": "urn:kuato:app",
+                "KUATO_DB__CLIENT": "sqlite3",
+                "KUATO_DB__CONNECTION__FILENAME": "${workspaceFolder}/dev.sqlite",
+            },
+            // "args": [
+            //     "--get-api-token",
+            // ]
+        },
+*/
     ]
 }

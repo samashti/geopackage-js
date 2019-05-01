@@ -1,4 +1,4 @@
-var GeoPackageAPI = require('../../../..')
+var GeoPackageAPI = require('../../../..').GeoPackage
   , ContentsDao = require('../../../../lib/core/contents').ContentsDao
   , Contents = require('../../../../lib/core/contents').Contents
   , TileMatrix = require('../../../../lib/tiles/matrix').TileMatrix

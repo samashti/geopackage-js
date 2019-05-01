@@ -1,6 +1,6 @@
-var UserTableReader = require('../../../lib/user/userTableReader.js')
-  , UserDao = require('../../../lib/user/userDao')
-  , GeoPackageAPI = require('../../../.')
+var UserTableReader = require('../../../lib/user/userTableReader').default
+  , UserDao = require('../../../lib/user/userDao').default
+  , GeoPackageAPI = require('../../../.').GeoPackage
   , path = require('path')
   , should = require('chai').should();
 

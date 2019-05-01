@@ -1,8 +1,8 @@
-var GeoPackageAPI = require('../../../..')
-  , GeoPackage = require('../../../../lib/geoPackage')
-  , ContentsIdExtension = require('../../../../lib/extension/contents')
+var GeoPackageAPI = require('../../../..').GeoPackage
+  , GeoPackage = require('../../../../lib/geoPackage').default
+  , ContentsIdExtension = require('../../../../lib/extension/contents').default
   , ContentsId = require('../../../../lib/extension/contents/contentsId').ContentsId
-  , sqliteQueryBuilder = require('../../../../lib/db/sqliteQueryBuilder')
+  , sqliteQueryBuilder = require('../../../../lib/db/sqliteQueryBuilder').default
   , Verification = require('../../../fixtures/verification')
   , testSetup = require('../../../fixtures/testSetup')
   , should = require('chai').should()

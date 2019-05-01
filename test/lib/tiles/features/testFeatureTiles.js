@@ -1,5 +1,5 @@
-var FeatureTiles = require('../../../../lib/tiles/features')
-  , GeoPackageAPI = require('../../../..')
+var FeatureTiles = require('../../../../lib/tiles/features').default
+  , GeoPackageAPI = require('../../../..').GeoPackage
   , testSetup = require('../../../fixtures/testSetup')
   , fs = require('fs')
   , should = require('chai').should()

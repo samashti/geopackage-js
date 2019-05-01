@@ -1,4 +1,4 @@
-var GeoPackageAPI = require('../..')
+var GeoPackageAPI = require('../..').GeoPackage
   , testSetup = require('../fixtures/testSetup')
   , should = require('chai').should()
   , path = require('path');

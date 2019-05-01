@@ -1,4 +1,4 @@
-var GeoPackageAPI = require('../../..')
+var GeoPackageAPI = require('../../..').GeoPackage
   , TileMatrixDao = require('../../../lib/tiles/matrix').TileMatrixDao
   , TileMatrix = require('../../../lib/tiles/matrix').TileMatrix
   , should = require('chai').should()

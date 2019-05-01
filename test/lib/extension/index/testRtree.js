@@ -1,10 +1,10 @@
 
-var GeoPackageAPI = require('../../../..')
-  , GeoPackage = require('../../../../lib/geoPackage')
-  , FeatureTableIndex = require('../../../../lib/extension/index/featureTableIndex')
+var GeoPackageAPI = require('../../../..').GeoPackage
+  , GeoPackage = require('../../../../lib/geoPackage').default
+  , FeatureTableIndex = require('../../../../lib/extension/index/featureTableIndex').default
   , RTreeIndexDao = require('../../../../lib/extension/rtree').RTreeIndexDao
   , RTreeIndex = require('../../../../lib/extension/rtree').RTreeIndex
-  , BoundingBox = require('../../../../lib/boundingBox')
+  , BoundingBox = require('../../../../lib/boundingBox').default
   , Verification = require('../../../fixtures/verification')
   , testSetup = require('../../../fixtures/testSetup')
   , should = require('chai').should()

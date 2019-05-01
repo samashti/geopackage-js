@@ -1,4 +1,4 @@
-var GeoPackageAPI = require('../../../..')
+var GeoPackageAPI = require('../../../..').GeoPackage
   , SpatialReferenceSystemDao = require('../../../../lib/core/srs').SpatialReferenceSystemDao
   , SpatialReferenceSystem = require('../../../../lib/core/srs').SpatialReferenceSystem
   , should = require('chai').should()

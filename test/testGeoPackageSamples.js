@@ -1,4 +1,4 @@
-var GeoPackageAPI = require('../index')
+var GeoPackageAPI = require('../index').GeoPackage
   , GeoPackageUtils = require('./geopackageUtils');
 
 var path = require('path')
@@ -26,6 +26,7 @@ describe('Create GeoPackage samples', function() {
     it('output a 1.2 compliant GeoPackage', function() {
       this.timeout(60000);
       console.log('Create GeoPackage');
+      try {
 
       return GeoPackageAPI.create(testGeoPackage)
       .then(function(gp) {
@@ -55,6 +56,9 @@ describe('Create GeoPackage samples', function() {
         console.log('error', error);
         false.should.be.equal(true);
       });
+    } catch (e) {
+      console.log('error', e)
+    }
     });
   });
 

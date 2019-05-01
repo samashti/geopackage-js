@@ -1,6 +1,6 @@
-var GeoPackage = require('../../../lib/geoPackage')
-  , GeoPackageConnection = require('../../../lib/db/geoPackageConnection')
-  , GeoPackageTileRetriever = require('../../../lib/tiles/retriever');
+var GeoPackage = require('../../../lib/geoPackage').default
+  , GeoPackageConnection = require('../../../lib/db/geoPackageConnection').connect
+  , GeoPackageTileRetriever = require('../../../lib/tiles/retriever').default;
 
 var path = require('path')
   , should = require('chai').should();
@@ -9,7 +9,7 @@ describe('Tests for issue 68', function() {
 
   it('should get a tile', function() {
     this.timeout(5000);
-    return GeoPackageConnection.connect(path.join(__dirname, '..', '..', 'fixtures', 'issue_68.gpkg'))
+    return GeoPackageConnection(path.join(__dirname, '..', '..', 'fixtures', 'issue_68.gpkg'))
     .then(function(geoPackageConnection) {
       var connection = geoPackageConnection;
       should.exist(connection);

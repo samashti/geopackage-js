@@ -1,6 +1,6 @@
-var FeatureTableReader = require('../../../../lib/features/user/featureTableReader.js')
+var FeatureTableReader = require('../../../../lib/features/user/featureTableReader').default
   , GeometryColumnsDao = require('../../../../lib/features/columns').GeometryColumnsDao
-  , GeoPackageAPI = require('../../../../.')
+  , GeoPackageAPI = require('../../../../.').GeoPackage
   , path = require('path')
   , should = require('chai').should();
 

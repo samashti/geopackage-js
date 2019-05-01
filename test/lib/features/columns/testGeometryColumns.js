@@ -1,6 +1,6 @@
-var GeoPackageAPI = require('../../../..')
+var GeoPackageAPI = require('../../../..').GeoPackage
   , GeometryColumnsDao = require('../../../../lib/features/columns').GeometryColumnsDao
-  , GeoPackageConnection = require('../../../../lib/db/geoPackageConnection')
+  , GeoPackageConnection = require('../../../../lib/db/geoPackageConnection').default
   , TestUtils = require('../../../fixtures/testUtils')
   , should = require('chai').should()
   , path = require('path');

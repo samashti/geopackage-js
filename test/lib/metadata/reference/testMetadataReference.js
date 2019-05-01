@@ -3,8 +3,8 @@ var fs = require('fs')
   , path = require('path')
   , MetadataReference = require('../../../../lib/metadata/reference').MetadataReference
   , Metadata = require('../../../../lib/metadata').Metadata
-  , GeoPackage = require('../../../../lib/geoPackage')
-  , TableCreator = require('../../../../lib/db/tableCreator')
+  , GeoPackage = require('../../../../lib/geoPackage').default
+  , TableCreator = require('../../../../lib/db/tableCreator').default
   , Verification = require('../../../fixtures/verification')
   , testSetup = require('../../../fixtures/testSetup');
 

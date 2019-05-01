@@ -1,7 +1,7 @@
-var GeoPackageConnection = require('../../lib/db/geoPackageConnection')
-  , GeoPackage = require('../../lib/geoPackage')
+
+var GeoPackage = require('../../lib/geoPackage').default
   , Verification = require('../fixtures/verification')
-  , TileTable = require('../../lib/tiles/user/tileTable')
+  , TileTable = require('../../lib/tiles/user/tileTable').default
   , SetupFeatureTable = require('../fixtures/setupFeatureTable')
   , testSetup = require('../fixtures/testSetup')
   , should = require('chai').should()
@@ -57,7 +57,7 @@ describe('GeoPackage create tests', function() {
   });
 
   it('should create a user feature table', function(done) {
-    var featureTable = SetupFeatureTable.buildFeatureTable('test_features', 'geom', wkx.Types.wkt.Point);
+    var featureTable = SetupFeatureTable.buildFeatureTable('test_features', 'geom', wkx.wkt.Point);
     var result = geopackage.createFeatureTable(featureTable);
     Verification.verifyTableExists(geopackage, 'test_features').should.be.equal(true);
     done();
