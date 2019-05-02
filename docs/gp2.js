@@ -1,10 +1,8 @@
 (function (global, factory) {
-            typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('SQL')) :
-            typeof define === 'function' && define.amd ? define(['exports', 'SQL'], factory) :
-            (global = global || self, factory(global.GeoPackageAPI = {}, global.sqljs));
-}(this, function (exports, sqljs) { 'use strict';
-
-            sqljs = sqljs && sqljs.hasOwnProperty('default') ? sqljs['default'] : sqljs;
+            typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+            typeof define === 'function' && define.amd ? define(['exports'], factory) :
+            (global = global || self, factory(global.GeoPackageAPI = {}));
+}(this, function (exports) { 'use strict';
 
             var global$1 = typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {};
 
@@ -41276,6 +41274,7 @@
              * @module db/sqljsAdapter
              * @implements {module:db/adapter~DBAdapterFactory}
              */
+
             var SqljsAdapter = {};
             /**
              * Returns a Promise which, when resolved, returns a {module:db/sqljsAdapter~Adapter} which has connected to the GeoPackage database file
@@ -41300,7 +41299,7 @@
                     }
 
                     var uInt8Array = new Uint8Array(this.response);
-                    var db = new sqljs.Database(uInt8Array);
+                    var db = new SQL.Database(uInt8Array);
                     var adapter = new Adapter(db);
                     return resolve(adapter);
                   };
@@ -41314,14 +41313,14 @@
                   try {
                     var stats = fs.statSync(filePath);
                   } catch (e) {
-                    var db = new sqljs.Database();
+                    var db = new SQL.Database();
                     var adapter = new Adapter(db);
                     return resolve(adapter);
                   }
 
                   var filebuffer = fs.readFileSync(filePath);
                   var t = new Uint8Array(filebuffer);
-                  var db = new sqljs.Database(t); // console.log('setting wal mode');
+                  var db = new SQL.Database(t); // console.log('setting wal mode');
                   // var walMode = db.exec('PRAGMA journal_mode=DELETE');
                   // console.log('walMode', walMode);
 
@@ -68072,6 +68071,8 @@
                 if (callback) callback(null, geopackage);
                 return geopackage;
               }).catch(function (error) {
+                console.log('error', error);
+
                 if (callback) {
                   callback(error);
                 } else {

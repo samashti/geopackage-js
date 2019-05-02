@@ -20,6 +20,7 @@ module.exports.createGeoPackage = function(gppath, callback) {
       fs.open(gppath, 'w', function() {
         GeoPackageAPI.create(gppath)
         .then(function(geopackage) {
+          console.log('created the geopackage')
           callback(null, geopackage);
         });
       });

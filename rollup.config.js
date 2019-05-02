@@ -103,11 +103,18 @@ export default [
       name: "GeoPackageAPI",
       sourcemap,
       globals: {
-        sqljs: 'SQL',
+        'sql.js': 'SQL',
       }
     },
     plugins: [
       replace({
+        patterns: [
+          {
+            match: /lib\/db/,
+            test: "import SQL from 'sql.js/js/sql-memory-growth.js'",
+            replace: ""
+          }
+        ],
         defines: {
           IS_NOT_BROWSER: false,
           IS_BROWSER: true,
