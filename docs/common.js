@@ -57,6 +57,8 @@ for (var name in defs) {
   }
 }
 
+var GeoPackage = GeoPackageAPI.GeoPackage
+
 var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> <strong>'
 });
@@ -359,7 +361,7 @@ function clearInfo() {
 function loadByteArray(array) {
   clearInfo();
 
-  return GeoPackageAPI.open(array)
+  return GeoPackage.open(array)
     .then(function(gp) {
       geoPackage = gp;
       readGeoPackage(gp);
@@ -441,7 +443,7 @@ window.toggleLayer = function(layerType, table) {
       canvas.height = size.y;
       setTimeout(function() {
         console.time('Draw tile ' + tilePoint.x + ', ' + tilePoint.y + ' zoom: ' + tilePoint.z);
-        GeoPackageAPI.drawXYZTileInCanvas(geoPackage, table, tilePoint.x, tilePoint.y, tilePoint.z, size.x, size.y, canvas)
+        GeoPackage.drawXYZTileInCanvas(geoPackage, table, tilePoint.x, tilePoint.y, tilePoint.z, size.x, size.y, canvas)
         .then(function() {
           console.timeEnd('Draw tile ' + tilePoint.x + ', ' + tilePoint.y + ' zoom: ' + tilePoint.z);
           done(null, canvas);
@@ -522,7 +524,7 @@ function getTile(coords, tileBounds, table) {
   var x = coords.x;
   var y = coords.y;
   var z = coords.z;
-  return GeoPackageAPI.getVectorTile(geoPackage, table, x, y, z)
+  return GeoPackage.getVectorTile(geoPackage, table, x, y, z)
   .then(function(json) {
     // Normalize feature getters into actual instanced features
     for (var layerName in json.layers) {
@@ -545,7 +547,7 @@ function addRowToLayer(iterator, row, featureDao, srs, layer) {
   return new Promise(function(resolve, reject) {
     setTimeout(function() {
       var currentRow = featureDao.getFeatureRow(row);
-      var json = GeoPackageAPI.parseFeatureRowIntoGeoJSON(currentRow, srs);
+      var json = GeoPackage.parseFeatureRowIntoGeoJSON(currentRow, srs);
       layer.addData(json);
       resolve(json);
     });
@@ -774,7 +776,7 @@ window.loadTiles = function(tableName, zoom, tilesElement) {
   var tilesTableTemplate = $('#all-tiles-template').html();
   Mustache.parse(tilesTableTemplate);
 
-  var tiles = GeoPackageAPI.getTilesInBoundingBoxWebZoom(geoPackage, tableName, zoom, Math.max(-180, mapBounds.getWest()), Math.min(mapBounds.getEast(), 180), mapBounds.getSouth(), mapBounds.getNorth());
+  var tiles = GeoPackage.getTilesInBoundingBoxWebZoom(geoPackage, tableName, zoom, Math.max(-180, mapBounds.getWest()), Math.min(mapBounds.getEast(), 180), mapBounds.getSouth(), mapBounds.getNorth());
   if (!tiles || !tiles.tiles || !tiles.tiles.length) {
     tilesElement.empty();
     tilesElement.html('<div class="section-title">No tiles exist in the GeoPackage for the current bounds and zoom level</div>')
@@ -797,7 +799,7 @@ window.zoomToTile = function(tileColumn, tileRow, zoom, minLongitude, minLatitud
   var sw = proj4(projection, 'EPSG:4326', [minLongitude, minLatitude]);
   var ne = proj4(projection, 'EPSG:4326', [maxLongitude, maxLatitude]);
 
-  var tile = GeoPackageAPI.getTileFromTable(geoPackage, tableName, zoom, tileRow, tileColumn);
+  var tile = GeoPackage.getTileFromTable(geoPackage, tableName, zoom, tileRow, tileColumn);
   var tileData = tile.getTileData();
   var type = fileType(tileData);
   var binary = '';
@@ -866,7 +868,7 @@ window.loadFeatures = function(tableName, featuresElement) {
 
   var featuresTable = featuresElement.find('#'+tableName+'-feature-table');
 
-  var each = GeoPackageAPI.iterateGeoJSONFeaturesFromTable(geoPackage, tableName);
+  var each = GeoPackage.iterateGeoJSONFeaturesFromTable(geoPackage, tableName);
   var promise = Promise.resolve();
   for (var row of each.results) {
     var feature = row;
@@ -939,7 +941,7 @@ map.addLayer(highlightLayer);
 
 window.highlightFeature = function(featureId, tableName) {
 
-  var geoJson = GeoPackageAPI.getFeature(geoPackage, tableName, featureId)
+  var geoJson = GeoPackage.getFeature(geoPackage, tableName, featureId)
   geoJson.properties.tableName = tableName;
   highlightLayer.clearLayers();
   highlightLayer.addData(geoJson);
@@ -1000,7 +1002,7 @@ window.toggleFeature = function(featureId, tableName, zoom, force) {
 
   currentFeature = featureId;
 
-  var geoJson = GeoPackageAPI.getFeature(geoPackage, tableName, featureId);
+  var geoJson = GeoPackage.getFeature(geoPackage, tableName, featureId);
   geoJson.properties.tableName = tableName;
   featureLayer.addData(geoJson);
   featureLayer.bringToFront();
