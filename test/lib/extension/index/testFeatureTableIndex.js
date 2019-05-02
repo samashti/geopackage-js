@@ -17,7 +17,7 @@ describe('GeoPackage Feature Table Index Extension tests', function() {
     var originalFilename = path.join(__dirname, '..', '..', '..', 'fixtures', 'rivers.gpkg');
     var filename;
 
-    function copyGeopackage(orignal, copy, callback) {
+    function copyGeopackage(originalFilename, filename, callback) {
       if (typeof(process) !== 'undefined' && process.version) {
         var fsExtra = require('fs-extra');
         fsExtra.copy(originalFilename, filename, callback);

@@ -19441,557 +19441,6 @@
             SpatialReferenceSystemDao.prototype.idColumns = [SpatialReferenceSystemDao.COLUMN_SRS_ID];
             SpatialReferenceSystem.TABLE_NAME = SpatialReferenceSystemDao.TABLE_NAME;
 
-            var inherits$1;
-
-            if (typeof Object.create === 'function') {
-              inherits$1 = function inherits(ctor, superCtor) {
-                // implementation from standard node.js 'util' module
-                ctor.super_ = superCtor;
-                ctor.prototype = Object.create(superCtor.prototype, {
-                  constructor: {
-                    value: ctor,
-                    enumerable: false,
-                    writable: true,
-                    configurable: true
-                  }
-                });
-              };
-            } else {
-              inherits$1 = function inherits(ctor, superCtor) {
-                ctor.super_ = superCtor;
-
-                var TempCtor = function () {};
-
-                TempCtor.prototype = superCtor.prototype;
-                ctor.prototype = new TempCtor();
-                ctor.prototype.constructor = ctor;
-              };
-            }
-
-            var inherits$2 = inherits$1;
-
-            var formatRegExp = /%[sdj%]/g;
-            function format(f) {
-              if (!isString(f)) {
-                var objects = [];
-
-                for (var i = 0; i < arguments.length; i++) {
-                  objects.push(inspect(arguments[i]));
-                }
-
-                return objects.join(' ');
-              }
-
-              var i = 1;
-              var args = arguments;
-              var len = args.length;
-              var str = String(f).replace(formatRegExp, function (x) {
-                if (x === '%%') return '%';
-                if (i >= len) return x;
-
-                switch (x) {
-                  case '%s':
-                    return String(args[i++]);
-
-                  case '%d':
-                    return Number(args[i++]);
-
-                  case '%j':
-                    try {
-                      return JSON.stringify(args[i++]);
-                    } catch (_) {
-                      return '[Circular]';
-                    }
-
-                  default:
-                    return x;
-                }
-              });
-
-              for (var x = args[i]; i < len; x = args[++i]) {
-                if (isNull(x) || !isObject(x)) {
-                  str += ' ' + x;
-                } else {
-                  str += ' ' + inspect(x);
-                }
-              }
-
-              return str;
-            }
-            // Returns a modified function which warns once by default.
-            // If --no-deprecation is set, then it is a no-op.
-
-            function deprecate(fn, msg) {
-              // Allow for deprecating things in the process of starting up.
-              if (isUndefined(global$1.process)) {
-                return function () {
-                  return deprecate(fn, msg).apply(this, arguments);
-                };
-              }
-
-              var warned = false;
-
-              function deprecated() {
-                if (!warned) {
-                  {
-                    console.error(msg);
-                  }
-
-                  warned = true;
-                }
-
-                return fn.apply(this, arguments);
-              }
-
-              return deprecated;
-            }
-            var debugs = {};
-            var debugEnviron;
-            function debuglog(set) {
-              if (isUndefined(debugEnviron)) debugEnviron = '';
-              set = set.toUpperCase();
-
-              if (!debugs[set]) {
-                if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
-                  var pid = 0;
-
-                  debugs[set] = function () {
-                    var msg = format.apply(null, arguments);
-                    console.error('%s %d: %s', set, pid, msg);
-                  };
-                } else {
-                  debugs[set] = function () {};
-                }
-              }
-
-              return debugs[set];
-            }
-            /**
-             * Echos the value of a value. Trys to print the value out
-             * in the best way possible given the different types.
-             *
-             * @param {Object} obj The object to print out.
-             * @param {Object} opts Optional options object that alters the output.
-             */
-
-            /* legacy: obj, showHidden, depth, colors*/
-
-            function inspect(obj, opts) {
-              // default options
-              var ctx = {
-                seen: [],
-                stylize: stylizeNoColor
-              }; // legacy...
-
-              if (arguments.length >= 3) ctx.depth = arguments[2];
-              if (arguments.length >= 4) ctx.colors = arguments[3];
-
-              if (isBoolean(opts)) {
-                // legacy...
-                ctx.showHidden = opts;
-              } else if (opts) {
-                // got an "options" object
-                _extend(ctx, opts);
-              } // set default options
-
-
-              if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
-              if (isUndefined(ctx.depth)) ctx.depth = 2;
-              if (isUndefined(ctx.colors)) ctx.colors = false;
-              if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
-              if (ctx.colors) ctx.stylize = stylizeWithColor;
-              return formatValue(ctx, obj, ctx.depth);
-            } // http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
-
-            inspect.colors = {
-              'bold': [1, 22],
-              'italic': [3, 23],
-              'underline': [4, 24],
-              'inverse': [7, 27],
-              'white': [37, 39],
-              'grey': [90, 39],
-              'black': [30, 39],
-              'blue': [34, 39],
-              'cyan': [36, 39],
-              'green': [32, 39],
-              'magenta': [35, 39],
-              'red': [31, 39],
-              'yellow': [33, 39]
-            }; // Don't use 'blue' not visible on cmd.exe
-
-            inspect.styles = {
-              'special': 'cyan',
-              'number': 'yellow',
-              'boolean': 'yellow',
-              'undefined': 'grey',
-              'null': 'bold',
-              'string': 'green',
-              'date': 'magenta',
-              // "name": intentionally not styling
-              'regexp': 'red'
-            };
-
-            function stylizeWithColor(str, styleType) {
-              var style = inspect.styles[styleType];
-
-              if (style) {
-                return '\u001b[' + inspect.colors[style][0] + 'm' + str + '\u001b[' + inspect.colors[style][1] + 'm';
-              } else {
-                return str;
-              }
-            }
-
-            function stylizeNoColor(str, styleType) {
-              return str;
-            }
-
-            function arrayToHash(array) {
-              var hash = {};
-              array.forEach(function (val, idx) {
-                hash[val] = true;
-              });
-              return hash;
-            }
-
-            function formatValue(ctx, value, recurseTimes) {
-              // Provide a hook for user-specified inspect functions.
-              // Check that value is an object with an inspect function on it
-              if (ctx.customInspect && value && isFunction(value.inspect) && // Filter out the util module, it's inspect function is special
-              value.inspect !== inspect && // Also filter out any prototype objects using the circular check.
-              !(value.constructor && value.constructor.prototype === value)) {
-                var ret = value.inspect(recurseTimes, ctx);
-
-                if (!isString(ret)) {
-                  ret = formatValue(ctx, ret, recurseTimes);
-                }
-
-                return ret;
-              } // Primitive types cannot have properties
-
-
-              var primitive = formatPrimitive(ctx, value);
-
-              if (primitive) {
-                return primitive;
-              } // Look up the keys of the object.
-
-
-              var keys = Object.keys(value);
-              var visibleKeys = arrayToHash(keys);
-
-              if (ctx.showHidden) {
-                keys = Object.getOwnPropertyNames(value);
-              } // IE doesn't make error fields non-enumerable
-              // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
-
-
-              if (isError(value) && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
-                return formatError(value);
-              } // Some type of object without properties can be shortcutted.
-
-
-              if (keys.length === 0) {
-                if (isFunction(value)) {
-                  var name = value.name ? ': ' + value.name : '';
-                  return ctx.stylize('[Function' + name + ']', 'special');
-                }
-
-                if (isRegExp(value)) {
-                  return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-                }
-
-                if (isDate(value)) {
-                  return ctx.stylize(Date.prototype.toString.call(value), 'date');
-                }
-
-                if (isError(value)) {
-                  return formatError(value);
-                }
-              }
-
-              var base = '',
-                  array = false,
-                  braces = ['{', '}']; // Make Array say that they are Array
-
-              if (isArray$1(value)) {
-                array = true;
-                braces = ['[', ']'];
-              } // Make functions say that they are functions
-
-
-              if (isFunction(value)) {
-                var n = value.name ? ': ' + value.name : '';
-                base = ' [Function' + n + ']';
-              } // Make RegExps say that they are RegExps
-
-
-              if (isRegExp(value)) {
-                base = ' ' + RegExp.prototype.toString.call(value);
-              } // Make dates with properties first say the date
-
-
-              if (isDate(value)) {
-                base = ' ' + Date.prototype.toUTCString.call(value);
-              } // Make error with message first say the error
-
-
-              if (isError(value)) {
-                base = ' ' + formatError(value);
-              }
-
-              if (keys.length === 0 && (!array || value.length == 0)) {
-                return braces[0] + base + braces[1];
-              }
-
-              if (recurseTimes < 0) {
-                if (isRegExp(value)) {
-                  return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
-                } else {
-                  return ctx.stylize('[Object]', 'special');
-                }
-              }
-
-              ctx.seen.push(value);
-              var output;
-
-              if (array) {
-                output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
-              } else {
-                output = keys.map(function (key) {
-                  return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
-                });
-              }
-
-              ctx.seen.pop();
-              return reduceToSingleString(output, base, braces);
-            }
-
-            function formatPrimitive(ctx, value) {
-              if (isUndefined(value)) return ctx.stylize('undefined', 'undefined');
-
-              if (isString(value)) {
-                var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '').replace(/'/g, "\\'").replace(/\\"/g, '"') + '\'';
-                return ctx.stylize(simple, 'string');
-              }
-
-              if (isNumber(value)) return ctx.stylize('' + value, 'number');
-              if (isBoolean(value)) return ctx.stylize('' + value, 'boolean'); // For some reason typeof null is "object", so special case here.
-
-              if (isNull(value)) return ctx.stylize('null', 'null');
-            }
-
-            function formatError(value) {
-              return '[' + Error.prototype.toString.call(value) + ']';
-            }
-
-            function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
-              var output = [];
-
-              for (var i = 0, l = value.length; i < l; ++i) {
-                if (hasOwnProperty(value, String(i))) {
-                  output.push(formatProperty(ctx, value, recurseTimes, visibleKeys, String(i), true));
-                } else {
-                  output.push('');
-                }
-              }
-
-              keys.forEach(function (key) {
-                if (!key.match(/^\d+$/)) {
-                  output.push(formatProperty(ctx, value, recurseTimes, visibleKeys, key, true));
-                }
-              });
-              return output;
-            }
-
-            function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
-              var name, str, desc;
-              desc = Object.getOwnPropertyDescriptor(value, key) || {
-                value: value[key]
-              };
-
-              if (desc.get) {
-                if (desc.set) {
-                  str = ctx.stylize('[Getter/Setter]', 'special');
-                } else {
-                  str = ctx.stylize('[Getter]', 'special');
-                }
-              } else {
-                if (desc.set) {
-                  str = ctx.stylize('[Setter]', 'special');
-                }
-              }
-
-              if (!hasOwnProperty(visibleKeys, key)) {
-                name = '[' + key + ']';
-              }
-
-              if (!str) {
-                if (ctx.seen.indexOf(desc.value) < 0) {
-                  if (isNull(recurseTimes)) {
-                    str = formatValue(ctx, desc.value, null);
-                  } else {
-                    str = formatValue(ctx, desc.value, recurseTimes - 1);
-                  }
-
-                  if (str.indexOf('\n') > -1) {
-                    if (array) {
-                      str = str.split('\n').map(function (line) {
-                        return '  ' + line;
-                      }).join('\n').substr(2);
-                    } else {
-                      str = '\n' + str.split('\n').map(function (line) {
-                        return '   ' + line;
-                      }).join('\n');
-                    }
-                  }
-                } else {
-                  str = ctx.stylize('[Circular]', 'special');
-                }
-              }
-
-              if (isUndefined(name)) {
-                if (array && key.match(/^\d+$/)) {
-                  return str;
-                }
-
-                name = JSON.stringify('' + key);
-
-                if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
-                  name = name.substr(1, name.length - 2);
-                  name = ctx.stylize(name, 'name');
-                } else {
-                  name = name.replace(/'/g, "\\'").replace(/\\"/g, '"').replace(/(^"|"$)/g, "'");
-                  name = ctx.stylize(name, 'string');
-                }
-              }
-
-              return name + ': ' + str;
-            }
-
-            function reduceToSingleString(output, base, braces) {
-              var length = output.reduce(function (prev, cur) {
-                if (cur.indexOf('\n') >= 0) ;
-                return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
-              }, 0);
-
-              if (length > 60) {
-                return braces[0] + (base === '' ? '' : base + '\n ') + ' ' + output.join(',\n  ') + ' ' + braces[1];
-              }
-
-              return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
-            } // NOTE: These type checking functions intentionally don't use `instanceof`
-            // because it is fragile and can be easily faked with `Object.create()`.
-
-
-            function isArray$1(ar) {
-              return Array.isArray(ar);
-            }
-            function isBoolean(arg) {
-              return typeof arg === 'boolean';
-            }
-            function isNull(arg) {
-              return arg === null;
-            }
-            function isNullOrUndefined(arg) {
-              return arg == null;
-            }
-            function isNumber(arg) {
-              return typeof arg === 'number';
-            }
-            function isString(arg) {
-              return typeof arg === 'string';
-            }
-            function isSymbol(arg) {
-              return typeof arg === 'symbol';
-            }
-            function isUndefined(arg) {
-              return arg === void 0;
-            }
-            function isRegExp(re) {
-              return isObject(re) && objectToString(re) === '[object RegExp]';
-            }
-            function isObject(arg) {
-              return typeof arg === 'object' && arg !== null;
-            }
-            function isDate(d) {
-              return isObject(d) && objectToString(d) === '[object Date]';
-            }
-            function isError(e) {
-              return isObject(e) && (objectToString(e) === '[object Error]' || e instanceof Error);
-            }
-            function isFunction(arg) {
-              return typeof arg === 'function';
-            }
-            function isPrimitive(arg) {
-              return arg === null || typeof arg === 'boolean' || typeof arg === 'number' || typeof arg === 'string' || typeof arg === 'symbol' || // ES6 symbol
-              typeof arg === 'undefined';
-            }
-            function isBuffer$1(maybeBuf) {
-              return isBuffer(maybeBuf);
-            }
-
-            function objectToString(o) {
-              return Object.prototype.toString.call(o);
-            }
-
-            function pad(n) {
-              return n < 10 ? '0' + n.toString(10) : n.toString(10);
-            }
-
-            var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']; // 26 Feb 16:19:34
-
-            function timestamp() {
-              var d = new Date();
-              var time = [pad(d.getHours()), pad(d.getMinutes()), pad(d.getSeconds())].join(':');
-              return [d.getDate(), months[d.getMonth()], time].join(' ');
-            } // log is just a thin wrapper to console.log that prepends a timestamp
-
-
-            function log() {
-              console.log('%s - %s', timestamp(), format.apply(null, arguments));
-            }
-            function _extend(origin, add) {
-              // Don't do anything if add isn't an object
-              if (!add || !isObject(add)) return origin;
-              var keys = Object.keys(add);
-              var i = keys.length;
-
-              while (i--) {
-                origin[keys[i]] = add[keys[i]];
-              }
-
-              return origin;
-            }
-
-            function hasOwnProperty(obj, prop) {
-              return Object.prototype.hasOwnProperty.call(obj, prop);
-            }
-
-            var util = {
-              inherits: inherits$2,
-              _extend: _extend,
-              log: log,
-              isBuffer: isBuffer$1,
-              isPrimitive: isPrimitive,
-              isFunction: isFunction,
-              isError: isError,
-              isDate: isDate,
-              isObject: isObject,
-              isRegExp: isRegExp,
-              isUndefined: isUndefined,
-              isSymbol: isSymbol,
-              isString: isString,
-              isNumber: isNumber,
-              isNullOrUndefined: isNullOrUndefined,
-              isNull: isNull,
-              isBoolean: isBoolean,
-              isArray: isArray$1,
-              inspect: inspect,
-              deprecate: deprecate,
-              format: format,
-              debuglog: debuglog
-            };
-
             /**
              * @module features/columns
              */
@@ -20003,54 +19452,57 @@
              * @class GeometryColumns
              */
 
-            const GeometryColumns = function () {
-              /**
-              * Name of the table containing the geometry column
-              * @member {string}
-              */
-              this.table_name;
-              /**
-               * Name of a column in the feature table that is a Geometry Column
-               * @member {string}
-               */
+            class GeometryColumns {
+              constructor() {
+                /**
+                   * Name of the table containing the geometry column
+                   * @member {string}
+                   */
+                this.table_name;
+                /**
+                 * Name of a column in the feature table that is a Geometry Column
+                 * @member {string}
+                 */
 
-              this.column_name;
-              /**
-               * Name from Geometry Type Codes (Core) or Geometry Type Codes (Extension)
-               * in Geometry Types (Normative)
-               * @member {string}
-               */
+                this.column_name;
+                /**
+                 * Name from Geometry Type Codes (Core) or Geometry Type Codes (Extension)
+                 * in Geometry Types (Normative)
+                 * @member {string}
+                 */
 
-              this.geometry_type_name;
-              /**
-               * Spatial Reference System ID: gpkg_spatial_ref_sys.srs_id
-               * @member {module:dao/spatialReferenceSystem~SpatialReferenceSystem}
-               */
+                this.geometry_type_name;
+                /**
+                 * Spatial Reference System ID: gpkg_spatial_ref_sys.srs_id
+                 * @member {module:dao/spatialReferenceSystem~SpatialReferenceSystem}
+                 */
 
-              this.srs;
-              /**
-               * Unique identifier for each Spatial Reference System within a GeoPackage
-               * @member {Number}
-               */
+                this.srs;
+                /**
+                 * Unique identifier for each Spatial Reference System within a GeoPackage
+                 * @member {Number}
+                 */
 
-              this.srs_id;
-              /**
-               * 0: z values prohibited; 1: z values mandatory; 2: z values optional
-               * @member {byte}
-               */
+                this.srs_id;
+                /**
+                 * 0: z values prohibited; 1: z values mandatory; 2: z values optional
+                 * @member {byte}
+                 */
 
-              this.z;
-              /**
-               * 0: m values prohibited; 1: m values mandatory; 2: m values optional
-               * @member {byte}
-               */
+                this.z;
+                /**
+                 * 0: m values prohibited; 1: m values mandatory; 2: m values optional
+                 * @member {byte}
+                 */
 
-              this.m;
-            };
+                this.m;
+              }
 
-            GeometryColumns.prototype.getGeometryType = function () {
-              return this.geometry_type_name;
-            }; // /**
+              getGeometryType() {
+                return this.geometry_type_name;
+              }
+
+            } // /**
             //  * Contents
             //  */
             // @ForeignCollectionField(eager = false)
@@ -20903,6 +20355,49 @@
             UserTable.TILE_TABLE = 'TILE';
 
             /**
+             * userRelatedTable module.
+             * @module extension/relatedTables
+             */
+            /**
+             * User Defined Related Table
+             * @param  {string} tableName table name
+             * @param  {array} columns   attribute columns
+             */
+
+            /**
+             * User Defined Related Table
+             * @param  {string} tableName       table name
+             * @param  {string} relationName    relation name
+             * @param  {string} dataType        Contents data type
+             * @param  {module:user/userColumn~UserColumn} columns         columns
+             * @param  {string[]} requiredColumns required columns
+             * @return {module:extension/relatedTables~UserRelatedTable}
+             */
+
+            class UserRelatedTable extends UserTable {
+              constructor(tableName, relationName, dataType, columns, requiredColumns) {
+                super(tableName, columns, requiredColumns);
+                this.relation_name = relationName;
+                this.data_type = dataType;
+              }
+              /**
+               * Sets the contents
+               * @param  {module:core/contents~Contents} contents contents
+               * @throw Error if the contents data type does not match this data type
+               */
+
+
+              setContents(contents) {
+                this.contents = contents; // verify the contents have a relation name data type
+
+                if (!contents.data_type || contents.data_type !== this.data_type) {
+                  throw new Error('The contents of this related table must have a data type of ' + this.data_type);
+                }
+              }
+
+            }
+
+            /**
              * @module user/userColumn
              */
             /**
@@ -21001,45 +20496,122 @@
             };
 
             /**
-             * userRelatedTable module.
-             * @module extension/relatedTables
+             * @module tiles/matrix
+             * @see module:dao/dao
              */
             /**
-             * User Defined Related Table
-             * @param  {string} tableName table name
-             * @param  {array} columns   attribute columns
+             * Tile Matrix object. Documents the structure of the tile matrix at each zoom
+             * level in each tiles table. It allows GeoPackages to contain rectangular as
+             * well as square tiles (e.g. for better representation of polar regions). It
+             * allows tile pyramids with zoom levels that differ in resolution by factors of
+             * 2, irregular intervals, or regular intervals other than factors of 2.
+             * @class TileMatrix
              */
 
-            /**
-             * User Defined Related Table
-             * @param  {string} tableName       table name
-             * @param  {string} relationName    relation name
-             * @param  {string} dataType        Contents data type
-             * @param  {module:user/userColumn~UserColumn} columns         columns
-             * @param  {string[]} requiredColumns required columns
-             * @return {module:extension/relatedTables~UserRelatedTable}
-             */
+            class TileMatrix {
+              constructor() {
+                /**
+                 * Tile Pyramid User Data Table Name
+                 * @member {string}
+                 */
+                this.table_name;
+                /**
+                 * 0 ⇐ zoom_level ⇐ max_level for table_name
+                 * @member {Number}
+                 */
 
-            var UserRelatedTable = function (tableName, relationName, dataType, columns, requiredColumns) {
-              UserTable.call(this, tableName, columns, requiredColumns);
-              this.relation_name = relationName;
-              this.data_type = dataType;
-            };
+                this.zoom_level;
+                /**
+                 * Number of columns (>= 1) in tile matrix at this zoom level
+                 * @member {Number}
+                 */
 
-            util.inherits(UserRelatedTable, UserTable);
-            /**
-             * Sets the contents
-             * @param  {module:core/contents~Contents} contents contents
-             * @throw Error if the contents data type does not match this data type
-             */
+                this.matrix_width;
+                /**
+                 * Number of rows (>= 1) in tile matrix at this zoom level
+                 * @member {Number}
+                 */
 
-            UserRelatedTable.prototype.setContents = function (contents) {
-              this.contents = contents; // verify the contents have a relation name data type
+                this.matrix_height;
+                /**
+                 * Tile width in pixels (>= 1)for this zoom level
+                 * @member {Number}
+                 */
 
-              if (!contents.data_type || contents.data_type !== this.data_type) {
-                throw new Error('The contents of this related table must have a data type of ' + this.data_type);
+                this.tile_width;
+                /**
+                 * Tile height in pixels (>= 1)for this zoom level
+                 * @member {Number}
+                 */
+
+                this.tile_height;
+                /**
+                 * In t_table_name srid units or default meters for srid 0 (>0)
+                 * @member {Number}
+                 */
+
+                this.pixel_x_size;
+                /**
+                 * In t_table_name srid units or default meters for srid 0 (>0)
+                 * @member {Number}
+                 */
+
+                this.pixel_y_size;
               }
-            };
+
+            }
+            /**
+             * Tile Matrix Set Data Access Object
+             * @class TileMatrixDao
+             * @extends {module:dao/dao~Dao}
+             */
+
+
+            class TileMatrixDao extends Dao {
+              createObject() {
+                return new TileMatrix();
+              }
+              /**
+               * get the Contents of the Tile matrix
+               * @param  {tileMatrix} tileMatrix the tile matrix
+               * @param  {Function} callback returns the contents
+               */
+
+
+              getContents(tileMatrix) {
+                var dao = this.geoPackage.getContentsDao();
+                return dao.queryForId(tileMatrix.table_name);
+              }
+
+              getTileMatrixSet(tileMatrix) {
+                var dao = this.geoPackage.getTileMatrixSetDao();
+                return dao.queryForId(tileMatrix.table_name);
+              }
+
+            }
+
+            TileMatrixDao.TABLE_NAME = "gpkg_tile_matrix";
+            TileMatrixDao.COLUMN_PK1 = "table_name";
+            TileMatrixDao.COLUMN_PK2 = "zoom_level";
+            TileMatrixDao.COLUMN_TABLE_NAME = "table_name";
+            TileMatrixDao.COLUMN_ZOOM_LEVEL = "zoom_level";
+            TileMatrixDao.COLUMN_MATRIX_WIDTH = "matrix_width";
+            TileMatrixDao.COLUMN_MATRIX_HEIGHT = "matrix_height";
+            TileMatrixDao.COLUMN_TILE_WIDTH = "tile_width";
+            TileMatrixDao.COLUMN_TILE_HEIGHT = "tile_height";
+            TileMatrixDao.COLUMN_PIXEL_X_SIZE = "pixel_x_size";
+            TileMatrixDao.COLUMN_PIXEL_Y_SIZE = "pixel_y_size";
+            TileMatrix.TABLE_NAME = 'tableName';
+            TileMatrix.ZOOM_LEVEL = 'zoomLevel';
+            TileMatrix.MATRIX_WIDTH = 'matrixWidth';
+            TileMatrix.MATRIX_HEIGHT = 'matrixHeight';
+            TileMatrix.TILE_WIDTH = 'tileWidth';
+            TileMatrix.TILE_HEIGHT = 'tileHeight';
+            TileMatrix.PIXEL_X_SIZE = 'pixelXSize';
+            TileMatrix.PIXEL_Y_SIZE = 'pixelYSize';
+            TileMatrixDao.prototype.gpkgTableName = 'gpkg_tile_matrix';
+            TileMatrixDao.prototype.idColumns = [TileMatrixDao.COLUMN_PK1, TileMatrixDao.COLUMN_PK2];
+            TileMatrixDao.prototype.columns = [TileMatrixDao.COLUMN_TABLE_NAME, TileMatrixDao.COLUMN_ZOOM_LEVEL, TileMatrixDao.COLUMN_MATRIX_WIDTH, TileMatrixDao.COLUMN_MATRIX_HEIGHT, TileMatrixDao.COLUMN_TILE_WIDTH, TileMatrixDao.COLUMN_TILE_HEIGHT, TileMatrixDao.COLUMN_PIXEL_X_SIZE, TileMatrixDao.COLUMN_PIXEL_Y_SIZE];
 
             // proj4 = 'default' in proj4 ? proj4['default'] : proj4;
 
@@ -21163,61 +20735,64 @@
              * @class TileMatrixSet
              */
 
-            var TileMatrixSet = function () {
-              /**
-               * Name of the [tile pyramid user data table](https://www.geopackage.org/spec121/index.html#tiles_user_tables)
-               * that stores the tiles
-               * @member {string}
-               */
-              this.table_name;
-              /**
-               * Unique identifier for each Spatial Reference System within a GeoPackage
-               * @member {SRSRef}
-               */
+            class TileMatrixSet {
+              constructor() {
+                /**
+                 * Name of the [tile pyramid user data table](https://www.geopackage.org/spec121/index.html#tiles_user_tables)
+                 * that stores the tiles
+                 * @member {string}
+                 */
+                this.table_name;
+                /**
+                 * Unique identifier for each Spatial Reference System within a GeoPackage
+                 * @member {SRSRef}
+                 */
 
-              this.srs_id;
-              /**
-               * Bounding box minimum easting or longitude for all content in table_name
-               * @member {Number}
-               */
+                this.srs_id;
+                /**
+                 * Bounding box minimum easting or longitude for all content in table_name
+                 * @member {Number}
+                 */
 
-              this.min_x;
-              /**
-               * Bounding box minimum northing or latitude for all content in table_name
-               * @member {Number}
-               */
+                this.min_x;
+                /**
+                 * Bounding box minimum northing or latitude for all content in table_name
+                 * @member {Number}
+                 */
 
-              this.min_y;
-              /**
-               * Bounding box maximum easting or longitude for all content in table_name
-               * @member {Number}
-               */
+                this.min_y;
+                /**
+                 * Bounding box maximum easting or longitude for all content in table_name
+                 * @member {Number}
+                 */
 
-              this.max_x;
-              /**
-               * Bounding box maximum northing or latitude for all content in table_name
-               * @member {Number}
-               */
+                this.max_x;
+                /**
+                 * Bounding box maximum northing or latitude for all content in table_name
+                 * @member {Number}
+                 */
 
-              this.max_y;
-            };
-
-            TileMatrixSet.prototype.setBoundingBox = function (boundingBox) {
-              this.min_x = boundingBox.minLongitude;
-              this.max_x = boundingBox.maxLongitude;
-              this.min_y = boundingBox.minLatitude;
-              this.max_y = boundingBox.maxLatitude;
-            };
-
-            TileMatrixSet.prototype.getBoundingBox = function () {
-              return new BoundingBox(this.min_x, this.max_x, this.min_y, this.max_y);
-            };
-
-            TileMatrixSet.prototype.setContents = function (contents) {
-              if (contents && contents.data_type === 'tiles') {
-                this.table_name = contents.table_name;
+                this.max_y;
               }
-            };
+
+              setBoundingBox(boundingBox) {
+                this.min_x = boundingBox.minLongitude;
+                this.max_x = boundingBox.maxLongitude;
+                this.min_y = boundingBox.minLatitude;
+                this.max_y = boundingBox.maxLatitude;
+              }
+
+              getBoundingBox() {
+                return new BoundingBox(this.min_x, this.max_x, this.min_y, this.max_y);
+              }
+
+              setContents(contents) {
+                if (contents && contents.data_type === 'tiles') {
+                  this.table_name = contents.table_name;
+                }
+              }
+
+            }
             /**
              * Tile Matrix Set Data Access Object
              * @class TileMatrixSetDao
@@ -21227,7 +20802,6 @@
 
             class TileMatrixSetDao extends Dao {
               createObject() {
-                console.log('create it!');
                 return new TileMatrixSet();
               }
               /**
@@ -21296,121 +20870,6 @@
             TileMatrixSetDao.prototype.columnToPropertyMap[TileMatrixSetDao.COLUMN_MIN_Y] = TileMatrixSet.MIN_Y;
             TileMatrixSetDao.prototype.columnToPropertyMap[TileMatrixSetDao.COLUMN_MAX_X] = TileMatrixSet.MAX_X;
             TileMatrixSetDao.prototype.columnToPropertyMap[TileMatrixSetDao.COLUMN_MAX_Y] = TileMatrixSet.MAX_Y;
-
-            /**
-             * @module tiles/matrix
-             * @see module:dao/dao
-             */
-            /**
-             * Tile Matrix object. Documents the structure of the tile matrix at each zoom
-             * level in each tiles table. It allows GeoPackages to contain rectangular as
-             * well as square tiles (e.g. for better representation of polar regions). It
-             * allows tile pyramids with zoom levels that differ in resolution by factors of
-             * 2, irregular intervals, or regular intervals other than factors of 2.
-             * @class TileMatrix
-             */
-
-            var TileMatrix = function () {
-              /**
-               * Tile Pyramid User Data Table Name
-               * @member {string}
-               */
-              this.table_name;
-              /**
-               * 0 ⇐ zoom_level ⇐ max_level for table_name
-               * @member {Number}
-               */
-
-              this.zoom_level;
-              /**
-               * Number of columns (>= 1) in tile matrix at this zoom level
-               * @member {Number}
-               */
-
-              this.matrix_width;
-              /**
-               * Number of rows (>= 1) in tile matrix at this zoom level
-               * @member {Number}
-               */
-
-              this.matrix_height;
-              /**
-               * Tile width in pixels (>= 1)for this zoom level
-               * @member {Number}
-               */
-
-              this.tile_width;
-              /**
-               * Tile height in pixels (>= 1)for this zoom level
-               * @member {Number}
-               */
-
-              this.tile_height;
-              /**
-               * In t_table_name srid units or default meters for srid 0 (>0)
-               * @member {Number}
-               */
-
-              this.pixel_x_size;
-              /**
-               * In t_table_name srid units or default meters for srid 0 (>0)
-               * @member {Number}
-               */
-
-              this.pixel_y_size;
-            };
-            /**
-             * Tile Matrix Set Data Access Object
-             * @class TileMatrixDao
-             * @extends {module:dao/dao~Dao}
-             */
-
-
-            class TileMatrixDao extends Dao {
-              createObject() {
-                return new TileMatrix();
-              }
-              /**
-               * get the Contents of the Tile matrix
-               * @param  {tileMatrix} tileMatrix the tile matrix
-               * @param  {Function} callback returns the contents
-               */
-
-
-              getContents(tileMatrix) {
-                var dao = this.geoPackage.getContentsDao();
-                return dao.queryForId(tileMatrix.table_name);
-              }
-
-              getTileMatrixSet(tileMatrix) {
-                var dao = this.geoPackage.getTileMatrixSetDao();
-                return dao.queryForId(tileMatrix.table_name);
-              }
-
-            }
-
-            TileMatrixDao.TABLE_NAME = "gpkg_tile_matrix";
-            TileMatrixDao.COLUMN_PK1 = "table_name";
-            TileMatrixDao.COLUMN_PK2 = "zoom_level";
-            TileMatrixDao.COLUMN_TABLE_NAME = "table_name";
-            TileMatrixDao.COLUMN_ZOOM_LEVEL = "zoom_level";
-            TileMatrixDao.COLUMN_MATRIX_WIDTH = "matrix_width";
-            TileMatrixDao.COLUMN_MATRIX_HEIGHT = "matrix_height";
-            TileMatrixDao.COLUMN_TILE_WIDTH = "tile_width";
-            TileMatrixDao.COLUMN_TILE_HEIGHT = "tile_height";
-            TileMatrixDao.COLUMN_PIXEL_X_SIZE = "pixel_x_size";
-            TileMatrixDao.COLUMN_PIXEL_Y_SIZE = "pixel_y_size";
-            TileMatrix.TABLE_NAME = 'tableName';
-            TileMatrix.ZOOM_LEVEL = 'zoomLevel';
-            TileMatrix.MATRIX_WIDTH = 'matrixWidth';
-            TileMatrix.MATRIX_HEIGHT = 'matrixHeight';
-            TileMatrix.TILE_WIDTH = 'tileWidth';
-            TileMatrix.TILE_HEIGHT = 'tileHeight';
-            TileMatrix.PIXEL_X_SIZE = 'pixelXSize';
-            TileMatrix.PIXEL_Y_SIZE = 'pixelYSize';
-            TileMatrixDao.prototype.gpkgTableName = 'gpkg_tile_matrix';
-            TileMatrixDao.prototype.idColumns = [TileMatrixDao.COLUMN_PK1, TileMatrixDao.COLUMN_PK2];
-            TileMatrixDao.prototype.columns = [TileMatrixDao.COLUMN_TABLE_NAME, TileMatrixDao.COLUMN_ZOOM_LEVEL, TileMatrixDao.COLUMN_MATRIX_WIDTH, TileMatrixDao.COLUMN_MATRIX_HEIGHT, TileMatrixDao.COLUMN_TILE_WIDTH, TileMatrixDao.COLUMN_TILE_HEIGHT, TileMatrixDao.COLUMN_PIXEL_X_SIZE, TileMatrixDao.COLUMN_PIXEL_Y_SIZE];
 
             /**
              * Contents module.
@@ -21709,122 +21168,124 @@
              * @param {string[]} requiredColumns required column names
              */
 
-            var MediaTable = function (tableName, columns, requiredColumns) {
-              UserRelatedTable.call(this, tableName, MediaTable.RELATION_TYPE.name, MediaTable.RELATION_TYPE.dataType, columns, requiredColumns);
-            };
+            class MediaTable extends UserRelatedTable {
+              constructor(tableName, columns, requiredColumns) {
+                super(tableName, MediaTable.RELATION_TYPE.name, MediaTable.RELATION_TYPE.dataType, columns, requiredColumns);
+              }
+              /**
+               * Get the primary key id column
+               * @return {module:user/userColumn~UserColumn}
+               */
 
-            util.inherits(MediaTable, UserRelatedTable);
-            /**
-             * Create a media table with a minimum required columns followed by the additional columns
-             * @param  {string} tableName         name of the table
-             * @param  {module:user/userColumn~UserColumn[]} additionalColumns additional columns
-             * @return {module:extension/relatedTables~MediaTable}
-             */
 
-            MediaTable.create = function (tableName, additionalColumns) {
-              var columns = MediaTable.createRequiredColumns();
+              getIdColumn() {
+                return this.getPkColumn();
+              }
+              /**
+               * Get the data column
+               * @return {module:user/userColumn~UserColumn}
+               */
 
-              if (additionalColumns) {
-                columns = columns.concat(additionalColumns);
+
+              getDataColumn() {
+                return this.getColumnWithColumnName(MediaTable.COLUMN_DATA);
+              }
+              /**
+               * Get the content type column
+               * @return {module:user/userColumn~UserColumn}
+               */
+
+
+              getContentTypeColumn() {
+                return this.getColumnWithColumnName(MediaTable.COLUMN_CONTENT_TYPE);
+              }
+              /**
+               * Create a media table with a minimum required columns followed by the additional columns
+               * @param  {string} tableName         name of the table
+               * @param  {module:user/userColumn~UserColumn[]} additionalColumns additional columns
+               * @return {module:extension/relatedTables~MediaTable}
+               */
+
+
+              static create(tableName, additionalColumns) {
+                var columns = MediaTable.createRequiredColumns();
+
+                if (additionalColumns) {
+                  columns = columns.concat(additionalColumns);
+                }
+
+                return new MediaTable(tableName, columns, MediaTable.requiredColumns());
+              }
+              /**
+               * Get the required columns
+               * @param  {string} [idColumnName=id] id column name
+               * @return {string[]}
+               */
+
+
+              static requiredColumns(idColumnName) {
+                var requiredColumns = [];
+                requiredColumns.push(idColumnName || MediaTable.COLUMN_ID);
+                requiredColumns.push(MediaTable.COLUMN_DATA);
+                requiredColumns.push(MediaTable.COLUMN_CONTENT_TYPE);
+                return requiredColumns;
+              }
+              /**
+               * Get the number of required columns
+               * @return {Number}
+               */
+
+
+              static numRequiredColumns() {
+                return MediaTable.requiredColumns().length;
+              }
+              /**
+               * Create the required columns
+               * @param  {Number} [startingIndex=0] starting index of the required columns
+               * @param  {string} [idColumnName=id]  id column name
+               * @return {module:user/userColumn~UserColumn[]}
+               */
+
+
+              static createRequiredColumns(startingIndex, idColumnName) {
+                startingIndex = startingIndex || 0;
+                return [MediaTable.createIdColumn(startingIndex++, idColumnName || MediaTable.COLUMN_ID), MediaTable.createDataColumn(startingIndex++), MediaTable.createContentTypeColumn(startingIndex++)];
+              }
+              /**
+               * Create the primary key id column
+               * @param  {Number} index        index of the column
+               * @param  {string} idColumnName name of the id column
+               * @return {module:user/userColumn~UserColumn}
+               */
+
+
+              static createIdColumn(index, idColumnName) {
+                return UserColumn.createPrimaryKeyColumnWithIndexAndName(index, idColumnName);
+              }
+              /**
+               * Create the data column
+               * @param  {Number} index        index of the column
+               * @param  {string} idColumnName name of the id column
+               * @return {module:user/userColumn~UserColumn}
+               */
+
+
+              static createDataColumn(index) {
+                return UserColumn.createColumnWithIndex(index, MediaTable.COLUMN_DATA, types.GPKGDataType.GPKG_DT_BLOB, true);
+              }
+              /**
+               * Create the content type column
+               * @param  {Number} index        index of the column
+               * @param  {string} idColumnName name of the id column
+               * @return {module:user/userColumn~UserColumn}
+               */
+
+
+              static createContentTypeColumn(index) {
+                return UserColumn.createColumnWithIndex(index, MediaTable.COLUMN_CONTENT_TYPE, types.GPKGDataType.GPKG_DT_TEXT, true);
               }
 
-              return new MediaTable(tableName, columns, MediaTable.requiredColumns());
-            };
-            /**
-             * Get the required columns
-             * @param  {string} [idColumnName=id] id column name
-             * @return {string[]}
-             */
-
-
-            MediaTable.requiredColumns = function (idColumnName) {
-              var requiredColumns = [];
-              requiredColumns.push(idColumnName || MediaTable.COLUMN_ID);
-              requiredColumns.push(MediaTable.COLUMN_DATA);
-              requiredColumns.push(MediaTable.COLUMN_CONTENT_TYPE);
-              return requiredColumns;
-            };
-            /**
-             * Get the number of required columns
-             * @return {Number}
-             */
-
-
-            MediaTable.numRequiredColumns = function () {
-              return MediaTable.requiredColumns().length;
-            };
-            /**
-             * Create the required columns
-             * @param  {Number} [startingIndex=0] starting index of the required columns
-             * @param  {string} [idColumnName=id]  id column name
-             * @return {module:user/userColumn~UserColumn[]}
-             */
-
-
-            MediaTable.createRequiredColumns = function (startingIndex, idColumnName) {
-              startingIndex = startingIndex || 0;
-              return [MediaTable.createIdColumn(startingIndex++, idColumnName || MediaTable.COLUMN_ID), MediaTable.createDataColumn(startingIndex++), MediaTable.createContentTypeColumn(startingIndex++)];
-            };
-            /**
-             * Create the primary key id column
-             * @param  {Number} index        index of the column
-             * @param  {string} idColumnName name of the id column
-             * @return {module:user/userColumn~UserColumn}
-             */
-
-
-            MediaTable.createIdColumn = function (index, idColumnName) {
-              return UserColumn.createPrimaryKeyColumnWithIndexAndName(index, idColumnName);
-            };
-            /**
-             * Create the data column
-             * @param  {Number} index        index of the column
-             * @param  {string} idColumnName name of the id column
-             * @return {module:user/userColumn~UserColumn}
-             */
-
-
-            MediaTable.createDataColumn = function (index) {
-              return UserColumn.createColumnWithIndex(index, MediaTable.COLUMN_DATA, types.GPKGDataType.GPKG_DT_BLOB, true);
-            };
-            /**
-             * Create the content type column
-             * @param  {Number} index        index of the column
-             * @param  {string} idColumnName name of the id column
-             * @return {module:user/userColumn~UserColumn}
-             */
-
-
-            MediaTable.createContentTypeColumn = function (index) {
-              return UserColumn.createColumnWithIndex(index, MediaTable.COLUMN_CONTENT_TYPE, types.GPKGDataType.GPKG_DT_TEXT, true);
-            };
-            /**
-             * Get the primary key id column
-             * @return {module:user/userColumn~UserColumn}
-             */
-
-
-            MediaTable.prototype.getIdColumn = function () {
-              return this.getPkColumn();
-            };
-            /**
-             * Get the data column
-             * @return {module:user/userColumn~UserColumn}
-             */
-
-
-            MediaTable.prototype.getDataColumn = function () {
-              return this.getColumnWithColumnName(MediaTable.COLUMN_DATA);
-            };
-            /**
-             * Get the content type column
-             * @return {module:user/userColumn~UserColumn}
-             */
-
-
-            MediaTable.prototype.getContentTypeColumn = function () {
-              return this.getColumnWithColumnName(MediaTable.COLUMN_CONTENT_TYPE);
-            };
+            }
 
             MediaTable.RELATION_TYPE = RelationType.MEDIA;
             MediaTable.COLUMN_ID = 'id';
@@ -21845,131 +21306,133 @@
              * @param {string[]} requiredColumns required column names
              */
 
-            var SimpleAttributesTable = function (tableName, columns, requiredColumns) {
-              UserRelatedTable.call(this, tableName, SimpleAttributesTable.RELATION_TYPE.name, SimpleAttributesTable.RELATION_TYPE.dataType, columns, requiredColumns);
-              this.validateColumns();
-            };
-
-            util.inherits(SimpleAttributesTable, UserRelatedTable);
-            /**
-             * Create a simple attributes table with the columns
-             * @param  {string} tableName name of the table
-             * @param  {module:user/userColumn~UserColumn[]} additionalColumns additional columns
-             * @return {module:extension/relatedTables~SimpleAttributesTable}
-             */
-
-            SimpleAttributesTable.create = function (tableName, additionalColumns) {
-              var tableColumns = SimpleAttributesTable.createRequiredColumns(0);
-
-              if (additionalColumns) {
-                tableColumns = tableColumns.concat(additionalColumns);
+            class SimpleAttributesTable extends UserRelatedTable {
+              constructor(tableName, columns, requiredColumns) {
+                super(tableName, SimpleAttributesTable.RELATION_TYPE.name, SimpleAttributesTable.RELATION_TYPE.dataType, columns, requiredColumns);
+                this.validateColumns();
               }
-
-              return new SimpleAttributesTable(tableName, tableColumns, SimpleAttributesTable.requiredColumns());
-            };
-            /**
-             * Get the required columns
-             * @param  {string} [idColumnName=id] id column name
-             * @return {string[]}
-             */
+              /**
+               * Validate that Simple Attributes columns to verify at least one non id
+               * column exists and that all columns are simple data types
+               */
 
 
-            SimpleAttributesTable.requiredColumns = function (idColumnName) {
-              var requiredColumns = [];
-              requiredColumns.push(idColumnName || SimpleAttributesTable.COLUMN_ID);
-              return requiredColumns;
-            };
-            /**
-             * Get the number of required columns
-             * @return {Number}
-             */
+              validateColumns() {
+                var columns = this.columns;
 
+                if (columns.length < 2) {
+                  throw new Error('Simple Attributes Tables require at least one non id column');
+                }
 
-            SimpleAttributesTable.numRequiredColumns = function () {
-              return SimpleAttributesTable.requiredColumns().length;
-            };
-            /**
-             * Create the required columns
-             * @param  {Number} [startingIndex=0] starting index of the required columns
-             * @param  {string} [idColumnName=id]  id column name
-             * @return {module:user/userColumn~UserColumn[]}
-             */
+                for (var i = 0; i < columns.length; i++) {
+                  var column = columns[i];
 
-
-            SimpleAttributesTable.createRequiredColumns = function (startingIndex, idColumnName) {
-              startingIndex = startingIndex || 0;
-              return [SimpleAttributesTable.createIdColumn(startingIndex++, idColumnName || SimpleAttributesTable.COLUMN_ID)];
-            };
-            /**
-             * Create the primary key id column
-             * @param  {Number} index        index of the column
-             * @param  {string} idColumnName name of the id column
-             * @return {module:user/userColumn~UserColumn}
-             */
-
-
-            SimpleAttributesTable.createIdColumn = function (index, idColumnName) {
-              return UserColumn.createPrimaryKeyColumnWithIndexAndName(index, idColumnName);
-            };
-            /**
-             * Validate that Simple Attributes columns to verify at least one non id
-             * column exists and that all columns are simple data types
-             */
-
-
-            SimpleAttributesTable.prototype.validateColumns = function () {
-              var columns = this.columns;
-
-              if (columns.length < 2) {
-                throw new Error('Simple Attributes Tables require at least one non id column');
-              }
-
-              for (var i = 0; i < columns.length; i++) {
-                var column = columns[i];
-
-                if (!SimpleAttributesTable.isSimple(column)) {
-                  throw new Error('Simple Attributes Tables only support simple data types. Column: ' + column.name + ', Non Simple Data Type: ' + column.dataType);
+                  if (!SimpleAttributesTable.isSimple(column)) {
+                    throw new Error('Simple Attributes Tables only support simple data types. Column: ' + column.name + ', Non Simple Data Type: ' + column.dataType);
+                  }
                 }
               }
-            };
-            /**
-             * Get the column index of the id column
-             * @return {Number}
-             */
+              /**
+               * Get the column index of the id column
+               * @return {Number}
+               */
 
 
-            SimpleAttributesTable.prototype.getIdColumnIndex = function () {
-              return this.pkIndex;
-            };
-            /**
-             * Get the primary key id column
-             * @return {module:user/userColumn~UserColumn}
-             */
+              getIdColumnIndex() {
+                return this.pkIndex;
+              }
+              /**
+               * Get the primary key id column
+               * @return {module:user/userColumn~UserColumn}
+               */
 
 
-            SimpleAttributesTable.prototype.getIdColumn = function () {
-              return this.getPkColumn();
-            };
-            /**
-             * Determine if the column is a simple column
-             * @param  {module:user/userColumn~UserColumn} column column to check
-             * @return {Boolean}
-             */
+              getIdColumn() {
+                return this.getPkColumn();
+              }
+              /**
+               * Create a simple attributes table with the columns
+               * @param  {string} tableName name of the table
+               * @param  {module:user/userColumn~UserColumn[]} additionalColumns additional columns
+               * @return {module:extension/relatedTables~SimpleAttributesTable}
+               */
 
 
-            SimpleAttributesTable.isSimple = function (column) {
-              return column.notNull && SimpleAttributesTable.isSimpleDataType(column.dataType);
-            };
-            /**
-             * Determine if the data type is a simple type: TEXT, INTEGER, or REAL
-             * @param {module:db/dataTypes~GPKGDataType}
-             * @return {Boolean}
-             */
+              static create(tableName, additionalColumns) {
+                var tableColumns = SimpleAttributesTable.createRequiredColumns(0);
+
+                if (additionalColumns) {
+                  tableColumns = tableColumns.concat(additionalColumns);
+                }
+
+                return new SimpleAttributesTable(tableName, tableColumns, SimpleAttributesTable.requiredColumns());
+              }
+              /**
+               * Get the required columns
+               * @param  {string} [idColumnName=id] id column name
+               * @return {string[]}
+               */
 
 
-            SimpleAttributesTable.isSimpleDataType = function (dataType) {
-              return dataType !== types.GPKGDataType.GPKG_DT_BLOB && dataType !== types.GPKGDataType.GPKG_DT_GEOMETRY;
-            };
+              static requiredColumns(idColumnName) {
+                var requiredColumns = [];
+                requiredColumns.push(idColumnName || SimpleAttributesTable.COLUMN_ID);
+                return requiredColumns;
+              }
+              /**
+               * Get the number of required columns
+               * @return {Number}
+               */
+
+
+              static numRequiredColumns() {
+                return SimpleAttributesTable.requiredColumns().length;
+              }
+              /**
+               * Create the required columns
+               * @param  {Number} [startingIndex=0] starting index of the required columns
+               * @param  {string} [idColumnName=id]  id column name
+               * @return {module:user/userColumn~UserColumn[]}
+               */
+
+
+              static createRequiredColumns(startingIndex, idColumnName) {
+                startingIndex = startingIndex || 0;
+                return [SimpleAttributesTable.createIdColumn(startingIndex++, idColumnName || SimpleAttributesTable.COLUMN_ID)];
+              }
+              /**
+               * Create the primary key id column
+               * @param  {Number} index        index of the column
+               * @param  {string} idColumnName name of the id column
+               * @return {module:user/userColumn~UserColumn}
+               */
+
+
+              static createIdColumn(index, idColumnName) {
+                return UserColumn.createPrimaryKeyColumnWithIndexAndName(index, idColumnName);
+              }
+              /**
+               * Determine if the column is a simple column
+               * @param  {module:user/userColumn~UserColumn} column column to check
+               * @return {Boolean}
+               */
+
+
+              static isSimple(column) {
+                return column.notNull && SimpleAttributesTable.isSimpleDataType(column.dataType);
+              }
+              /**
+               * Determine if the data type is a simple type: TEXT, INTEGER, or REAL
+               * @param {module:db/dataTypes~GPKGDataType}
+               * @return {Boolean}
+               */
+
+
+              static isSimpleDataType(dataType) {
+                return dataType !== types.GPKGDataType.GPKG_DT_BLOB && dataType !== types.GPKGDataType.GPKG_DT_GEOMETRY;
+              }
+
+            }
 
             SimpleAttributesTable.RELATION_TYPE = RelationType.SIMPLE_ATTRIBUTES;
             SimpleAttributesTable.COLUMN_ID = 'id';
@@ -21985,10 +21448,91 @@
              * @param  {string[]} requiredColumns array of required column names
              */
 
-            var UserTableReader = function (tableName, requiredColumns) {
-              this.table_name = tableName;
-              this.requiredColumns = requiredColumns;
-            };
+            class UserTableReader {
+              constructor(tableName, requiredColumns) {
+                this.table_name = tableName;
+                this.requiredColumns = requiredColumns;
+              }
+              /**
+               * Read the table
+               * @param  {object} db db connection
+               * @return {module:user/userTable~UserTable}
+               */
+
+
+              readTable(db) {
+                var columnList = [];
+                var results = db.all('PRAGMA table_info(\'' + this.table_name + '\')');
+
+                for (var i = 0; i < results.length; i++) {
+                  var result = results[i];
+                  var index = result[GPKG_UTR_CID];
+                  var name = result[GPKG_UTR_NAME];
+                  var type = result[GPKG_UTR_TYPE];
+                  var notNull = result[GPKG_UTR_NOT_NULL] === 1;
+                  var primarykey = result[GPKG_UTR_PK] === 1;
+                  var max = undefined;
+
+                  if (type && type.lastIndexOf(')') === type.length - 1) {
+                    var maxStart = type.indexOf('(');
+
+                    if (maxStart > -1) {
+                      var maxString = type.substring(maxStart + 1, type.length - 1);
+
+                      if (maxString !== '') {
+                        max = parseInt(maxString);
+                        type = type.substring(0, maxStart);
+                      }
+                    }
+                  }
+
+                  var defaultValue = undefined;
+
+                  if (result[GPKG_UTR_DFLT_VALUE]) {
+                    defaultValue = result[GPKG_UTR_DFLT_VALUE].replace(/\\'/g, '');
+                  }
+
+                  var column = this.createColumnWithResults(result, index, name, type, max, notNull, defaultValue, primarykey);
+                  columnList.push(column);
+                }
+
+                if (columnList.length === 0) {
+                  throw new Error('Table does not exist: ' + this.table_name);
+                }
+
+                return this.createTable(this.table_name, columnList, this.requiredColumns);
+              }
+              /**
+               * Creates a user column
+               * @param {Object} result
+               * @param {Number} index        column index
+               * @param {string} name         column name
+               * @param {module:db/dataTypes~GPKGDataType} type         data type
+               * @param {Number} max max value
+               * @param {Boolean} notNull      not null
+               * @param {Object} defaultValue default value or nil
+               * @param {Boolean} primaryKey primary key
+               * @return {module:user/custom~UserCustomColumn}
+               */
+
+
+              createColumnWithResults(result, index, name, type, max, notNull, defaultValue, primaryKey) {
+                var dataType = types.fromName(type);
+                return new UserColumn(index, name, dataType, max, notNull, defaultValue, primaryKey);
+              }
+              /**
+               * Create the table
+               * @param  {string} tableName table name
+               * @param  {module:dao/columnValues~ColumnValues[]} columns   columns
+               * @return {module:user/userTable~UserTable}           the user table
+               */
+
+
+              createTable(tableName, columns) {
+                return new UserTable(tableName, columns);
+              }
+
+            }
 
             var GPKG_UTR_CID = "cid";
             var GPKG_UTR_NAME = "name";
@@ -21996,83 +21540,6 @@
             var GPKG_UTR_NOT_NULL = "notnull";
             var GPKG_UTR_PK = "pk";
             var GPKG_UTR_DFLT_VALUE = "dflt_value";
-            /**
-             * Read the table
-             * @param  {object} db db connection
-             * @return {module:user/userTable~UserTable}
-             */
-
-            UserTableReader.prototype.readTable = function (db) {
-              var columnList = [];
-              var results = db.all('PRAGMA table_info(\'' + this.table_name + '\')');
-
-              for (var i = 0; i < results.length; i++) {
-                var result = results[i];
-                var index = result[GPKG_UTR_CID];
-                var name = result[GPKG_UTR_NAME];
-                var type = result[GPKG_UTR_TYPE];
-                var notNull = result[GPKG_UTR_NOT_NULL] === 1;
-                var primarykey = result[GPKG_UTR_PK] === 1;
-                var max = undefined;
-
-                if (type && type.lastIndexOf(')') === type.length - 1) {
-                  var maxStart = type.indexOf('(');
-
-                  if (maxStart > -1) {
-                    var maxString = type.substring(maxStart + 1, type.length - 1);
-
-                    if (maxString !== '') {
-                      max = parseInt(maxString);
-                      type = type.substring(0, maxStart);
-                    }
-                  }
-                }
-
-                var defaultValue = undefined;
-
-                if (result[GPKG_UTR_DFLT_VALUE]) {
-                  defaultValue = result[GPKG_UTR_DFLT_VALUE].replace(/\\'/g, '');
-                }
-
-                var column = this.createColumnWithResults(result, index, name, type, max, notNull, defaultValue, primarykey);
-                columnList.push(column);
-              }
-
-              if (columnList.length === 0) {
-                throw new Error('Table does not exist: ' + this.table_name);
-              }
-
-              return this.createTable(this.table_name, columnList, this.requiredColumns);
-            };
-            /**
-             * Creates a user column
-             * @param {Object} result
-             * @param {Number} index        column index
-             * @param {string} name         column name
-             * @param {module:db/dataTypes~GPKGDataType} type         data type
-             * @param {Number} max max value
-             * @param {Boolean} notNull      not null
-             * @param {Object} defaultValue default value or nil
-             * @param {Boolean} primaryKey primary key
-             * @return {module:user/custom~UserCustomColumn}
-             */
-
-
-            UserTableReader.prototype.createColumnWithResults = function (result, index, name, type, max, notNull, defaultValue, primaryKey) {
-              var dataType = types.fromName(type);
-              return new UserColumn(index, name, dataType, max, notNull, defaultValue, primaryKey);
-            };
-            /**
-             * Create the table
-             * @param  {string} tableName table name
-             * @param  {module:dao/columnValues~ColumnValues[]} columns   columns
-             * @return {module:user/userTable~UserTable}           the user table
-             */
-
-
-            UserTableReader.prototype.createTable = function (tableName, columns) {
-              return new UserTable(tableName, columns);
-            };
 
             /**
              * @module user/userDao
@@ -22590,95 +22057,96 @@
              * @extends {module:user/userColumn~UserColumn}
              */
 
-            const FeatureColumn = function (index, name, dataType, max, notNull, defaultValue, primaryKey, geometryType) {
-              UserColumn.call(this, index, name, dataType, max, notNull, defaultValue, primaryKey);
-              this.geometryType = geometryType;
+            class FeatureColumn extends UserColumn {
+              constructor(index, name, dataType, max, notNull, defaultValue, primaryKey, geometryType) {
+                super(index, name, dataType, max, notNull, defaultValue, primaryKey);
+                this.geometryType = geometryType;
 
-              if (!geometryType && dataType === types.GPKGDataType.GPKG_DT_GEOMETRY) {
-                throw new Error('Data or Geometry Type is required to create column: ' + name);
-              }
-            };
-
-            util.inherits(FeatureColumn, UserColumn);
-
-            FeatureColumn.prototype.getTypeName = function () {
-              if (this.isGeometry()) {
-                return this.geometryType;
+                if (!geometryType && dataType === types.GPKGDataType.GPKG_DT_GEOMETRY) {
+                  throw new Error('Data or Geometry Type is required to create column: ' + name);
+                }
               }
 
-              return this.dataType !== undefined && types.name(this.dataType);
-            };
-            /**
-             *  Create a new primary key column
-             *
-             *  @param {Number} index column index
-             *  @param {string} name  column name
-             *
-             *  @return feature column
-             */
+              getTypeName() {
+                if (this.isGeometry()) {
+                  return this.geometryType;
+                }
+
+                return this.dataType !== undefined && types.name(this.dataType);
+              }
+              /**
+               * Determine if this column is a geometry
+               * @return {Boolean} true if a geometry column
+               */
 
 
-            FeatureColumn.createPrimaryKeyColumnWithIndexAndName = function (index, name) {
-              return new FeatureColumn(index, name, types.GPKGDataType.GPKG_DT_INTEGER, undefined, true, undefined, true);
-            };
-            /**
-             *  Create a new geometry column
-             *
-             *  @param {Number} index        column index
-             *  @param {string} name         column name
-             *  @param {WKBGeometryType} type         geometry type
-             *  @param {Boolean} notNull      not null
-             *  @param {Object} defaultValue default value or nil
-             *
-             *  @return feature column
-             */
+              isGeometry() {
+                return this.geometryType !== undefined;
+              }
+              /**
+               *  Create a new primary key column
+               *
+               *  @param {Number} index column index
+               *  @param {string} name  column name
+               *
+               *  @return feature column
+               */
 
 
-            FeatureColumn.createGeometryColumn = function (index, name, type, notNull, defaultValue) {
-              return new FeatureColumn(index, name, type, undefined, notNull, defaultValue, false, type);
-            };
-            /**
-             *  Create a new column
-             *
-             *  @param {Number} index column index
-             *  @param {string} name column name
-             *  @param {module:db/dataTypes~GPKGDataType} type         data type
-             *  @param {Boolean} notNull not null
-             *  @param {Object} defaultValue default value or nil
-             *
-             *  @return feature column
-             */
+              static createPrimaryKeyColumnWithIndexAndName(index, name) {
+                return new FeatureColumn(index, name, types.GPKGDataType.GPKG_DT_INTEGER, undefined, true, undefined, true);
+              }
+              /**
+               *  Create a new geometry column
+               *
+               *  @param {Number} index        column index
+               *  @param {string} name         column name
+               *  @param {WKBGeometryType} type         geometry type
+               *  @param {Boolean} notNull      not null
+               *  @param {Object} defaultValue default value or nil
+               *
+               *  @return feature column
+               */
 
 
-            FeatureColumn.createColumnWithIndex = function (index, name, type, notNull, defaultValue) {
-              return FeatureColumn.createColumnWithIndexAndMax(index, name, type, undefined, notNull, defaultValue);
-            };
-            /**
-             *  Create a new column
-             *
-             *  @param {Number} index        column index
-             *  @param {string} name         column name
-             *  @param {module:db/dataTypes~GPKGDataType} type         data type
-             *  @param {Number} max max value
-             *  @param {Boolean} notNull      not null
-             *  @param {Object} defaultValue default value or nil
-             *
-             *  @return feature column
-             */
+              static createGeometryColumn(index, name, type, notNull, defaultValue) {
+                return new FeatureColumn(index, name, type, undefined, notNull, defaultValue, false, type);
+              }
+              /**
+               *  Create a new column
+               *
+               *  @param {Number} index column index
+               *  @param {string} name column name
+               *  @param {module:db/dataTypes~GPKGDataType} type         data type
+               *  @param {Boolean} notNull not null
+               *  @param {Object} defaultValue default value or nil
+               *
+               *  @return feature column
+               */
 
 
-            FeatureColumn.createColumnWithIndexAndMax = function (index, name, type, max, notNull, defaultValue) {
-              return new FeatureColumn(index, name, type, max, notNull, defaultValue, false);
-            };
-            /**
-             * Determine if this column is a geometry
-             * @return {Boolean} true if a geometry column
-             */
+              static createColumnWithIndex(index, name, type, notNull, defaultValue) {
+                return FeatureColumn.createColumnWithIndexAndMax(index, name, type, undefined, notNull, defaultValue);
+              }
+              /**
+               *  Create a new column
+               *
+               *  @param {Number} index        column index
+               *  @param {string} name         column name
+               *  @param {module:db/dataTypes~GPKGDataType} type         data type
+               *  @param {Number} max max value
+               *  @param {Boolean} notNull      not null
+               *  @param {Object} defaultValue default value or nil
+               *
+               *  @return feature column
+               */
 
 
-            FeatureColumn.prototype.isGeometry = function () {
-              return this.geometryType !== undefined;
-            };
+              static createColumnWithIndexAndMax(index, name, type, max, notNull, defaultValue) {
+                return new FeatureColumn(index, name, type, max, notNull, defaultValue, false);
+              }
+
+            }
 
             /**
              * GeoPackage Constants module.
@@ -22950,71 +22418,73 @@
              * @param  {Array} values       values
              */
 
-            var FeatureRow = function (featureTable, columnTypes, values) {
-              UserRow.call(this, featureTable, columnTypes, values);
-              this.featureTable = featureTable;
-            };
-
-            util.inherits(FeatureRow, UserRow);
-            /**
-             * Get the geometry column index
-             * @return {Number} geometry column index
-             */
-
-            FeatureRow.prototype.getGeometryColumnIndex = function () {
-              return this.featureTable.geometryIndex;
-            };
-            /**
-             * Get the geometry column
-             * @return {FeatureColumn} geometry column
-             */
+            class FeatureRow extends UserRow {
+              constructor(featureTable, columnTypes, values) {
+                super(featureTable, columnTypes, values);
+                this.featureTable = featureTable;
+              }
+              /**
+               * Get the geometry column index
+               * @return {Number} geometry column index
+               */
 
 
-            FeatureRow.prototype.getGeometryColumn = function () {
-              return this.featureTable.getGeometryColumn();
-            };
-            /**
-             * Get the geometry
-             * @return {Buffer} geometry data
-             */
+              getGeometryColumnIndex() {
+                return this.featureTable.geometryIndex;
+              }
+              /**
+               * Get the geometry column
+               * @return {FeatureColumn} geometry column
+               */
 
 
-            FeatureRow.prototype.getGeometry = function () {
-              return this.getValueWithIndex(this.featureTable.geometryIndex);
-            };
-            /**
-             * set the geometry
-             * @param {Buffer} geometryData geometry data
-             */
+              getGeometryColumn() {
+                return this.featureTable.getGeometryColumn();
+              }
+              /**
+               * Get the geometry
+               * @return {Buffer} geometry data
+               */
 
 
-            FeatureRow.prototype.setGeometry = function (geometryData) {
-              this.setValueWithIndex(this.featureTable.geometryIndex, geometryData);
-            };
+              getGeometry() {
+                return this.getValueWithIndex(this.featureTable.geometryIndex);
+              }
+              /**
+               * set the geometry
+               * @param {Buffer} geometryData geometry data
+               */
 
-            FeatureRow.prototype.toObjectValue = function (index, value) {
-              var objectValue = value;
-              var column = this.getColumnWithIndex(index);
 
-              if (column.isGeometry() && value) {
-                objectValue = new GeometryData(value);
+              setGeometry(geometryData) {
+                this.setValueWithIndex(this.featureTable.geometryIndex, geometryData);
               }
 
-              return objectValue;
-            };
+              toObjectValue(index, value) {
+                var objectValue = value;
+                var column = this.getColumnWithIndex(index);
 
-            FeatureRow.prototype.toDatabaseValue = function (columnName) {
-              var column = this.getColumnWithColumnName(columnName);
-              var value = this.getValueWithColumnName(columnName);
+                if (column.isGeometry() && value) {
+                  objectValue = new GeometryData(value);
+                }
 
-              if (column.isGeometry() && value.toData) {
-                return value.toData();
-              } else if (column.dataType === types.GPKGDataType.BOOLEAN) {
-                return value === true ? 1 : 0;
+                return objectValue;
               }
 
-              return value;
-            };
+              toDatabaseValue(columnName) {
+                var column = this.getColumnWithColumnName(columnName);
+                var value = this.getValueWithColumnName(columnName);
+
+                if (column.isGeometry() && value.toData) {
+                  return value.toData();
+                } else if (column.dataType === types.GPKGDataType.BOOLEAN) {
+                  return value === true ? 1 : 0;
+                }
+
+                return value;
+              }
+
+            }
 
             /**
              * Creates tables necessary for GeoPackages
@@ -23319,77 +22789,79 @@
              * @class Extension
              */
 
-            var Extension = function () {
-              /**
-               * Name of the table that requires the extension. When NULL, the extension
-               * is required for the entire GeoPackage. SHALL NOT be NULL when the
-               * column_name is not NULL.
-               * @member {String}
-               */
-              this.table_name;
-              /**
-               * Name of the column that requires the extension. When NULL, the extension
-               * is required for the entire table.
-               * @member {String}
-               */
+            class Extension {
+              constructor() {
+                /**
+                 * Name of the table that requires the extension. When NULL, the extension
+                 * is required for the entire GeoPackage. SHALL NOT be NULL when the
+                 * column_name is not NULL.
+                 * @member {String}
+                 */
+                this.table_name;
+                /**
+                 * Name of the column that requires the extension. When NULL, the extension
+                 * is required for the entire table.
+                 * @member {String}
+                 */
 
-              this.column_name;
-              /**
-               * The case sensitive name of the extension that is required, in the form
-               * <author>_<extension_name>.
-               * @member {String}
-               */
+                this.column_name;
+                /**
+                 * The case sensitive name of the extension that is required, in the form
+                 * <author>_<extension_name>.
+                 * @member {String}
+                 */
 
-              this.extension_name;
-              /**
-               * Definition of the extension in the form specfied by the template in
-               * GeoPackage Extension Template (Normative) or reference thereto.
-               * @member {String}
-               */
+                this.extension_name;
+                /**
+                 * Definition of the extension in the form specfied by the template in
+                 * GeoPackage Extension Template (Normative) or reference thereto.
+                 * @member {String}
+                 */
 
-              this.definition;
-              /**
-               * Indicates scope of extension effects on readers / writers: read-write or
-               * write-only in lowercase.
-               * @member {String}
-               */
+                this.definition;
+                /**
+                 * Indicates scope of extension effects on readers / writers: read-write or
+                 * write-only in lowercase.
+                 * @member {String}
+                 */
 
-              this.scope;
-            };
+                this.scope;
+              }
+
+              setExtensionName(author, extensionName) {
+                this.extension_name = Extension.buildExtensionName(author, extensionName);
+              }
+
+              getAuthor() {
+                return Extension.getAuthorWithExtensionName(this.extension_name);
+              }
+
+              getExtensionNameNoAuthor() {
+                return Extension.getExtensionNameNoAuthor(this.extension_name);
+              }
+
+              static buildExtensionName(author, extensionName) {
+                return author + Extension.EXTENSION_NAME_DIVIDER + extensionName;
+              }
+
+              static getAuthorWithExtensionName(extensionName) {
+                return extensionName.split(Extension.EXTENSION_NAME_DIVIDER)[0];
+              }
+
+              static getExtensionNameNoAuthor(extensionName) {
+                return extensionName.slice(extensionName.indexOf(Extension.EXTENSION_NAME_DIVIDER) + 1);
+              }
+
+            }
 
             Extension.EXTENSION_NAME_DIVIDER = "_";
             Extension.READ_WRITE = "read-write";
             Extension.WRITE_ONLY = "write-only";
-
-            Extension.prototype.setExtensionName = function (author, extensionName) {
-              this.extension_name = Extension.buildExtensionName(author, extensionName);
-            };
-
-            Extension.prototype.getAuthor = function () {
-              return Extension.getAuthorWithExtensionName(this.extension_name);
-            };
-
-            Extension.prototype.getExtensionNameNoAuthor = function () {
-              return Extension.getExtensionNameNoAuthor(this.extension_name);
-            };
-
-            Extension.buildExtensionName = function (author, extensionName) {
-              return author + Extension.EXTENSION_NAME_DIVIDER + extensionName;
-            };
-
-            Extension.getAuthorWithExtensionName = function (extensionName) {
-              return extensionName.split(Extension.EXTENSION_NAME_DIVIDER)[0];
-            };
-
-            Extension.getExtensionNameNoAuthor = function (extensionName) {
-              return extensionName.slice(extensionName.indexOf(Extension.EXTENSION_NAME_DIVIDER) + 1);
-            };
             /**
              * Extension Data Access Object
              * @class
              * @extends {module:dao/dao~Dao}
              */
-
 
             class ExtensionDao extends Dao {
               createObject(row) {
@@ -23483,70 +22955,74 @@
              * @class
              */
 
-            var BaseExtension = function (geoPackage) {
-              this.geoPackage = geoPackage;
-              this.connection = geoPackage.connection;
-              this.extensionsDao = geoPackage.getExtensionDao();
-            };
-            /**
-             * Get the extension or create as needed
-             * @param  {String}   extensionName extension name
-             * @param  {String}   tableName     table name
-             * @param  {String}   columnName    column name
-             * @param  {String}   definition    extension definition
-             * @param  {String}   scopeType     extension scope type
-             * @return {Promise<module:extension/baseExtension~BaseExtension>}
-             */
+            class BaseExtension {
+              constructor(geoPackage) {
+                this.geoPackage = geoPackage;
+                this.connection = geoPackage.connection;
+                this.extensionsDao = geoPackage.getExtensionDao();
+              }
+              /**
+               * Get the extension or create as needed
+               * @param  {String}   extensionName extension name
+               * @param  {String}   tableName     table name
+               * @param  {String}   columnName    column name
+               * @param  {String}   definition    extension definition
+               * @param  {String}   scopeType     extension scope type
+               * @return {Promise<module:extension/baseExtension~BaseExtension>}
+               */
 
-            BaseExtension.prototype.getOrCreate = function (extensionName, tableName, columnName, definition, scopeType) {
-              var extension = this.getExtension(extensionName, tableName, columnName);
 
-              if (extension) {
-                return Promise.resolve(extension);
+              getOrCreate(extensionName, tableName, columnName, definition, scopeType) {
+                var extension = this.getExtension(extensionName, tableName, columnName);
+
+                if (extension) {
+                  return Promise.resolve(extension);
+                }
+
+                return this.extensionsDao.createTable().then(function () {
+                  return this.createExtension(extensionName, tableName, columnName, definition, scopeType);
+                }.bind(this));
+              }
+              /**
+               * Get the extension for the name, table name and column name
+               * @param  {String}   extensionName extension name
+               * @param  {String}   tableName     table name
+               * @param  {String}   columnName    column name
+               * @param  {Function} callback      Called with err if one occurred and the extension
+               */
+
+
+              getExtension(extensionName, tableName, columnName) {
+                if (!this.extensionsDao.isTableExists()) {
+                  return false;
+                }
+
+                return this.extensionsDao.queryByExtensionAndTableNameAndColumnName(extensionName, tableName, columnName);
+              }
+              /**
+               * Determine if the GeoPackage has the extension
+               * @param  {String}   extensionName extension name
+               * @param  {String}   tableName     table name
+               * @param  {String}   columnName    column name
+               */
+
+
+              hasExtension(extensionName, tableName, columnName) {
+                var exists = this.getExtension(extensionName, tableName, columnName);
+                return !!this.getExtension(extensionName, tableName, columnName).length;
               }
 
-              return this.extensionsDao.createTable().then(function () {
-                return this.createExtension(extensionName, tableName, columnName, definition, scopeType);
-              }.bind(this));
-            };
-            /**
-             * Get the extension for the name, table name and column name
-             * @param  {String}   extensionName extension name
-             * @param  {String}   tableName     table name
-             * @param  {String}   columnName    column name
-             * @param  {Function} callback      Called with err if one occurred and the extension
-             */
-
-
-            BaseExtension.prototype.getExtension = function (extensionName, tableName, columnName) {
-              if (!this.extensionsDao.isTableExists()) {
-                return false;
+              createExtension(extensionName, tableName, columnName, definition, scopeType) {
+                var extension = new Extension();
+                extension.table_name = tableName;
+                extension.column_name = columnName;
+                extension.extension_name = extensionName;
+                extension.definition = definition;
+                extension.scope = scopeType;
+                return this.extensionsDao.create(extension);
               }
 
-              return this.extensionsDao.queryByExtensionAndTableNameAndColumnName(extensionName, tableName, columnName);
-            };
-            /**
-             * Determine if the GeoPackage has the extension
-             * @param  {String}   extensionName extension name
-             * @param  {String}   tableName     table name
-             * @param  {String}   columnName    column name
-             */
-
-
-            BaseExtension.prototype.hasExtension = function (extensionName, tableName, columnName) {
-              var exists = this.getExtension(extensionName, tableName, columnName);
-              return !!this.getExtension(extensionName, tableName, columnName).length;
-            };
-
-            BaseExtension.prototype.createExtension = function (extensionName, tableName, columnName, definition, scopeType) {
-              var extension = new Extension();
-              extension.table_name = tableName;
-              extension.column_name = columnName;
-              extension.extension_name = extensionName;
-              extension.definition = definition;
-              extension.scope = scopeType;
-              return this.extensionsDao.create(extension);
-            };
+            }
 
             /**
              * TableIndexDao module.
@@ -23618,71 +23094,74 @@
              * @class
              */
 
-            var GeometryIndex = function () {
-              /**
-               * Name of the table
-               * @member {String}
-               */
-              this.table_name;
-              /**
-               * Geometry Id column
-               * @member {Number}
-               */
+            class GeometryIndex {
+              constructor() {
+                /**
+                 * Name of the table
+                 * @member {String}
+                 */
+                this.table_name;
+                /**
+                 * Geometry Id column
+                 * @member {Number}
+                 */
 
-              this.geom_id;
-              /**
-               * Min X
-               * @member {Number}
-               */
+                this.geom_id;
+                /**
+                 * Min X
+                 * @member {Number}
+                 */
 
-              this.min_x;
-              /**
-               * Max X
-               * @member {Number}
-               */
+                this.min_x;
+                /**
+                 * Max X
+                 * @member {Number}
+                 */
 
-              this.max_x;
-              /**
-               * Min Y
-               * @member {Number}
-               */
+                this.max_x;
+                /**
+                 * Min Y
+                 * @member {Number}
+                 */
 
-              this.min_y;
-              /**
-               * Max Y
-               * @member {Number}
-               */
+                this.min_y;
+                /**
+                 * Max Y
+                 * @member {Number}
+                 */
 
-              this.max_y;
-              /**
-               * Min Z
-               * @member {Number}
-               */
+                this.max_y;
+                /**
+                 * Min Z
+                 * @member {Number}
+                 */
 
-              this.min_z;
-              /**
-               * Max Z
-               * @member {Number}
-               */
+                this.min_z;
+                /**
+                 * Max Z
+                 * @member {Number}
+                 */
 
-              this.max_z;
-              /**
-               * Min M
-               * @member {Number}
-               */
+                this.max_z;
+                /**
+                 * Min M
+                 * @member {Number}
+                 */
 
-              this.min_m;
-              /**
-               * Max M
-               * @member {Number}
-               */
+                this.min_m;
+                /**
+                 * Max M
+                 * @member {Number}
+                 */
 
-              this.max_m;
-            };
+                this.max_m;
+              }
 
-            GeometryIndex.prototype.setTableIndex = function (tableIndex) {
-              this.table_name = tableIndex.table_name;
-            };
+              setTableIndex(tableIndex) {
+                this.table_name = tableIndex.table_name;
+              }
+
+            }
             /**
              * Geometry Index Data Access Object
              * @class
@@ -24593,130 +24072,131 @@
              * @see module:dao/dao
              */
 
-            var RTreeIndex = function (geoPackage, featureDao) {
-              BaseExtension.call(this, geoPackage);
-              this.extensionName = Extension.buildExtensionName(RTreeIndexDao.EXTENSION_RTREE_INDEX_AUTHOR, RTreeIndexDao.EXTENSION_RTREE_INDEX_NAME_NO_AUTHOR);
-              this.extensionDefinition = RTreeIndexDao.EXTENSION_RTREE_INDEX_DEFINITION;
-              this.tableName = featureDao.table_name;
-              this.primaryKeyColumn = featureDao.idColumns[0];
-              this.columnName = featureDao.getGeometryColumnName();
-              this.rtreeIndexDao = new RTreeIndexDao(geoPackage, featureDao);
-              this.extensionExists = this.hasExtension(this.extensionName, this.tableName, this.columnName);
-            };
-
-            util.inherits(RTreeIndex, BaseExtension);
-
-            RTreeIndex.prototype.getRTreeIndexExtension = function () {
-              return this.getExtension(this.extensionName, this.tableName, this.columnName);
-            };
-
-            RTreeIndex.prototype.getOrCreateExtension = function () {
-              return this.getOrCreate(this.extensionName, this.tableName, this.columnName, this.extensionDefinition, Extension.WRITE_ONLY);
-            };
-
-            RTreeIndex.prototype.create = function () {
-              if (this.extensionExists) {
-                return Promise.resolve(this.getRTreeIndexExtension());
+            class RTreeIndex extends BaseExtension {
+              constructor(geoPackage, featureDao) {
+                super(geoPackage);
+                this.extensionName = Extension.buildExtensionName(RTreeIndexDao.EXTENSION_RTREE_INDEX_AUTHOR, RTreeIndexDao.EXTENSION_RTREE_INDEX_NAME_NO_AUTHOR);
+                this.extensionDefinition = RTreeIndexDao.EXTENSION_RTREE_INDEX_DEFINITION;
+                this.tableName = featureDao.table_name;
+                this.primaryKeyColumn = featureDao.idColumns[0];
+                this.columnName = featureDao.getGeometryColumnName();
+                this.rtreeIndexDao = new RTreeIndexDao(geoPackage, featureDao);
+                this.extensionExists = this.hasExtension(this.extensionName, this.tableName, this.columnName);
               }
 
-              return this.getOrCreate(this.extensionName, this.tableName, this.columnName, RTreeIndexDao.EXTENSION_RTREE_INDEX_DEFINITION, Extension.WRITE_ONLY).then(function () {
-                this.createAllFunctions();
-                this.createRTreeIndex();
-                this.loadRTreeIndex();
-                this.createAllTriggers();
-                return this.getRTreeIndexExtension();
-              }.bind(this));
-            };
+              getRTreeIndexExtension() {
+                return this.getExtension(this.extensionName, this.tableName, this.columnName);
+              }
 
-            RTreeIndex.prototype.createAllTriggers = function () {
-              var insertTrigger = 'CREATE TRIGGER rtree_' + this.tableName + '_' + this.columnName + '_insert AFTER INSERT ON ' + this.tableName + '  WHEN (new.' + this.columnName + ' NOT NULL AND NOT ST_IsEmpty(NEW.' + this.columnName + ')) ' + 'BEGIN ' + '  INSERT OR REPLACE INTO rtree_' + this.tableName + '_' + this.columnName + ' VALUES (' + '    NEW.' + this.primaryKeyColumn + ',' + '    ST_MinX(NEW.' + this.columnName + '), ST_MaxX(NEW.' + this.columnName + '), ' + '    ST_MinY(NEW.' + this.columnName + '), ST_MaxY(NEW.' + this.columnName + ') ' + '  ); ' + 'END;';
-              var update1Trigger = 'CREATE TRIGGER rtree_' + this.tableName + '_' + this.columnName + '_update1 AFTER UPDATE OF ' + this.columnName + ' ON ' + this.tableName + '  WHEN OLD.' + this.primaryKeyColumn + ' = NEW.' + this.primaryKeyColumn + ' AND ' + '     (NEW.' + this.columnName + ' NOTNULL AND NOT ST_IsEmpty(NEW.' + this.columnName + ')) ' + 'BEGIN ' + '  INSERT OR REPLACE INTO rtree_' + this.tableName + '_' + this.columnName + ' VALUES (' + '    NEW.' + this.primaryKeyColumn + ',' + '    ST_MinX(NEW.' + this.columnName + '), ST_MaxX(NEW.' + this.columnName + '), ' + '    ST_MinY(NEW.' + this.columnName + '), ST_MaxY(NEW.' + this.columnName + ') ' + '  ); ' + 'END;';
-              var update2Trigger = 'CREATE TRIGGER rtree_' + this.tableName + '_' + this.columnName + '_update2 AFTER UPDATE OF ' + this.columnName + ' ON ' + this.tableName + '  WHEN OLD.' + this.primaryKeyColumn + ' = NEW.' + this.primaryKeyColumn + ' AND ' + '       (NEW.' + this.columnName + ' ISNULL OR ST_IsEmpty(NEW.' + this.columnName + ')) ' + 'BEGIN ' + '  DELETE FROM rtree_' + this.tableName + '_' + this.columnName + ' WHERE id = OLD.' + this.primaryKeyColumn + '; ' + 'END;';
-              var update3Trigger = 'CREATE TRIGGER rtree_' + this.tableName + '_' + this.columnName + '_update3 AFTER UPDATE OF ' + this.columnName + ' ON ' + this.tableName + '  WHEN OLD.' + this.primaryKeyColumn + ' != NEW.' + this.primaryKeyColumn + ' AND ' + '       (NEW.' + this.columnName + ' NOTNULL AND NOT ST_IsEmpty(NEW.' + this.columnName + ')) ' + 'BEGIN ' + '  DELETE FROM rtree_' + this.tableName + '_' + this.columnName + ' WHERE id = OLD.' + this.primaryKeyColumn + '; ' + '  INSERT OR REPLACE INTO rtree_' + this.tableName + '_' + this.columnName + ' VALUES (' + '    NEW.' + this.primaryKeyColumn + ', ' + '    ST_MinX(NEW.' + this.columnName + '), ST_MaxX(NEW.' + this.columnName + '), ' + '    ST_MinY(NEW.' + this.columnName + '), ST_MaxY(NEW.' + this.columnName + ')' + '  ); ' + 'END;';
-              var update4Trigger = 'CREATE TRIGGER rtree_' + this.tableName + '_' + this.columnName + '_update4 AFTER UPDATE ON ' + this.tableName + '  WHEN OLD.' + this.primaryKeyColumn + ' != NEW.' + this.primaryKeyColumn + ' AND ' + '       (NEW.' + this.columnName + ' ISNULL OR ST_IsEmpty(NEW.' + this.columnName + ')) ' + 'BEGIN ' + '  DELETE FROM rtree_' + this.tableName + '_' + this.columnName + ' WHERE id IN (OLD.' + this.primaryKeyColumn + ', NEW.' + this.primaryKeyColumn + '); ' + 'END;';
-              var deleteTrigger = 'CREATE TRIGGER rtree_' + this.tableName + '_' + this.columnName + '_delete AFTER DELETE ON ' + this.tableName + '  WHEN old.' + this.columnName + ' NOT NULL ' + 'BEGIN' + '  DELETE FROM rtree_' + this.tableName + '_' + this.columnName + ' WHERE id = OLD.' + this.primaryKeyColumn + '; ' + 'END;';
-              this.connection.run(insertTrigger);
-              this.connection.run(update1Trigger);
-              this.connection.run(update2Trigger);
-              this.connection.run(update3Trigger);
-              this.connection.run(update4Trigger);
-              this.connection.run(deleteTrigger);
-            };
+              getOrCreateExtension() {
+                return this.getOrCreate(this.extensionName, this.tableName, this.columnName, this.extensionDefinition, Extension.WRITE_ONLY);
+              }
 
-            RTreeIndex.prototype.loadRTreeIndex = function () {
-              this.connection.run('INSERT OR REPLACE INTO rtree_' + this.tableName + '_' + this.columnName + ' SELECT ' + this.primaryKeyColumn + ', st_minx(' + this.columnName + '), st_maxx(' + this.columnName + '), st_miny(' + this.columnName + '), st_maxy(' + this.columnName + ') FROM ' + this.tableName);
-            };
-
-            RTreeIndex.prototype.createRTreeIndex = function () {
-              this.connection.run('CREATE VIRTUAL TABLE rtree_' + this.tableName + '_' + this.columnName + ' USING rtree(id, minx, maxx, miny, maxy)');
-            };
-
-            RTreeIndex.prototype.createAllFunctions = function () {
-              this.createMinXFunction();
-              this.createMaxXFunction();
-              this.createMinYFunction();
-              this.createMaxYFunction();
-              this.createIsEmptyFunction();
-            };
-
-            RTreeIndex.prototype.createMinXFunction = function () {
-              this.connection.registerFunction('ST_MinX', function (buffer) {
-                var geom = new GeometryData(buffer);
-                var envelope = geom.envelope;
-
-                if (!envelope) {
-                  envelope = EnvelopeBuilder.buildEnvelopeWithGeometry(geom.geometry);
+              create() {
+                if (this.extensionExists) {
+                  return Promise.resolve(this.getRTreeIndexExtension());
                 }
 
-                return envelope.minX;
-              });
-            };
+                return this.getOrCreate(this.extensionName, this.tableName, this.columnName, RTreeIndexDao.EXTENSION_RTREE_INDEX_DEFINITION, Extension.WRITE_ONLY).then(function () {
+                  this.createAllFunctions();
+                  this.createRTreeIndex();
+                  this.loadRTreeIndex();
+                  this.createAllTriggers();
+                  return this.getRTreeIndexExtension();
+                }.bind(this));
+              }
 
-            RTreeIndex.prototype.createMinYFunction = function () {
-              this.connection.registerFunction('ST_MinY', function (buffer) {
-                var geom = new GeometryData(buffer);
-                var envelope = geom.envelope;
+              createAllTriggers() {
+                var insertTrigger = 'CREATE TRIGGER rtree_' + this.tableName + '_' + this.columnName + '_insert AFTER INSERT ON ' + this.tableName + '  WHEN (new.' + this.columnName + ' NOT NULL AND NOT ST_IsEmpty(NEW.' + this.columnName + ')) ' + 'BEGIN ' + '  INSERT OR REPLACE INTO rtree_' + this.tableName + '_' + this.columnName + ' VALUES (' + '    NEW.' + this.primaryKeyColumn + ',' + '    ST_MinX(NEW.' + this.columnName + '), ST_MaxX(NEW.' + this.columnName + '), ' + '    ST_MinY(NEW.' + this.columnName + '), ST_MaxY(NEW.' + this.columnName + ') ' + '  ); ' + 'END;';
+                var update1Trigger = 'CREATE TRIGGER rtree_' + this.tableName + '_' + this.columnName + '_update1 AFTER UPDATE OF ' + this.columnName + ' ON ' + this.tableName + '  WHEN OLD.' + this.primaryKeyColumn + ' = NEW.' + this.primaryKeyColumn + ' AND ' + '     (NEW.' + this.columnName + ' NOTNULL AND NOT ST_IsEmpty(NEW.' + this.columnName + ')) ' + 'BEGIN ' + '  INSERT OR REPLACE INTO rtree_' + this.tableName + '_' + this.columnName + ' VALUES (' + '    NEW.' + this.primaryKeyColumn + ',' + '    ST_MinX(NEW.' + this.columnName + '), ST_MaxX(NEW.' + this.columnName + '), ' + '    ST_MinY(NEW.' + this.columnName + '), ST_MaxY(NEW.' + this.columnName + ') ' + '  ); ' + 'END;';
+                var update2Trigger = 'CREATE TRIGGER rtree_' + this.tableName + '_' + this.columnName + '_update2 AFTER UPDATE OF ' + this.columnName + ' ON ' + this.tableName + '  WHEN OLD.' + this.primaryKeyColumn + ' = NEW.' + this.primaryKeyColumn + ' AND ' + '       (NEW.' + this.columnName + ' ISNULL OR ST_IsEmpty(NEW.' + this.columnName + ')) ' + 'BEGIN ' + '  DELETE FROM rtree_' + this.tableName + '_' + this.columnName + ' WHERE id = OLD.' + this.primaryKeyColumn + '; ' + 'END;';
+                var update3Trigger = 'CREATE TRIGGER rtree_' + this.tableName + '_' + this.columnName + '_update3 AFTER UPDATE OF ' + this.columnName + ' ON ' + this.tableName + '  WHEN OLD.' + this.primaryKeyColumn + ' != NEW.' + this.primaryKeyColumn + ' AND ' + '       (NEW.' + this.columnName + ' NOTNULL AND NOT ST_IsEmpty(NEW.' + this.columnName + ')) ' + 'BEGIN ' + '  DELETE FROM rtree_' + this.tableName + '_' + this.columnName + ' WHERE id = OLD.' + this.primaryKeyColumn + '; ' + '  INSERT OR REPLACE INTO rtree_' + this.tableName + '_' + this.columnName + ' VALUES (' + '    NEW.' + this.primaryKeyColumn + ', ' + '    ST_MinX(NEW.' + this.columnName + '), ST_MaxX(NEW.' + this.columnName + '), ' + '    ST_MinY(NEW.' + this.columnName + '), ST_MaxY(NEW.' + this.columnName + ')' + '  ); ' + 'END;';
+                var update4Trigger = 'CREATE TRIGGER rtree_' + this.tableName + '_' + this.columnName + '_update4 AFTER UPDATE ON ' + this.tableName + '  WHEN OLD.' + this.primaryKeyColumn + ' != NEW.' + this.primaryKeyColumn + ' AND ' + '       (NEW.' + this.columnName + ' ISNULL OR ST_IsEmpty(NEW.' + this.columnName + ')) ' + 'BEGIN ' + '  DELETE FROM rtree_' + this.tableName + '_' + this.columnName + ' WHERE id IN (OLD.' + this.primaryKeyColumn + ', NEW.' + this.primaryKeyColumn + '); ' + 'END;';
+                var deleteTrigger = 'CREATE TRIGGER rtree_' + this.tableName + '_' + this.columnName + '_delete AFTER DELETE ON ' + this.tableName + '  WHEN old.' + this.columnName + ' NOT NULL ' + 'BEGIN' + '  DELETE FROM rtree_' + this.tableName + '_' + this.columnName + ' WHERE id = OLD.' + this.primaryKeyColumn + '; ' + 'END;';
+                this.connection.run(insertTrigger);
+                this.connection.run(update1Trigger);
+                this.connection.run(update2Trigger);
+                this.connection.run(update3Trigger);
+                this.connection.run(update4Trigger);
+                this.connection.run(deleteTrigger);
+              }
 
-                if (!envelope) {
-                  envelope = EnvelopeBuilder.buildEnvelopeWithGeometry(geom.geometry);
-                }
+              loadRTreeIndex() {
+                this.connection.run('INSERT OR REPLACE INTO rtree_' + this.tableName + '_' + this.columnName + ' SELECT ' + this.primaryKeyColumn + ', st_minx(' + this.columnName + '), st_maxx(' + this.columnName + '), st_miny(' + this.columnName + '), st_maxy(' + this.columnName + ') FROM ' + this.tableName);
+              }
 
-                return envelope.minY;
-              });
-            };
+              createRTreeIndex() {
+                this.connection.run('CREATE VIRTUAL TABLE rtree_' + this.tableName + '_' + this.columnName + ' USING rtree(id, minx, maxx, miny, maxy)');
+              }
 
-            RTreeIndex.prototype.createMaxXFunction = function () {
-              this.connection.registerFunction('ST_MaxX', function (buffer) {
-                var geom = new GeometryData(buffer);
-                var envelope = geom.envelope;
+              createAllFunctions() {
+                this.createMinXFunction();
+                this.createMaxXFunction();
+                this.createMinYFunction();
+                this.createMaxYFunction();
+                this.createIsEmptyFunction();
+              }
 
-                if (!envelope) {
-                  envelope = EnvelopeBuilder.buildEnvelopeWithGeometry(geom.geometry);
-                }
+              createMinXFunction() {
+                this.connection.registerFunction('ST_MinX', function (buffer) {
+                  var geom = new GeometryData(buffer);
+                  var envelope = geom.envelope;
 
-                return envelope.maxX;
-              });
-            };
+                  if (!envelope) {
+                    envelope = EnvelopeBuilder.buildEnvelopeWithGeometry(geom.geometry);
+                  }
 
-            RTreeIndex.prototype.createMaxYFunction = function () {
-              this.connection.registerFunction('ST_MaxY', function (buffer) {
-                var geom = new GeometryData(buffer);
-                var envelope = geom.envelope;
+                  return envelope.minX;
+                });
+              }
 
-                if (!envelope) {
-                  envelope = EnvelopeBuilder.buildEnvelopeWithGeometry(geom.geometry);
-                }
+              createMinYFunction() {
+                this.connection.registerFunction('ST_MinY', function (buffer) {
+                  var geom = new GeometryData(buffer);
+                  var envelope = geom.envelope;
 
-                return envelope.maxY;
-              });
-            };
+                  if (!envelope) {
+                    envelope = EnvelopeBuilder.buildEnvelopeWithGeometry(geom.geometry);
+                  }
 
-            RTreeIndex.prototype.createIsEmptyFunction = function () {
-              this.connection.registerFunction('ST_IsEmpty', function (buffer) {
-                var geom = new GeometryData(buffer);
-                return !geom || geom.empty || !geom.geometry;
-              });
-            };
+                  return envelope.minY;
+                });
+              }
+
+              createMaxXFunction() {
+                this.connection.registerFunction('ST_MaxX', function (buffer) {
+                  var geom = new GeometryData(buffer);
+                  var envelope = geom.envelope;
+
+                  if (!envelope) {
+                    envelope = EnvelopeBuilder.buildEnvelopeWithGeometry(geom.geometry);
+                  }
+
+                  return envelope.maxX;
+                });
+              }
+
+              createMaxYFunction() {
+                this.connection.registerFunction('ST_MaxY', function (buffer) {
+                  var geom = new GeometryData(buffer);
+                  var envelope = geom.envelope;
+
+                  if (!envelope) {
+                    envelope = EnvelopeBuilder.buildEnvelopeWithGeometry(geom.geometry);
+                  }
+
+                  return envelope.maxY;
+                });
+              }
+
+              createIsEmptyFunction() {
+                this.connection.registerFunction('ST_IsEmpty', function (buffer) {
+                  var geom = new GeometryData(buffer);
+                  return !geom || geom.empty || !geom.geometry;
+                });
+              }
+
+            }
             /**
              * RTree Index Data Access Object
              * @class
@@ -24799,299 +24279,301 @@
              * @class
              */
 
-            var FeatureTableIndex = function (geoPackage, featureDao) {
-              BaseExtension.call(this, geoPackage);
-              this.progress;
-              /**
-               * Feature Dao to index
-               * @type {module:features/user/featureDao~FeatureDao}
-               */
+            class FeatureTableIndex extends BaseExtension {
+              constructor(geoPackage, featureDao) {
+                super(geoPackage);
+                this.progress;
+                /**
+                 * Feature Dao to index
+                 * @type {module:features/user/featureDao~FeatureDao}
+                 */
 
-              this.featureDao = featureDao;
-              this.extensionName = Extension.buildExtensionName(FeatureTableIndex.EXTENSION_GEOMETRY_INDEX_AUTHOR, FeatureTableIndex.EXTENSION_GEOMETRY_INDEX_NAME_NO_AUTHOR);
-              this.extensionDefinition = FeatureTableIndex.EXTENSION_GEOMETRY_INDEX_DEFINITION;
-              this.tableName = featureDao.table_name;
-              this.columnName = featureDao.getGeometryColumnName();
-              this.extensionsDao = geoPackage.getExtensionDao();
-              this.tableIndexDao = geoPackage.getTableIndexDao();
-              this.geometryIndexDao = geoPackage.getGeometryIndexDao(featureDao);
-              this.rtreeIndexDao = new RTreeIndexDao(geoPackage, featureDao);
-              this.rtreeIndexDao.gpkgTableName = 'rtree_' + this.tableName + '_' + this.columnName;
-              this.rtreeIndex = new RTreeIndex(geoPackage, featureDao);
-              /**
-               * true if the table is indexed with an RTree
-               * @type {Boolean}
-               */
+                this.featureDao = featureDao;
+                this.extensionName = Extension.buildExtensionName(FeatureTableIndex.EXTENSION_GEOMETRY_INDEX_AUTHOR, FeatureTableIndex.EXTENSION_GEOMETRY_INDEX_NAME_NO_AUTHOR);
+                this.extensionDefinition = FeatureTableIndex.EXTENSION_GEOMETRY_INDEX_DEFINITION;
+                this.tableName = featureDao.table_name;
+                this.columnName = featureDao.getGeometryColumnName();
+                this.extensionsDao = geoPackage.getExtensionDao();
+                this.tableIndexDao = geoPackage.getTableIndexDao();
+                this.geometryIndexDao = geoPackage.getGeometryIndexDao(featureDao);
+                this.rtreeIndexDao = new RTreeIndexDao(geoPackage, featureDao);
+                this.rtreeIndexDao.gpkgTableName = 'rtree_' + this.tableName + '_' + this.columnName;
+                this.rtreeIndex = new RTreeIndex(geoPackage, featureDao);
+                /**
+                 * true if the table is indexed with an RTree
+                 * @type {Boolean}
+                 */
 
-              this.rtreeIndexed = this.hasExtension('gpkg_rtree_index', this.tableName, this.columnName);
-            };
-
-            util.inherits(FeatureTableIndex, BaseExtension);
-            /**
-             * Index the table if not already indexed
-             * @param  {Function} progress function which is called with progress while indexing
-             * @return {Promise<Boolean>} promise resolved when the indexing is complete
-             */
-
-            FeatureTableIndex.prototype.index = function (progress) {
-              return this.indexWithForce(false, progress);
-            };
-            /**
-             * Index the table if not already indexed or force is true
-             * @param  {Boolean} force force index even if the table is already indexed
-             * @param  {Function} progress function which is called with progress while indexing
-             * @return {Promise<Boolean>} promise resolved when the indexing is complete
-             */
-
-
-            FeatureTableIndex.prototype.indexWithForce = function (force, progress) {
-              progress = progress || function () {};
-
-              this.progress = function (message) {
-                setTimeout(progress, 0, message);
-              };
-
-              var indexed = this.isIndexed();
-
-              if (force || !indexed) {
-                return this.getOrCreateExtension().then(function (extension) {
-                  return this.getOrCreateTableIndex();
-                }.bind(this)).then(function (tableIndex) {
-                  return this.createOrClearGeometryIndicies().then(function () {
-                    return this.indexTable(tableIndex);
-                  }.bind(this)).then(function () {
-                    return true;
-                  });
-                }.bind(this));
-              } else {
-                return Promise.resolve(indexed);
+                this.rtreeIndexed = this.hasExtension('gpkg_rtree_index', this.tableName, this.columnName);
               }
-            };
-            /**
-             * Check if the table is indexed either with an RTree or the NGA Feature Table Index
-             * @return {Boolean}
-             */
+              /**
+               * Index the table if not already indexed
+               * @param  {Function} progress function which is called with progress while indexing
+               * @return {Promise<Boolean>} promise resolved when the indexing is complete
+               */
 
 
-            FeatureTableIndex.prototype.isIndexed = function () {
-              if (this.rtreeIndexed) return true;
+              index(progress) {
+                return this.indexWithForce(false, progress);
+              }
+              /**
+               * Index the table if not already indexed or force is true
+               * @param  {Boolean} force force index even if the table is already indexed
+               * @param  {Function} progress function which is called with progress while indexing
+               * @return {Promise<Boolean>} promise resolved when the indexing is complete
+               */
 
-              try {
-                var result = this.getFeatureTableIndexExtension();
 
-                if (result) {
-                  var contentsDao = this.geoPackage.getContentsDao();
-                  var contents = contentsDao.queryForId(this.tableName);
-                  if (!contents) return false;
-                  var lastChange = new Date(contents.last_change);
-                  var tableIndex = this.tableIndexDao.queryForId(this.tableName);
+              indexWithForce(force, progress) {
+                progress = progress || function () {};
 
-                  if (!tableIndex || !tableIndex.last_indexed) {
+                this.progress = function (message) {
+                  setTimeout(progress, 0, message);
+                };
+
+                var indexed = this.isIndexed();
+
+                if (force || !indexed) {
+                  return this.getOrCreateExtension().then(function (extension) {
+                    return this.getOrCreateTableIndex();
+                  }.bind(this)).then(function (tableIndex) {
+                    return this.createOrClearGeometryIndicies().then(function () {
+                      return this.indexTable(tableIndex);
+                    }.bind(this)).then(function () {
+                      return true;
+                    });
+                  }.bind(this));
+                } else {
+                  return Promise.resolve(indexed);
+                }
+              }
+              /**
+               * Check if the table is indexed either with an RTree or the NGA Feature Table Index
+               * @return {Boolean}
+               */
+
+
+              isIndexed() {
+                if (this.rtreeIndexed) return true;
+
+                try {
+                  var result = this.getFeatureTableIndexExtension();
+
+                  if (result) {
+                    var contentsDao = this.geoPackage.getContentsDao();
+                    var contents = contentsDao.queryForId(this.tableName);
+                    if (!contents) return false;
+                    var lastChange = new Date(contents.last_change);
+                    var tableIndex = this.tableIndexDao.queryForId(this.tableName);
+
+                    if (!tableIndex || !tableIndex.last_indexed) {
+                      return false;
+                    }
+
+                    var lastIndexed = new Date(tableIndex.last_indexed);
+                    return lastIndexed >= lastChange;
+                  } else {
                     return false;
                   }
+                } catch (e) {
+                  return false;
+                }
+              }
+              /**
+               * Returns the feature table index extension for this table and column name if exists
+               * @return {module:extension~Extension}
+               */
 
-                  var lastIndexed = new Date(tableIndex.last_indexed);
-                  return lastIndexed >= lastChange;
+
+              getFeatureTableIndexExtension() {
+                return this.getExtension(this.extensionName, this.tableName, this.columnName);
+              }
+              /**
+               * Get or create the extension for this table name and column name
+               * @return {module:extension~Extension}
+               */
+
+
+              getOrCreateExtension() {
+                return this.getOrCreate(this.extensionName, this.tableName, this.columnName, this.extensionDefinition, Extension.READ_WRITE);
+              }
+              /**
+               * Get or create if needed the table index
+               * @return {Promise<TableIndex>}
+               */
+
+
+              getOrCreateTableIndex() {
+                var tableIndex = this.getTableIndex();
+                if (tableIndex) return Promise.resolve(tableIndex);
+                return this.tableIndexDao.createTable().then(function () {
+                  this.createTableIndex();
+                  return this.getTableIndex();
+                }.bind(this));
+              }
+              /**
+               * Create the table index
+               * @return {module:extension/index~TableIndex}
+               */
+
+
+              createTableIndex() {
+                var ti = new TableIndex();
+                ti.table_name = this.tableName;
+                ti.last_indexed = this.lastIndexed;
+                return this.tableIndexDao.create(ti);
+              }
+              /**
+               * Get the table index
+               * @return {module:extension/index~TableIndex}
+               */
+
+
+              getTableIndex() {
+                if (this.tableIndexDao.isTableExists()) {
+                  return this.tableIndexDao.queryForId(this.tableName);
+                } else {
+                  return;
+                }
+              }
+              /**
+               * Clear the geometry indices or create the table if needed
+               * @return {Promise} resolved when complete
+               */
+
+
+              createOrClearGeometryIndicies() {
+                return this.geometryIndexDao.createTable().then(function () {
+                  return this.clearGeometryIndicies();
+                }.bind(this));
+              }
+              /**
+               * Clears the geometry indices
+               * @return {Number} number of rows deleted
+               */
+
+
+              clearGeometryIndicies() {
+                var where = this.geometryIndexDao.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_TABLE_NAME, this.tableName);
+                var whereArgs = this.geometryIndexDao.buildWhereArgs(this.tableName);
+                return this.geometryIndexDao.deleteWhere(where, whereArgs);
+              }
+              /**
+               * Indexes the table
+               * @param  {module:extension/index~TableIndex} tableIndex TableIndex
+               * @return {Promise} resolved when complete
+               */
+
+
+              indexTable(tableIndex) {
+                return new Promise(function (resolve, reject) {
+                  setTimeout(function () {
+                    this.indexChunk(0, tableIndex, resolve, reject);
+                  }.bind(this));
+                }.bind(this)).then(function (result) {
+                  return this.updateLastIndexed(tableIndex);
+                }.bind(this));
+              }
+              /**
+               * Indexes a chunk of 100 rows
+               * @param  {Number} page       page to start on
+               * @param  {module:extension/index~TableIndex} tableIndex TableIndex
+               * @param  {Function} resolve    function to call when all chunks are indexed
+               * @param  {Function} reject     called if there is an error
+               */
+
+
+              indexChunk(page, tableIndex, resolve, reject) {
+                var rows = this.featureDao.queryForChunk(100, page);
+
+                if (rows.length) {
+                  this.progress('Indexing ' + page * 100 + ' to ' + (page + 1) * 100);
+                  console.log('Indexing ' + page * 100 + ' to ' + (page + 1) * 100);
+                  rows.forEach(function (row) {
+                    var fr = this.featureDao.getRow(row);
+                    this.indexRow(tableIndex, fr.getId(), fr.getGeometry());
+                  }.bind(this));
+                  setTimeout(function () {
+                    this.indexChunk(++page, tableIndex, resolve, reject);
+                  }.bind(this));
+                } else {
+                  resolve();
+                }
+              }
+              /**
+               * Indexes a row
+               * @param  {module:extension/index~TableIndex} tableIndex TableIndex`
+               * @param  {Number} geomId     id of the row
+               * @param  {module:geom/geometryData~GeometryData} geomData   GeometryData to index
+               * @return {Boolean} success
+               */
+
+
+              indexRow(tableIndex, geomId, geomData) {
+                if (!geomData) return false;
+                var envelope = geomData.envelope;
+
+                if (!envelope) {
+                  var geometry = geomData.geometry;
+
+                  if (geometry) {
+                    envelope = EnvelopeBuilder.buildEnvelopeWithGeometry(geometry);
+                  }
+                }
+
+                if (envelope) {
+                  var geometryIndex = this.geometryIndexDao.populate(tableIndex, geomId, envelope);
+                  return this.geometryIndexDao.createOrUpdate(geometryIndex);
                 } else {
                   return false;
                 }
-              } catch (e) {
-                return false;
               }
-            };
-            /**
-             * Returns the feature table index extension for this table and column name if exists
-             * @return {module:extension~Extension}
-             */
+              /**
+               * Update the last time this feature table was indexed
+               * @param  {module:extension/index~TableIndex} tableIndex TableIndex
+               * @return {Object} update status
+               */
 
 
-            FeatureTableIndex.prototype.getFeatureTableIndexExtension = function () {
-              return this.getExtension(this.extensionName, this.tableName, this.columnName);
-            };
-            /**
-             * Get or create the extension for this table name and column name
-             * @return {module:extension~Extension}
-             */
+              updateLastIndexed(tableIndex) {
+                if (!tableIndex) {
+                  tableIndex = new TableIndex();
+                  tableIndex.table_name = this.tableName;
+                }
 
-
-            FeatureTableIndex.prototype.getOrCreateExtension = function () {
-              return this.getOrCreate(this.extensionName, this.tableName, this.columnName, this.extensionDefinition, Extension.READ_WRITE);
-            };
-            /**
-             * Get or create if needed the table index
-             * @return {Promise<TableIndex>}
-             */
-
-
-            FeatureTableIndex.prototype.getOrCreateTableIndex = function () {
-              var tableIndex = this.getTableIndex();
-              if (tableIndex) return Promise.resolve(tableIndex);
-              return this.tableIndexDao.createTable().then(function () {
-                this.createTableIndex();
-                return this.getTableIndex();
-              }.bind(this));
-            };
-            /**
-             * Create the table index
-             * @return {module:extension/index~TableIndex}
-             */
-
-
-            FeatureTableIndex.prototype.createTableIndex = function () {
-              var ti = new TableIndex();
-              ti.table_name = this.tableName;
-              ti.last_indexed = this.lastIndexed;
-              return this.tableIndexDao.create(ti);
-            };
-            /**
-             * Get the table index
-             * @return {module:extension/index~TableIndex}
-             */
-
-
-            FeatureTableIndex.prototype.getTableIndex = function () {
-              if (this.tableIndexDao.isTableExists()) {
-                return this.tableIndexDao.queryForId(this.tableName);
-              } else {
-                return;
+                tableIndex.last_indexed = new Date().toISOString();
+                var updateIndex = this.tableIndexDao.createOrUpdate(tableIndex);
+                return updateIndex;
               }
-            };
-            /**
-             * Clear the geometry indices or create the table if needed
-             * @return {Promise} resolved when complete
-             */
+              /**
+               * Query the index with the specified bounding box and projection
+               * @param  {module:boundingBox~BoundingBox} boundingBox bounding box to query for
+               * @param  {string} projection  projection the boundingBox is in
+               * @return {Iterable}
+               */
 
 
-            FeatureTableIndex.prototype.createOrClearGeometryIndicies = function () {
-              return this.geometryIndexDao.createTable().then(function () {
-                return this.clearGeometryIndicies();
-              }.bind(this));
-            };
-            /**
-             * Clears the geometry indices
-             * @return {Number} number of rows deleted
-             */
-
-
-            FeatureTableIndex.prototype.clearGeometryIndicies = function () {
-              var where = this.geometryIndexDao.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_TABLE_NAME, this.tableName);
-              var whereArgs = this.geometryIndexDao.buildWhereArgs(this.tableName);
-              return this.geometryIndexDao.deleteWhere(where, whereArgs);
-            };
-            /**
-             * Indexes the table
-             * @param  {module:extension/index~TableIndex} tableIndex TableIndex
-             * @return {Promise} resolved when complete
-             */
-
-
-            FeatureTableIndex.prototype.indexTable = function (tableIndex) {
-              return new Promise(function (resolve, reject) {
-                setTimeout(function () {
-                  this.indexChunk(0, tableIndex, resolve, reject);
-                }.bind(this));
-              }.bind(this)).then(function (result) {
-                return this.updateLastIndexed(tableIndex);
-              }.bind(this));
-            };
-            /**
-             * Indexes a chunk of 100 rows
-             * @param  {Number} page       page to start on
-             * @param  {module:extension/index~TableIndex} tableIndex TableIndex
-             * @param  {Function} resolve    function to call when all chunks are indexed
-             * @param  {Function} reject     called if there is an error
-             */
-
-
-            FeatureTableIndex.prototype.indexChunk = function (page, tableIndex, resolve, reject) {
-              var rows = this.featureDao.queryForChunk(100, page);
-
-              if (rows.length) {
-                this.progress('Indexing ' + page * 100 + ' to ' + (page + 1) * 100);
-                console.log('Indexing ' + page * 100 + ' to ' + (page + 1) * 100);
-                rows.forEach(function (row) {
-                  var fr = this.featureDao.getRow(row);
-                  this.indexRow(tableIndex, fr.getId(), fr.getGeometry());
-                }.bind(this));
-                setTimeout(function () {
-                  this.indexChunk(++page, tableIndex, resolve, reject);
-                }.bind(this));
-              } else {
-                resolve();
+              queryWithBoundingBox(boundingBox, projection) {
+                var projectedBoundingBox = boundingBox.projectBoundingBox(projection, this.featureDao.projection);
+                var envelope = projectedBoundingBox.buildEnvelope();
+                return this.queryWithGeometryEnvelope(envelope);
               }
-            };
-            /**
-             * Indexes a row
-             * @param  {module:extension/index~TableIndex} tableIndex TableIndex`
-             * @param  {Number} geomId     id of the row
-             * @param  {module:geom/geometryData~GeometryData} geomData   GeometryData to index
-             * @return {Boolean} success
-             */
+              /**
+               * Query witha geometry envelope
+               * @param  {Envelope} envelope envelope
+               * @return {Iterable}
+               */
 
 
-            FeatureTableIndex.prototype.indexRow = function (tableIndex, geomId, geomData) {
-              if (!geomData) return false;
-              var envelope = geomData.envelope;
-
-              if (!envelope) {
-                var geometry = geomData.geometry;
-
-                if (geometry) {
-                  envelope = EnvelopeBuilder.buildEnvelopeWithGeometry(geometry);
+              queryWithGeometryEnvelope(envelope) {
+                if (this.rtreeIndexed) {
+                  return this.rtreeIndexDao.queryWithGeometryEnvelope(envelope);
+                } else {
+                  return this.geometryIndexDao.queryWithGeometryEnvelope(envelope);
                 }
               }
 
-              if (envelope) {
-                var geometryIndex = this.geometryIndexDao.populate(tableIndex, geomId, envelope);
-                return this.geometryIndexDao.createOrUpdate(geometryIndex);
-              } else {
-                return false;
-              }
-            };
-            /**
-             * Update the last time this feature table was indexed
-             * @param  {module:extension/index~TableIndex} tableIndex TableIndex
-             * @return {Object} update status
-             */
-
-
-            FeatureTableIndex.prototype.updateLastIndexed = function (tableIndex) {
-              if (!tableIndex) {
-                tableIndex = new TableIndex();
-                tableIndex.table_name = this.tableName;
-              }
-
-              tableIndex.last_indexed = new Date().toISOString();
-              var updateIndex = this.tableIndexDao.createOrUpdate(tableIndex);
-              return updateIndex;
-            };
-            /**
-             * Query the index with the specified bounding box and projection
-             * @param  {module:boundingBox~BoundingBox} boundingBox bounding box to query for
-             * @param  {string} projection  projection the boundingBox is in
-             * @return {Iterable}
-             */
-
-
-            FeatureTableIndex.prototype.queryWithBoundingBox = function (boundingBox, projection) {
-              var projectedBoundingBox = boundingBox.projectBoundingBox(projection, this.featureDao.projection);
-              var envelope = projectedBoundingBox.buildEnvelope();
-              return this.queryWithGeometryEnvelope(envelope);
-            };
-            /**
-             * Query witha geometry envelope
-             * @param  {Envelope} envelope envelope
-             * @return {Iterable}
-             */
-
-
-            FeatureTableIndex.prototype.queryWithGeometryEnvelope = function (envelope) {
-              if (this.rtreeIndexed) {
-                return this.rtreeIndexDao.queryWithGeometryEnvelope(envelope);
-              } else {
-                return this.geometryIndexDao.queryWithGeometryEnvelope(envelope);
-              }
-            };
+            }
 
             FeatureTableIndex.EXTENSION_GEOMETRY_INDEX_AUTHOR = 'nga';
             FeatureTableIndex.EXTENSION_GEOMETRY_INDEX_NAME_NO_AUTHOR = 'geometry_index';
@@ -35210,43 +34692,45 @@
              * @param {module:features/user/featureColumn~FeatureColumn[]} columns feature columns
              */
 
-            const FeatureTable = function (tableName, columns) {
-              UserTable.call(this, tableName, columns);
-              var geometry = undefined;
+            class FeatureTable extends UserTable {
+              constructor(tableName, columns) {
+                super(tableName, columns);
+                var geometry = undefined;
 
-              for (var i = 0; i < columns.length; i++) {
-                var column = columns[i];
+                for (var i = 0; i < columns.length; i++) {
+                  var column = columns[i];
 
-                if (column.isGeometry()) {
-                  this.duplicateCheck(column.index, geometry,
-                  /* WKB_GEOMETRY_NAME */
-                  'GEOMETRY');
-                  geometry = column.index;
+                  if (column.isGeometry()) {
+                    this.duplicateCheck(column.index, geometry,
+                    /* WKB_GEOMETRY_NAME */
+                    'GEOMETRY');
+                    geometry = column.index;
+                  }
                 }
+
+                this.missingCheck(geometry,
+                /* WKB_GEOMETRY_NAME */
+                'GEOMETRY');
+                this.geometryIndex = geometry;
+              }
+              /**
+               * Get the geometry feature column of this feature table.  This column
+               * corresponds to a row in the [geometry columns]{@link module:features/columns~GeometryColumns}
+               * table.
+               *
+               * @returns {module:features/user/featureColumn~FeatureColumn}
+               */
+
+
+              getGeometryColumn() {
+                return this.getColumnWithIndex(this.geometryIndex);
               }
 
-              this.missingCheck(geometry,
-              /* WKB_GEOMETRY_NAME */
-              'GEOMETRY');
-              this.geometryIndex = geometry;
-            };
+              getTableType() {
+                return UserTable.FEATURE_TABLE;
+              }
 
-            util.inherits(FeatureTable, UserTable);
-            /**
-             * Get the geometry feature column of this feature table.  This column
-             * corresponds to a row in the [geometry columns]{@link module:features/columns~GeometryColumns}
-             * table.
-             *
-             * @returns {module:features/user/featureColumn~FeatureColumn}
-             */
-
-            FeatureTable.prototype.getGeometryColumn = function () {
-              return this.getColumnWithIndex(this.geometryIndex);
-            };
-
-            FeatureTable.prototype.getTableType = function () {
-              return UserTable.FEATURE_TABLE;
-            };
+            }
 
             /**
              * WKB module.
@@ -35287,45 +34771,45 @@
             * @extends {module:user~UserTableReader}
             */
 
-            var FeatureTableReader = function (tableNameOrGeometryColumns) {
-              if (util.isString(tableNameOrGeometryColumns)) {
-                UserTableReader.call(this, tableNameOrGeometryColumns);
-              } else {
-                UserTableReader.call(this, tableNameOrGeometryColumns.table_name);
-                this.geometryColumns = tableNameOrGeometryColumns;
-              }
-            };
+            class FeatureTableReader extends UserTableReader {
+              constructor(tableNameOrGeometryColumns) {
+                super(tableNameOrGeometryColumns.table_name ? tableNameOrGeometryColumns.table_name : tableNameOrGeometryColumns);
 
-            util.inherits(FeatureTableReader, UserTableReader);
-
-            FeatureTableReader.prototype.readFeatureTable = function (geoPackage) {
-              if (!this.geometryColumns) {
-                var gcd = new GeometryColumnsDao(geoPackage);
-                this.geometryColumns = gcd.queryForTableName(this.table_name);
-                return this.readTable(geoPackage.getDatabase());
-              } else {
-                return this.readTable(geoPackage.getDatabase());
-              }
-            };
-
-            FeatureTableReader.prototype.createTable = function (tableName, columns) {
-              return new FeatureTable(tableName, columns);
-            };
-
-            FeatureTableReader.prototype.createColumnWithResults = function (results, index, name, type, max, notNull, defaultValue, primaryKey) {
-              var geometry = name === this.geometryColumns.column_name;
-              var geometryType = undefined;
-              var dataType = undefined;
-
-              if (geometry) {
-                geometryType = wkb$1.fromName(type);
-              } else {
-                dataType = types.fromName(type);
+                if (tableNameOrGeometryColumns.table_name) {
+                  this.geometryColumns = tableNameOrGeometryColumns;
+                }
               }
 
-              var column = new FeatureColumn(index, name, dataType, max, notNull, defaultValue, primaryKey, geometryType);
-              return column;
-            };
+              readFeatureTable(geoPackage) {
+                if (!this.geometryColumns) {
+                  var gcd = new GeometryColumnsDao(geoPackage);
+                  this.geometryColumns = gcd.queryForTableName(this.table_name);
+                  return this.readTable(geoPackage.getDatabase());
+                } else {
+                  return this.readTable(geoPackage.getDatabase());
+                }
+              }
+
+              createTable(tableName, columns) {
+                return new FeatureTable(tableName, columns);
+              }
+
+              createColumnWithResults(results, index, name, type, max, notNull, defaultValue, primaryKey) {
+                var geometry = name === this.geometryColumns.column_name;
+                var geometryType = undefined;
+                var dataType = undefined;
+
+                if (geometry) {
+                  geometryType = wkb$1.fromName(type);
+                } else {
+                  dataType = types.fromName(type);
+                }
+
+                var column = new FeatureColumn(index, name, dataType, max, notNull, defaultValue, primaryKey, geometryType);
+                return column;
+              }
+
+            }
 
             /**
              * @module tiles/user/tileColumn
@@ -35337,63 +34821,65 @@
              * @extends {module:user/userColumn~UserColumn}
              */
 
-            var TileColumn = function (index, name, dataType, max, notNull, defaultValue, primaryKey) {
-              UserColumn.call(this, index, name, dataType, max, notNull, defaultValue, primaryKey);
+            class TileColumn extends UserColumn {
+              constructor(index, name, dataType, max, notNull, defaultValue, primaryKey) {
+                super(index, name, dataType, max, notNull, defaultValue, primaryKey);
 
-              if (dataType === types.GPKG_DT_GEOMETRY) {
-                throw new Error('Data Type is required to create column: ' + name);
+                if (dataType === types.GPKG_DT_GEOMETRY) {
+                  throw new Error('Data Type is required to create column: ' + name);
+                }
               }
-            };
-
-            util.inherits(TileColumn, UserColumn);
-            /**
-             * Create an id column
-             * @param  {number} index Index
-             */
-
-            TileColumn.createIdColumn = function (index) {
-              return new TileColumn(index, TileColumn.COLUMN_ID, types.GPKGDataType.GPKG_DT_INTEGER, null, false, null, true);
-            };
-            /**
-             * Create a zoom level column
-             * @param  {number} index Index
-             */
+              /**
+               * Create an id column
+               * @param  {number} index Index
+               */
 
 
-            TileColumn.createZoomLevelColumn = function (index) {
-              return new TileColumn(index, TileColumn.COLUMN_ZOOM_LEVEL, types.GPKGDataType.GPKG_DT_INTEGER, null, true, null, false);
-            };
-            /**
-             *  Create a tile column column
-             *
-             *  @param {number} index column index
-             */
+              static createIdColumn(index) {
+                return new TileColumn(index, TileColumn.COLUMN_ID, types.GPKGDataType.GPKG_DT_INTEGER, null, false, null, true);
+              }
+              /**
+               * Create a zoom level column
+               * @param  {number} index Index
+               */
 
 
-            TileColumn.createTileColumnColumn = function (index) {
-              return new TileColumn(index, TileColumn.COLUMN_TILE_COLUMN, types.GPKGDataType.GPKG_DT_INTEGER, null, true, null, false);
-            };
-            /**
-             *  Create a tile row column
-             *
-             *  @param {number} index column index
-             *
-             */
+              static createZoomLevelColumn(index) {
+                return new TileColumn(index, TileColumn.COLUMN_ZOOM_LEVEL, types.GPKGDataType.GPKG_DT_INTEGER, null, true, null, false);
+              }
+              /**
+               *  Create a tile column column
+               *
+               *  @param {number} index column index
+               */
 
 
-            TileColumn.createTileRowColumn = function (index) {
-              return new TileColumn(index, TileColumn.COLUMN_TILE_ROW, types.GPKGDataType.GPKG_DT_INTEGER, null, true, null, false);
-            };
-            /**
-             *  Create a tile data column
-             *
-             *  @param {number} index column index
-             */
+              static createTileColumnColumn(index) {
+                return new TileColumn(index, TileColumn.COLUMN_TILE_COLUMN, types.GPKGDataType.GPKG_DT_INTEGER, null, true, null, false);
+              }
+              /**
+               *  Create a tile row column
+               *
+               *  @param {number} index column index
+               *
+               */
 
 
-            TileColumn.createTileDataColumn = function (index) {
-              return new TileColumn(index, TileColumn.COLUMN_TILE_DATA, types.GPKGDataType.GPKG_DT_BLOB, null, true, null, false);
-            };
+              static createTileRowColumn(index) {
+                return new TileColumn(index, TileColumn.COLUMN_TILE_ROW, types.GPKGDataType.GPKG_DT_INTEGER, null, true, null, false);
+              }
+              /**
+               *  Create a tile data column
+               *
+               *  @param {number} index column index
+               */
+
+
+              static createTileDataColumn(index) {
+                return new TileColumn(index, TileColumn.COLUMN_TILE_DATA, types.GPKGDataType.GPKG_DT_BLOB, null, true, null, false);
+              }
+
+            }
 
             TileColumn.COLUMN_ID = "id";
             TileColumn.COLUMN_ZOOM_LEVEL = "zoom_level";
@@ -35413,93 +34899,94 @@
              * @param {module:tiles/user/tileColumn~TileColumn[]} columns
              */
 
-            var TileTable = function (tableName, columns) {
-              UserTable.call(this, tableName, columns);
-              var zoomLevel;
-              var tileColumn;
-              var tileRow;
-              var tileData;
-              var uniqueColumns = [];
+            class TileTable extends UserTable {
+              constructor(tableName, columns) {
+                super(tableName, columns);
+                var zoomLevel;
+                var tileColumn;
+                var tileRow;
+                var tileData;
+                var uniqueColumns = [];
 
-              for (var i = 0; i < columns.length; i++) {
-                var column = columns[i];
-                var columnName = column.name;
-                var columnIndex = column.index;
+                for (var i = 0; i < columns.length; i++) {
+                  var column = columns[i];
+                  var columnName = column.name;
+                  var columnIndex = column.index;
 
-                switch (columnName) {
-                  case TileColumn.COLUMN_ZOOM_LEVEL:
-                    this.duplicateCheck(columnIndex, zoomLevel, TileColumn.COLUMN_ZOOM_LEVEL);
-                    zoomLevel = columnIndex;
-                    uniqueColumns.push(column);
-                    break;
+                  switch (columnName) {
+                    case TileColumn.COLUMN_ZOOM_LEVEL:
+                      this.duplicateCheck(columnIndex, zoomLevel, TileColumn.COLUMN_ZOOM_LEVEL);
+                      zoomLevel = columnIndex;
+                      uniqueColumns.push(column);
+                      break;
 
-                  case TileColumn.COLUMN_TILE_COLUMN:
-                    this.duplicateCheck(columnIndex, tileColumn, TileColumn.COLUMN_TILE_COLUMN);
-                    tileColumn = columnIndex;
-                    uniqueColumns.push(column);
-                    break;
+                    case TileColumn.COLUMN_TILE_COLUMN:
+                      this.duplicateCheck(columnIndex, tileColumn, TileColumn.COLUMN_TILE_COLUMN);
+                      tileColumn = columnIndex;
+                      uniqueColumns.push(column);
+                      break;
 
-                  case TileColumn.COLUMN_TILE_ROW:
-                    this.duplicateCheck(columnIndex, tileRow, TileColumn.COLUMN_TILE_ROW);
-                    tileRow = columnIndex;
-                    uniqueColumns.push(column);
-                    break;
+                    case TileColumn.COLUMN_TILE_ROW:
+                      this.duplicateCheck(columnIndex, tileRow, TileColumn.COLUMN_TILE_ROW);
+                      tileRow = columnIndex;
+                      uniqueColumns.push(column);
+                      break;
 
-                  case TileColumn.COLUMN_TILE_DATA:
-                    this.duplicateCheck(columnIndex, tileData, TileColumn.COLUMN_TILE_DATA);
-                    tileData = columnIndex;
-                    break;
+                    case TileColumn.COLUMN_TILE_DATA:
+                      this.duplicateCheck(columnIndex, tileData, TileColumn.COLUMN_TILE_DATA);
+                      tileData = columnIndex;
+                      break;
+                  }
                 }
+
+                this.uniqueConstraints = [{
+                  columns: uniqueColumns
+                }];
+                this.missingCheck(zoomLevel, TileColumn.COLUMN_ZOOM_LEVEL);
+                this.zoomLevelIndex = zoomLevel;
+                this.missingCheck(tileColumn, TileColumn.COLUMN_TILE_COLUMN);
+                this.tileColumnIndex = tileColumn;
+                this.missingCheck(tileRow, TileColumn.COLUMN_TILE_ROW);
+                this.tileRowIndex = tileRow;
+                this.missingCheck(tileData, TileColumn.COLUMN_TILE_DATA);
+                this.tileDataIndex = tileData;
               }
 
-              this.uniqueConstraints = [{
-                columns: uniqueColumns
-              }];
-              this.missingCheck(zoomLevel, TileColumn.COLUMN_ZOOM_LEVEL);
-              this.zoomLevelIndex = zoomLevel;
-              this.missingCheck(tileColumn, TileColumn.COLUMN_TILE_COLUMN);
-              this.tileColumnIndex = tileColumn;
-              this.missingCheck(tileRow, TileColumn.COLUMN_TILE_ROW);
-              this.tileRowIndex = tileRow;
-              this.missingCheck(tileData, TileColumn.COLUMN_TILE_DATA);
-              this.tileDataIndex = tileData;
-            };
+              getZoomLevelColumn() {
+                return this.getColumnWithIndex(this.zoomLevelIndex);
+              }
 
-            util.inherits(TileTable, UserTable);
+              getTileColumnColumn() {
+                return this.getColumnWithIndex(this.tileColumnIndex);
+              }
 
-            TileTable.prototype.getZoomLevelColumn = function () {
-              return this.getColumnWithIndex(this.zoomLevelIndex);
-            };
+              getRowColumn() {
+                return this.getColumnWithIndex(this.tileRowIndex);
+              }
 
-            TileTable.prototype.getTileColumnColumn = function () {
-              return this.getColumnWithIndex(this.tileColumnIndex);
-            };
+              getTileDataColumn() {
+                return this.getColumnWithIndex(this.tileDataIndex);
+              }
 
-            TileTable.prototype.getRowColumn = function () {
-              return this.getColumnWithIndex(this.tileRowIndex);
-            };
+              getTableType() {
+                return UserTable.TILE_TABLE;
+              }
 
-            TileTable.prototype.getTileDataColumn = function () {
-              return this.getColumnWithIndex(this.tileDataIndex);
-            };
+              static createRequiredColumns() {
+                return TileTable.createRequiredColumnsWithStartingIndex(0);
+              }
 
-            TileTable.prototype.getTableType = function () {
-              return UserTable.TILE_TABLE;
-            };
+              static createRequiredColumnsWithStartingIndex(startingIndex) {
+                var columns = [];
+                columns.push(TileColumn.createIdColumn(startingIndex++));
+                columns.push(TileColumn.createZoomLevelColumn(startingIndex++));
+                columns.push(TileColumn.createTileColumnColumn(startingIndex++));
+                columns.push(TileColumn.createTileRowColumn(startingIndex++));
+                columns.push(TileColumn.createTileDataColumn(startingIndex++));
+                return columns;
+              }
 
-            TileTable.createRequiredColumns = function () {
-              return TileTable.createRequiredColumnsWithStartingIndex(0);
-            };
-
-            TileTable.createRequiredColumnsWithStartingIndex = function (startingIndex) {
-              var columns = [];
-              columns.push(TileColumn.createIdColumn(startingIndex++));
-              columns.push(TileColumn.createZoomLevelColumn(startingIndex++));
-              columns.push(TileColumn.createTileColumnColumn(startingIndex++));
-              columns.push(TileColumn.createTileRowColumn(startingIndex++));
-              columns.push(TileColumn.createTileDataColumn(startingIndex++));
-              return columns;
-            };
+            }
 
             /**
              * tileTableReader module.
@@ -35511,28 +34998,29 @@
             * @extends {module:user~UserTableReader}
             */
 
-            var TileTableReader = function (tileMatrixSet) {
-              UserTableReader.call(this, tileMatrixSet.table_name);
-              this.tileMatrixSet = tileMatrixSet;
-            };
+            class TileTableReader extends UserTableReader {
+              constructor(tileMatrixSet) {
+                super(tileMatrixSet.table_name);
+                this.tileMatrixSet = tileMatrixSet;
+              }
 
-            util.inherits(TileTableReader, UserTableReader);
+              readTileTable(geoPackage) {
+                return this.readTable(geoPackage.getDatabase());
+              }
 
-            TileTableReader.prototype.readTileTable = function (geoPackage) {
-              return this.readTable(geoPackage.getDatabase());
-            };
+              createTable(tableName, columns) {
+                return new TileTable(tableName, columns);
+              }
 
-            TileTableReader.prototype.createTable = function (tableName, columns) {
-              return new TileTable(tableName, columns);
-            };
+              createColumnWithResults(results, index, name, type, max, notNull, defaultValueIndex, primaryKey) {
+                var dataType = types.fromName(type);
+                var defaultValue = undefined;
 
-            TileTableReader.prototype.createColumnWithResults = function (results, index, name, type, max, notNull, defaultValueIndex, primaryKey) {
-              var dataType = types.fromName(type);
-              var defaultValue = undefined;
+                var column = new TileColumn(index, name, dataType, max, notNull, defaultValue, primaryKey);
+                return column;
+              }
 
-              var column = new TileColumn(index, name, dataType, max, notNull, defaultValue, primaryKey);
-              return column;
-            };
+            }
 
             /**
              * Tile grid with x and y ranges
@@ -35566,172 +35054,173 @@
              * @param  {Array} values       values
              */
 
-            var TileRow = function (tileTable, columnTypes, values) {
-              UserRow.call(this, tileTable, columnTypes, values);
-              this.tileTable = tileTable;
-            };
+            class TileRow extends UserRow {
+              constructor(tileTable, columnTypes, values) {
+                super(tileTable, columnTypes, values);
+                this.tileTable = tileTable;
+              }
 
-            util.inherits(TileRow, UserRow);
+              toObjectValue(value) {
+                return value;
+              }
 
-            TileRow.prototype.toObjectValue = function (value) {
-              return value;
-            };
-
-            TileRow.prototype.toDatabaseValue = function (columnName) {
-              return this.getValueWithColumnName(columnName);
-            };
-            /**
-             * Get the zoom level column index
-             * @return {Number} zoom level column index
-             */
-
-
-            TileRow.prototype.getZoomLevelColumnIndex = function () {
-              return this.tileTable.zoomLevelIndex;
-            };
-            /**
-             * Get the zoom level column
-             * @return {TileColumn} zoom level column
-             */
+              toDatabaseValue(columnName) {
+                return this.getValueWithColumnName(columnName);
+              }
+              /**
+               * Get the zoom level column index
+               * @return {Number} zoom level column index
+               */
 
 
-            TileRow.prototype.getZoomLevelColumn = function () {
-              return this.tileTable.getZoomLevelColumn();
-            };
-            /**
-             * Get the zoom level
-             * @return {Number} zoom level
-             */
+              getZoomLevelColumnIndex() {
+                return this.tileTable.zoomLevelIndex;
+              }
+              /**
+               * Get the zoom level column
+               * @return {TileColumn} zoom level column
+               */
 
 
-            TileRow.prototype.getZoomLevel = function () {
-              return this.getValueWithColumnName(this.getZoomLevelColumn().name);
-            };
-            /**
-             * Set the zoom level
-             * @param {Number} zoomLevel zoom level
-             */
+              getZoomLevelColumn() {
+                return this.tileTable.getZoomLevelColumn();
+              }
+              /**
+               * Get the zoom level
+               * @return {Number} zoom level
+               */
 
 
-            TileRow.prototype.setZoomLevel = function (zoomLevel) {
-              this.setValueWithIndex(this.getZoomLevelColumnIndex(), zoomLevel);
-            };
-            /**
-             * Get the tile column column Index
-             * @return {number} tile column column index
-             */
+              getZoomLevel() {
+                return this.getValueWithColumnName(this.getZoomLevelColumn().name);
+              }
+              /**
+               * Set the zoom level
+               * @param {Number} zoomLevel zoom level
+               */
 
 
-            TileRow.prototype.getTileColumnColumnIndex = function () {
-              return this.tileTable.tileColumnIndex;
-            };
-            /**
-             * Get the tile column column
-             * @return {TileColumn} tile column column
-             */
+              setZoomLevel(zoomLevel) {
+                this.setValueWithIndex(this.getZoomLevelColumnIndex(), zoomLevel);
+              }
+              /**
+               * Get the tile column column Index
+               * @return {number} tile column column index
+               */
 
 
-            TileRow.prototype.getTileColumnColumn = function () {
-              return this.tileTable.getTileColumnColumn();
-            };
-            /**
-             * Get the tile column
-             * @return {Number} tile column
-             */
+              getTileColumnColumnIndex() {
+                return this.tileTable.tileColumnIndex;
+              }
+              /**
+               * Get the tile column column
+               * @return {TileColumn} tile column column
+               */
 
 
-            TileRow.prototype.getTileColumn = function () {
-              return this.getValueWithColumnName(this.getTileColumnColumn().name);
-            };
-            /**
-             * Set the tile column
-             * @param {number} tileColumn tile column
-             */
+              getTileColumnColumn() {
+                return this.tileTable.getTileColumnColumn();
+              }
+              /**
+               * Get the tile column
+               * @return {Number} tile column
+               */
 
 
-            TileRow.prototype.setTileColumn = function (tileColumn) {
-              this.setValueWithColumnName(this.getTileColumnColumn().name, tileColumn);
-            };
-            /**
-             * Get the tile row column index
-             * @return {Number} tile row column index
-             */
+              getTileColumn() {
+                return this.getValueWithColumnName(this.getTileColumnColumn().name);
+              }
+              /**
+               * Set the tile column
+               * @param {number} tileColumn tile column
+               */
 
 
-            TileRow.prototype.getRowColumnIndex = function () {
-              return this.tileTable.tileRowIndex;
-            };
-            /**
-             * Get the tile row column
-             * @return {TileColumn} tile row column
-             */
+              setTileColumn(tileColumn) {
+                this.setValueWithColumnName(this.getTileColumnColumn().name, tileColumn);
+              }
+              /**
+               * Get the tile row column index
+               * @return {Number} tile row column index
+               */
 
 
-            TileRow.prototype.getRowColumn = function () {
-              return this.tileTable.getRowColumn();
-            };
-            /**
-             * Get the tile row
-             * @return {Number} tile row
-             */
+              getRowColumnIndex() {
+                return this.tileTable.tileRowIndex;
+              }
+              /**
+               * Get the tile row column
+               * @return {TileColumn} tile row column
+               */
 
 
-            TileRow.prototype.getRow = function () {
-              return this.getValueWithColumnName(this.getRowColumn().name);
-            };
-            /**
-             * Set the tile row
-             * @param {Number} tileRow tile row
-             */
+              getRowColumn() {
+                return this.tileTable.getRowColumn();
+              }
+              /**
+               * Get the tile row
+               * @return {Number} tile row
+               */
 
 
-            TileRow.prototype.setTileRow = function (tileRow) {
-              this.setValueWithColumnName(this.getRowColumn().name, tileRow);
-            };
-            /**
-             * Get the tile data column index
-             * @return {Number} tile data column index
-             */
+              getRow() {
+                return this.getValueWithColumnName(this.getRowColumn().name);
+              }
+              /**
+               * Set the tile row
+               * @param {Number} tileRow tile row
+               */
 
 
-            TileRow.prototype.getTileDataColumnIndex = function () {
-              return this.tileTable.tileDataIndex;
-            };
-            /**
-             * Get the tile data column
-             * @return {TileColumn} tile data column
-             */
+              setTileRow(tileRow) {
+                this.setValueWithColumnName(this.getRowColumn().name, tileRow);
+              }
+              /**
+               * Get the tile data column index
+               * @return {Number} tile data column index
+               */
 
 
-            TileRow.prototype.getTileDataColumn = function () {
-              return this.tileTable.getTileDataColumn();
-            };
-            /**
-             * Get the tile data
-             * @return {Buffer} tile data
-             */
+              getTileDataColumnIndex() {
+                return this.tileTable.tileDataIndex;
+              }
+              /**
+               * Get the tile data column
+               * @return {TileColumn} tile data column
+               */
 
 
-            TileRow.prototype.getTileData = function () {
-              return this.getValueWithColumnName(this.getTileDataColumn().name);
-            };
-            /**
-             * Set the tile data
-             * @param {Buffer} tileData tile data
-             */
+              getTileDataColumn() {
+                return this.tileTable.getTileDataColumn();
+              }
+              /**
+               * Get the tile data
+               * @return {Buffer} tile data
+               */
 
 
-            TileRow.prototype.setTileData = function (tileData) {
-              this.setValueWithColumnName(this.getTileDataColumn().name, tileData);
-            };
-            /**
-             * Get the tile data as an image
-             * @return {image} tile image
-             */
+              getTileData() {
+                return this.getValueWithColumnName(this.getTileDataColumn().name);
+              }
+              /**
+               * Set the tile data
+               * @param {Buffer} tileData tile data
+               */
 
 
-            TileRow.prototype.getTileDataImage = function () {// TODO
-            }; // /**
+              setTileData(tileData) {
+                this.setValueWithColumnName(this.getTileDataColumn().name, tileData);
+              }
+              /**
+               * Get the tile data as an image
+               * @return {image} tile image
+               */
+
+
+              getTileDataImage() {// TODO
+              }
+
+            }
 
             /**
              * This module exports utility functions for [slippy map (XYZ)](https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames)
@@ -36649,37 +36138,177 @@
              * @class Metadata
              */
 
-            var Metadata = function () {
-              /**
-               * Metadata primary key
-               * @member {Number}
-               */
-              this.id;
-              /**
-               * Case sensitive name of the data scope to which this metadata applies; see Metadata Scopes below
-               * @member {string}
-               */
+            class Metadata {
+              constructor() {
+                /**
+                 * Metadata primary key
+                 * @member {Number}
+                 */
+                this.id;
+                /**
+                 * Case sensitive name of the data scope to which this metadata applies; see Metadata Scopes below
+                 * @member {string}
+                 */
 
-              this.md_scope;
-              /**
-               * URI reference to the metadata structure definition authority
-               * @member {string}
-               */
+                this.md_scope;
+                /**
+                 * URI reference to the metadata structure definition authority
+                 * @member {string}
+                 */
 
-              this.md_standard_uri;
-              /**
-               * MIME encoding of metadata
-               * @member {string}
-               */
+                this.md_standard_uri;
+                /**
+                 * MIME encoding of metadata
+                 * @member {string}
+                 */
 
-              this.mime_type;
-              /**
-               * metadata
-               * @member {string}
-               */
+                this.mime_type;
+                /**
+                 * metadata
+                 * @member {string}
+                 */
 
-              this.metadata;
-            };
+                this.metadata;
+              }
+
+              getScopeInformation(type) {
+                switch (type) {
+                  case Metadata.UNDEFINED:
+                    return {
+                      name: Metadata.UNDEFINED,
+                      code: 'NA',
+                      definition: 'Metadata information scope is undefined'
+                    };
+
+                  case Metadata.FIELD_SESSION:
+                    return {
+                      name: Metadata.FIELD_SESSION,
+                      code: '012',
+                      definition: 'Information applies to the field session'
+                    };
+
+                  case Metadata.COLLECTION_SESSION:
+                    return {
+                      name: Metadata.COLLECTION_SESSION,
+                      code: '004',
+                      definition: 'Information applies to the collection session'
+                    };
+
+                  case Metadata.SERIES:
+                    return {
+                      name: Metadata.SERIES,
+                      code: '006',
+                      definition: 'Information applies to the (dataset) series'
+                    };
+
+                  case Metadata.DATASET:
+                    return {
+                      name: Metadata.DATASET,
+                      code: '005',
+                      definition: 'Information applies to the (geographic feature) dataset'
+                    };
+
+                  case Metadata.FEATURE_TYPE:
+                    return {
+                      name: Metadata.FEATURE_TYPE,
+                      code: '010',
+                      definition: 'Information applies to a feature type (class)'
+                    };
+
+                  case Metadata.FEATURE:
+                    return {
+                      name: Metadata.FEATURE,
+                      code: '009',
+                      definition: 'Information applies to a feature (instance)'
+                    };
+
+                  case Metadata.ATTRIBUTE_TYPE:
+                    return {
+                      name: Metadata.ATTRIBUTE_TYPE,
+                      code: '002',
+                      definition: 'Information applies to the attribute class'
+                    };
+
+                  case Metadata.ATTRIBUTE:
+                    return {
+                      name: Metadata.ATTRIBUTE,
+                      code: '001',
+                      definition: 'Information applies to the characteristic of a feature (instance)'
+                    };
+
+                  case Metadata.TILE:
+                    return {
+                      name: Metadata.TILE,
+                      code: '016',
+                      definition: 'Information applies to a tile, a spatial subset of geographic data'
+                    };
+
+                  case Metadata.MODEL:
+                    return {
+                      name: Metadata.MODEL,
+                      code: '015',
+                      definition: 'Information applies to a copy or imitation of an existing or hypothetical object'
+                    };
+
+                  case Metadata.CATALOG:
+                    return {
+                      name: Metadata.CATALOG,
+                      code: 'NA',
+                      definition: 'Metadata applies to a feature catalog'
+                    };
+
+                  case Metadata.SCHEMA:
+                    return {
+                      name: Metadata.SCHEMA,
+                      code: 'NA',
+                      definition: 'Metadata applies to an application schema'
+                    };
+
+                  case Metadata.TAXONOMY:
+                    return {
+                      name: Metadata.TAXONOMY,
+                      code: 'NA',
+                      definition: 'Metadata applies to a taxonomy or knowledge system'
+                    };
+
+                  case Metadata.SOFTWARE:
+                    return {
+                      name: Metadata.SOFTWARE,
+                      code: '013',
+                      definition: 'Information applies to a computer program or routine'
+                    };
+
+                  case Metadata.SERVICE:
+                    return {
+                      name: Metadata.SERVICE,
+                      code: '014',
+                      definition: 'Information applies to a capability which a service provider entity makes available to a service user entity through a set of interfaces that define a behaviour, such as a use case'
+                    };
+
+                  case Metadata.COLLECTION_HARDWARE:
+                    return {
+                      name: Metadata.COLLECTION_HARDWARE,
+                      code: '003',
+                      definition: 'Information applies to the collection hardware class'
+                    };
+
+                  case Metadata.NON_GEOGRAPHIC_DATASET:
+                    return {
+                      name: Metadata.NON_GEOGRAPHIC_DATASET,
+                      code: '007',
+                      definition: 'Information applies to non-geographic data'
+                    };
+
+                  case Metadata.DIMENSION_GROUP:
+                    return {
+                      name: Metadata.DIMENSION_GROUP,
+                      code: '008',
+                      definition: 'Information applies to a dimension group'
+                    };
+                }
+              }
+
+            }
 
             Metadata.UNDEFINED = "undefined";
             Metadata.FIELD_SESSION = "fieldSession";
@@ -36700,149 +36329,11 @@
             Metadata.COLLECTION_HARDWARE = "collectionHardware";
             Metadata.NON_GEOGRAPHIC_DATASET = "nonGeographicDataset";
             Metadata.DIMENSION_GROUP = "dimensionGroup";
-
-            Metadata.prototype.getScopeInformation = function (type) {
-              switch (type) {
-                case Metadata.UNDEFINED:
-                  return {
-                    name: Metadata.UNDEFINED,
-                    code: 'NA',
-                    definition: 'Metadata information scope is undefined'
-                  };
-
-                case Metadata.FIELD_SESSION:
-                  return {
-                    name: Metadata.FIELD_SESSION,
-                    code: '012',
-                    definition: 'Information applies to the field session'
-                  };
-
-                case Metadata.COLLECTION_SESSION:
-                  return {
-                    name: Metadata.COLLECTION_SESSION,
-                    code: '004',
-                    definition: 'Information applies to the collection session'
-                  };
-
-                case Metadata.SERIES:
-                  return {
-                    name: Metadata.SERIES,
-                    code: '006',
-                    definition: 'Information applies to the (dataset) series'
-                  };
-
-                case Metadata.DATASET:
-                  return {
-                    name: Metadata.DATASET,
-                    code: '005',
-                    definition: 'Information applies to the (geographic feature) dataset'
-                  };
-
-                case Metadata.FEATURE_TYPE:
-                  return {
-                    name: Metadata.FEATURE_TYPE,
-                    code: '010',
-                    definition: 'Information applies to a feature type (class)'
-                  };
-
-                case Metadata.FEATURE:
-                  return {
-                    name: Metadata.FEATURE,
-                    code: '009',
-                    definition: 'Information applies to a feature (instance)'
-                  };
-
-                case Metadata.ATTRIBUTE_TYPE:
-                  return {
-                    name: Metadata.ATTRIBUTE_TYPE,
-                    code: '002',
-                    definition: 'Information applies to the attribute class'
-                  };
-
-                case Metadata.ATTRIBUTE:
-                  return {
-                    name: Metadata.ATTRIBUTE,
-                    code: '001',
-                    definition: 'Information applies to the characteristic of a feature (instance)'
-                  };
-
-                case Metadata.TILE:
-                  return {
-                    name: Metadata.TILE,
-                    code: '016',
-                    definition: 'Information applies to a tile, a spatial subset of geographic data'
-                  };
-
-                case Metadata.MODEL:
-                  return {
-                    name: Metadata.MODEL,
-                    code: '015',
-                    definition: 'Information applies to a copy or imitation of an existing or hypothetical object'
-                  };
-
-                case Metadata.CATALOG:
-                  return {
-                    name: Metadata.CATALOG,
-                    code: 'NA',
-                    definition: 'Metadata applies to a feature catalog'
-                  };
-
-                case Metadata.SCHEMA:
-                  return {
-                    name: Metadata.SCHEMA,
-                    code: 'NA',
-                    definition: 'Metadata applies to an application schema'
-                  };
-
-                case Metadata.TAXONOMY:
-                  return {
-                    name: Metadata.TAXONOMY,
-                    code: 'NA',
-                    definition: 'Metadata applies to a taxonomy or knowledge system'
-                  };
-
-                case Metadata.SOFTWARE:
-                  return {
-                    name: Metadata.SOFTWARE,
-                    code: '013',
-                    definition: 'Information applies to a computer program or routine'
-                  };
-
-                case Metadata.SERVICE:
-                  return {
-                    name: Metadata.SERVICE,
-                    code: '014',
-                    definition: 'Information applies to a capability which a service provider entity makes available to a service user entity through a set of interfaces that define a behaviour, such as a use case'
-                  };
-
-                case Metadata.COLLECTION_HARDWARE:
-                  return {
-                    name: Metadata.COLLECTION_HARDWARE,
-                    code: '003',
-                    definition: 'Information applies to the collection hardware class'
-                  };
-
-                case Metadata.NON_GEOGRAPHIC_DATASET:
-                  return {
-                    name: Metadata.NON_GEOGRAPHIC_DATASET,
-                    code: '007',
-                    definition: 'Information applies to non-geographic data'
-                  };
-
-                case Metadata.DIMENSION_GROUP:
-                  return {
-                    name: Metadata.DIMENSION_GROUP,
-                    code: '008',
-                    definition: 'Information applies to a dimension group'
-                  };
-              }
-            };
             /**
              * Metadata Data Access Object
              * @class
              * @extends {module:dao/dao~Dao}
              */
-
 
             class MetadataDao extends Dao {
               createObject() {
@@ -36870,116 +36361,119 @@
              * @class MetadataReference
              */
 
-            var MetadataReference = function () {
-              /**
-               * Lowercase metadata reference scope; one of ‘geopackage’, ‘table’, ‘column’, ’row’, ’row/col’
-               * @member {string}
-               */
-              this.reference_scope;
-              /**
-               * Name of the table to which this metadata reference applies, or NULL for reference_scope of ‘geopackage’.
-               * @member {string}
-               */
+            class MetadataReference {
+              constructor() {
+                /**
+                 * Lowercase metadata reference scope; one of ‘geopackage’, ‘table’, ‘column’, ’row’, ’row/col’
+                 * @member {string}
+                 */
+                this.reference_scope;
+                /**
+                 * Name of the table to which this metadata reference applies, or NULL for reference_scope of ‘geopackage’.
+                 * @member {string}
+                 */
 
-              this.table_name;
-              /**
-               * Name of the column to which this metadata reference applies; NULL for
-               * reference_scope of ‘geopackage’,‘table’ or ‘row’, or the name of a column
-               * in the table_name table for reference_scope of ‘column’ or ‘row/col’
-               * @member {string}
-               */
+                this.table_name;
+                /**
+                 * Name of the column to which this metadata reference applies; NULL for
+                 * reference_scope of ‘geopackage’,‘table’ or ‘row’, or the name of a column
+                 * in the table_name table for reference_scope of ‘column’ or ‘row/col’
+                 * @member {string}
+                 */
 
-              this.column_name;
-              /**
-               * NULL for reference_scope of ‘geopackage’, ‘table’ or ‘column’, or the
-               * rowed of a row record in the table_name table for reference_scope of
-               * ‘row’ or ‘row/col’
-               * @member {Number}
-               */
+                this.column_name;
+                /**
+                 * NULL for reference_scope of ‘geopackage’, ‘table’ or ‘column’, or the
+                 * rowed of a row record in the table_name table for reference_scope of
+                 * ‘row’ or ‘row/col’
+                 * @member {Number}
+                 */
 
-              this.row_id_value;
-              /**
-               * timestamp value in ISO 8601 format as defined by the strftime function
-               * '%Y-%m-%dT%H:%M:%fZ' format string applied to the current time
-               * @member {Date}
-               */
+                this.row_id_value;
+                /**
+                 * timestamp value in ISO 8601 format as defined by the strftime function
+                 * '%Y-%m-%dT%H:%M:%fZ' format string applied to the current time
+                 * @member {Date}
+                 */
 
-              this.timestamp;
-              /**
-               * gpkg_metadata table id column value for the metadata to which this
-               * gpkg_metadata_reference applies
-               * @member {Number}
-               */
+                this.timestamp;
+                /**
+                 * gpkg_metadata table id column value for the metadata to which this
+                 * gpkg_metadata_reference applies
+                 * @member {Number}
+                 */
 
-              this.md_file_id;
-              /**
-               * gpkg_metadata table id column value for the hierarchical parent
-               * gpkg_metadata for the gpkg_metadata to which this gpkg_metadata_reference
-               * applies, or NULL if md_file_id forms the root of a metadata hierarchy
-               * @member {Number}
-               */
+                this.md_file_id;
+                /**
+                 * gpkg_metadata table id column value for the hierarchical parent
+                 * gpkg_metadata for the gpkg_metadata to which this gpkg_metadata_reference
+                 * applies, or NULL if md_file_id forms the root of a metadata hierarchy
+                 * @member {Number}
+                 */
 
-              this.md_parent_id;
-            };
-
-            MetadataReference.prototype.toDatabaseValue = function (columnName) {
-              if (columnName === 'timestamp') {
-                return this.timestamp.toISOString();
+                this.md_parent_id;
               }
 
-              return this[columnName];
-            };
-            /**
-             * Set the metadata
-             * @param  {Metadata} metadata metadata
-             */
+              toDatabaseValue(columnName) {
+                if (columnName === 'timestamp') {
+                  return this.timestamp.toISOString();
+                }
 
-
-            MetadataReference.prototype.setMetadata = function (metadata) {
-              if (metadata) {
-                this.md_file_id = metadata.id;
-              } else {
-                this.md_file_id = -1;
+                return this[columnName];
               }
-            };
-            /**
-             * Set the parent metadata
-             * @param  {Metadata} metadata parent metadata
-             */
+              /**
+               * Set the metadata
+               * @param  {Metadata} metadata metadata
+               */
 
 
-            MetadataReference.prototype.setParentMetadata = function (metadata) {
-              if (metadata) {
-                this.md_parent_id = metadata.id;
-              } else {
-                this.md_parent_id = -1;
+              setMetadata(metadata) {
+                if (metadata) {
+                  this.md_file_id = metadata.id;
+                } else {
+                  this.md_file_id = -1;
+                }
               }
-            };
+              /**
+               * Set the parent metadata
+               * @param  {Metadata} metadata parent metadata
+               */
 
-            MetadataReference.prototype.setReferenceScopeType = function (referenceScopeType) {
-              this.reference_scope = referenceScopeType;
 
-              switch (referenceScopeType) {
-                case MetadataReference.GEOPACKAGE:
-                  this.table_name = undefined;
-                  this.column_name = undefined;
-                  this.row_id_value = undefined;
-                  break;
-
-                case MetadataReference.TABLE:
-                  this.column_name = undefined;
-                  this.row_id_value = undefined;
-                  break;
-
-                case MetadataReference.ROW:
-                  this.column_name = undefined;
-                  break;
-
-                case MetadataReference.COLUMN:
-                  this.row_id_value = undefined;
-                  break;
+              setParentMetadata(metadata) {
+                if (metadata) {
+                  this.md_parent_id = metadata.id;
+                } else {
+                  this.md_parent_id = -1;
+                }
               }
-            };
+
+              setReferenceScopeType(referenceScopeType) {
+                this.reference_scope = referenceScopeType;
+
+                switch (referenceScopeType) {
+                  case MetadataReference.GEOPACKAGE:
+                    this.table_name = undefined;
+                    this.column_name = undefined;
+                    this.row_id_value = undefined;
+                    break;
+
+                  case MetadataReference.TABLE:
+                    this.column_name = undefined;
+                    this.row_id_value = undefined;
+                    break;
+
+                  case MetadataReference.ROW:
+                    this.column_name = undefined;
+                    break;
+
+                  case MetadataReference.COLUMN:
+                    this.row_id_value = undefined;
+                    break;
+                }
+              }
+
+            }
 
             MetadataReference.GEOPACKAGE = "geopackage";
             MetadataReference.TABLE = "table";
@@ -37048,21 +36542,23 @@
              * @extends {module:extension/baseExtension~BaseExtension}
              */
 
-            var CrsWktExtension = function (geoPackage) {
-              BaseExtension.call(this, geoPackage);
-              this.extensionName = CrsWktExtension.EXTENSION_NAME;
-              this.extensionDefinition = CrsWktExtension.EXTENSION_CRS_WKT_DEFINITION;
-            };
+            class CrsWktExtension extends BaseExtension {
+              constructor(geoPackage) {
+                super(geoPackage);
+                this.extensionName = CrsWktExtension.EXTENSION_NAME;
+                this.extensionDefinition = CrsWktExtension.EXTENSION_CRS_WKT_DEFINITION;
+              }
+              /**
+               * Get or create the extension
+               * @return {Promise<module:extension/crsWkt~CrsWktExtension>}
+               */
 
-            util.inherits(CrsWktExtension, BaseExtension);
-            /**
-             * Get or create the extension
-             * @return {Promise<module:extension/crsWkt~CrsWktExtension>}
-             */
 
-            CrsWktExtension.prototype.getOrCreateExtension = function () {
-              return this.getOrCreate(this.extensionName, null, null, this.extensionDefinition, Extension.READ_WRITE);
-            };
+              getOrCreateExtension() {
+                return this.getOrCreate(this.extensionName, null, null, this.extensionDefinition, Extension.READ_WRITE);
+              }
+
+            }
 
             CrsWktExtension.EXTENSION_NAME = 'gpkg_crs_wkt';
             CrsWktExtension.EXTENSION_CRS_WKT_AUTHOR = 'gpkg';
@@ -37075,17 +36571,18 @@
              * @see module:extension/BaseExtension
              */
 
-            var SchemaExtension = function (geoPackage) {
-              BaseExtension.call(this, geoPackage);
-              this.extensionName = SchemaExtension.EXTENSION_NAME;
-              this.extensionDefinition = SchemaExtension.EXTENSION_SCHEMA_DEFINITION;
-            };
+            class SchemaExtension extends BaseExtension {
+              constructor(geoPackage) {
+                super(geoPackage);
+                this.extensionName = SchemaExtension.EXTENSION_NAME;
+                this.extensionDefinition = SchemaExtension.EXTENSION_SCHEMA_DEFINITION;
+              }
 
-            util.inherits(SchemaExtension, BaseExtension);
+              getOrCreateExtension() {
+                return this.getOrCreate(this.extensionName, null, null, this.extensionDefinition, Extension.READ_WRITE);
+              }
 
-            SchemaExtension.prototype.getOrCreateExtension = function () {
-              return this.getOrCreate(this.extensionName, null, null, this.extensionDefinition, Extension.READ_WRITE);
-            };
+            }
 
             SchemaExtension.EXTENSION_NAME = 'gpkg_schema';
             SchemaExtension.EXTENSION_SCHEMA_AUTHOR = 'gpkg';
@@ -37308,83 +36805,85 @@
              * @param  {module:dao/columnValues~ColumnValues[]} values      values
              */
 
-            var MediaRow = function (mediaTable, columnTypes, values) {
-              UserRow.call(this, mediaTable, columnTypes, values);
-              this.mediaTable = mediaTable;
-            };
-
-            util.inherits(MediaRow, UserRow);
-            /**
-             * Gets the id column
-             * @return {module:user/userColumn~UserColumn}
-             */
-
-            MediaRow.prototype.getIdColumn = function () {
-              return this.mediaTable.getIdColumn();
-            };
-            /**
-             * Gets the id
-             * @return {Number}
-             */
+            class MediaRow extends UserRow {
+              constructor(mediaTable, columnTypes, values) {
+                super(mediaTable, columnTypes, values);
+                this.mediaTable = mediaTable;
+              }
+              /**
+               * Gets the id column
+               * @return {module:user/userColumn~UserColumn}
+               */
 
 
-            MediaRow.prototype.getId = function () {
-              return this.getValueWithColumnName(this.getIdColumn().name);
-            };
-            /**
-             * Get the data column
-             * @return {module:user/userColumn~UserColumn}
-             */
+              getIdColumn() {
+                return this.mediaTable.getIdColumn();
+              }
+              /**
+               * Gets the id
+               * @return {Number}
+               */
 
 
-            MediaRow.prototype.getDataColumn = function () {
-              return this.mediaTable.getDataColumn();
-            };
-            /**
-             * Gets the data
-             * @return {Buffer}
-             */
+              getId() {
+                return this.getValueWithColumnName(this.getIdColumn().name);
+              }
+              /**
+               * Get the data column
+               * @return {module:user/userColumn~UserColumn}
+               */
 
 
-            MediaRow.prototype.getData = function () {
-              return this.getValueWithColumnName(this.getDataColumn().name);
-            };
-            /**
-             * Sets the data for the row
-             * @param  {Buffer} data data
-             */
+              getDataColumn() {
+                return this.mediaTable.getDataColumn();
+              }
+              /**
+               * Gets the data
+               * @return {Buffer}
+               */
 
 
-            MediaRow.prototype.setData = function (data) {
-              this.setValueWithColumnName(this.getDataColumn().name, data);
-            };
-            /**
-             * Get the content type column
-             * @return {module:user/userColumn~UserColumn}
-             */
+              getData() {
+                return this.getValueWithColumnName(this.getDataColumn().name);
+              }
+              /**
+               * Sets the data for the row
+               * @param  {Buffer} data data
+               */
 
 
-            MediaRow.prototype.getContentTypeColumn = function () {
-              return this.mediaTable.getContentTypeColumn();
-            };
-            /**
-             * Gets the content type
-             * @return {string}
-             */
+              setData(data) {
+                this.setValueWithColumnName(this.getDataColumn().name, data);
+              }
+              /**
+               * Get the content type column
+               * @return {module:user/userColumn~UserColumn}
+               */
 
 
-            MediaRow.prototype.getContentType = function () {
-              return this.getValueWithColumnName(this.getContentTypeColumn().name);
-            };
-            /**
-             * Sets the content type for the row
-             * @param  {string} contentType contentType
-             */
+              getContentTypeColumn() {
+                return this.mediaTable.getContentTypeColumn();
+              }
+              /**
+               * Gets the content type
+               * @return {string}
+               */
 
 
-            MediaRow.prototype.setContentType = function (contentType) {
-              this.setValueWithColumnName(this.getContentTypeColumn().name, contentType);
-            };
+              getContentType() {
+                return this.getValueWithColumnName(this.getContentTypeColumn().name);
+              }
+              /**
+               * Sets the content type for the row
+               * @param  {string} contentType contentType
+               */
+
+
+              setContentType(contentType) {
+                this.setValueWithColumnName(this.getContentTypeColumn().name, contentType);
+              }
+
+            }
 
             /**
              * MediaDao module.
@@ -37462,29 +36961,31 @@
              * @param  {module:dao/columnValues~ColumnValues[]} values      values
              */
 
-            var SimpleAttributesRow = function (simpleAttributesTable, columnTypes, values) {
-              UserRow.call(this, simpleAttributesTable, columnTypes, values);
-              this.simpleAttributesTable = simpleAttributesTable;
-            };
-
-            util.inherits(SimpleAttributesRow, UserRow);
-            /**
-             * Gets the primary key id column
-             * @return {module:user/userColumn~UserColumn}
-             */
-
-            SimpleAttributesRow.prototype.getIdColumn = function () {
-              return this.simpleAttributesTable.getIdColumn();
-            };
-            /**
-             * Gets the id
-             * @return {Number}
-             */
+            class SimpleAttributesRow extends UserRow {
+              constructor(simpleAttributesTable, columnTypes, values) {
+                super(simpleAttributesTable, columnTypes, values);
+                this.simpleAttributesTable = simpleAttributesTable;
+              }
+              /**
+               * Gets the primary key id column
+               * @return {module:user/userColumn~UserColumn}
+               */
 
 
-            SimpleAttributesRow.prototype.getId = function () {
-              return this.getValueWithColumnName(this.getIdColumn().name);
-            };
+              getIdColumn() {
+                return this.simpleAttributesTable.getIdColumn();
+              }
+              /**
+               * Gets the id
+               * @return {Number}
+               */
+
+
+              getId() {
+                return this.getValueWithColumnName(this.getIdColumn().name);
+              }
+
+            }
 
             /**
              * SimpleAttributesDao module.
@@ -37569,31 +37070,33 @@
              *  @param {Boolean} primaryKey primary key
              */
 
-            var UserCustomColumn = function (index, name, dataType, max, notNull, defaultValue, primaryKey) {
-              UserColumn.call(this, index, name, dataType, max, notNull, defaultValue, primaryKey);
+            class UserCustomColumn extends UserColumn {
+              constructor(index, name, dataType, max, notNull, defaultValue, primaryKey) {
+                super(index, name, dataType, max, notNull, defaultValue, primaryKey);
 
-              if (dataType == null) {
-                throw new Error('Data type is required to create column: ' + name);
+                if (dataType == null) {
+                  throw new Error('Data type is required to create column: ' + name);
+                }
               }
-            };
+              /**
+               *  Create a new column
+               *
+               *  @param {Number} index        column index
+               *  @param {string} name         column name
+               *  @param {module:db/dataTypes~GPKGDataType} type         data type
+               *  @param {Number} max max value
+               *  @param {Boolean} notNull      not null
+               *  @param {Object} defaultValue default value or nil
+               *
+               *  @return {module:user/custom~UserCustomColumn} created column
+               */
 
-            util.inherits(UserCustomColumn, UserColumn);
-            /**
-             *  Create a new column
-             *
-             *  @param {Number} index        column index
-             *  @param {string} name         column name
-             *  @param {module:db/dataTypes~GPKGDataType} type         data type
-             *  @param {Number} max max value
-             *  @param {Boolean} notNull      not null
-             *  @param {Object} defaultValue default value or nil
-             *
-             *  @return {module:user/custom~UserCustomColumn} created column
-             */
 
-            UserCustomColumn.createColumn = function (index, name, dataType, max, notNull, defaultValue) {
-              return new UserCustomColumn(index, name, dataType, max, notNull, defaultValue, false);
-            };
+              static createColumn(index, name, dataType, max, notNull, defaultValue) {
+                return new UserCustomColumn(index, name, dataType, max, notNull, defaultValue, false);
+              }
+
+            }
 
             /**
              * userMappingTable module.
@@ -37607,95 +37110,92 @@
              * @param  {module:user/userColumn~UserColumn[]} columns   user mapping columns
              */
 
-            var UserMappingTable = function (tableName, columns) {
-              UserTable.call(this, tableName, columns);
-            };
+            class UserMappingTable extends UserTable {
+              /**
+               * Get the base id column
+               * @return {module:user/userColumn~UserColumn}
+               */
+              getBaseIdColumn() {
+                return this.getColumnWithColumnName(UserMappingTable.COLUMN_BASE_ID);
+              }
+              /**
+               * Get the related id column
+               * @return {module:user/userColumn~UserColumn}
+               */
 
-            util.inherits(UserMappingTable, UserTable);
-            /**
-             * Creates a user mapping table with the minimum required columns followed by the additional columns
-             * @param  {string} tableName name of the table
-             * @param  {module:user/userColumn~UserColumn[]} additionalColumns additional columns
-             * @return {module:extension/relatedTables~UserMappingTable}
-             */
 
-            UserMappingTable.create = function (tableName, columns) {
-              var allColumns = UserMappingTable.createRequiredColumns(0);
+              getRelatedIdColumn() {
+                return this.getColumnWithColumnName(UserMappingTable.COLUMN_RELATED_ID);
+              }
+              /**
+               * Creates a user mapping table with the minimum required columns followed by the additional columns
+               * @param  {string} tableName name of the table
+               * @param  {module:user/userColumn~UserColumn[]} additionalColumns additional columns
+               * @return {module:extension/relatedTables~UserMappingTable}
+               */
 
-              if (columns) {
-                allColumns = allColumns.concat(columns);
+
+              static create(tableName, columns) {
+                var allColumns = UserMappingTable.createRequiredColumns(0);
+
+                if (columns) {
+                  allColumns = allColumns.concat(columns);
+                }
+
+                return new UserMappingTable(tableName, allColumns);
+              }
+              /**
+               * Get the number of required columns
+               * @return {Number}
+               */
+
+
+              static numRequiredColumns() {
+                return UserMappingTable.createRequiredColumns(0).length;
+              }
+              /**
+               * Create the required columns
+               * @param  {Number} [startingIndex=0] starting index of the required columns
+               * @return {module:user/userColumn~UserColumn[]}
+               */
+
+
+              static createRequiredColumns(startingIndex) {
+                startingIndex = startingIndex || 0;
+                return [UserMappingTable.createBaseIdColumn(startingIndex++), UserMappingTable.createRelatedIdColumn(startingIndex)];
+              }
+              /**
+               * Create the base id column
+               * @param  {Number} index        index of the column
+               * @return {module:user/userColumn~UserColumn}
+               */
+
+
+              static createBaseIdColumn(index) {
+                var baseIdColumn = UserCustomColumn.createColumn(index, UserMappingTable.COLUMN_BASE_ID, types.GPKGDataType.GPKG_DT_INTEGER, undefined, true);
+                return baseIdColumn;
+              }
+              /**
+               * Create the related id column
+               * @param  {Number} index        index of the column
+               * @return {module:user/userColumn~UserColumn}
+               */
+
+
+              static createRelatedIdColumn(index) {
+                return UserCustomColumn.createColumn(index, UserMappingTable.COLUMN_RELATED_ID, types.GPKGDataType.GPKG_DT_INTEGER, undefined, true);
+              }
+              /**
+               * Get the required columns
+               * @return {string[]}
+               */
+
+
+              static requiredColumns() {
+                return [UserMappingTable.COLUMN_BASE_ID, UserMappingTable.COLUMN_RELATED_ID];
               }
 
-              return new UserMappingTable(tableName, allColumns);
-            };
-            /**
-             * Get the number of required columns
-             * @return {Number}
-             */
-
-
-            UserMappingTable.numRequiredColumns = function () {
-              return UserMappingTable.createRequiredColumns(0).length;
-            };
-            /**
-             * Create the required columns
-             * @param  {Number} [startingIndex=0] starting index of the required columns
-             * @return {module:user/userColumn~UserColumn[]}
-             */
-
-
-            UserMappingTable.createRequiredColumns = function (startingIndex) {
-              startingIndex = startingIndex || 0;
-              return [UserMappingTable.createBaseIdColumn(startingIndex++), UserMappingTable.createRelatedIdColumn(startingIndex)];
-            };
-            /**
-             * Create the base id column
-             * @param  {Number} index        index of the column
-             * @return {module:user/userColumn~UserColumn}
-             */
-
-
-            UserMappingTable.createBaseIdColumn = function (index) {
-              var baseIdColumn = UserCustomColumn.createColumn(index, UserMappingTable.COLUMN_BASE_ID, types.GPKGDataType.GPKG_DT_INTEGER, undefined, true);
-              return baseIdColumn;
-            };
-            /**
-             * Create the related id column
-             * @param  {Number} index        index of the column
-             * @return {module:user/userColumn~UserColumn}
-             */
-
-
-            UserMappingTable.createRelatedIdColumn = function (index) {
-              return UserCustomColumn.createColumn(index, UserMappingTable.COLUMN_RELATED_ID, types.GPKGDataType.GPKG_DT_INTEGER, undefined, true);
-            };
-            /**
-             * Get the base id column
-             * @return {module:user/userColumn~UserColumn}
-             */
-
-
-            UserMappingTable.prototype.getBaseIdColumn = function () {
-              return this.getColumnWithColumnName(UserMappingTable.COLUMN_BASE_ID);
-            };
-            /**
-             * Get the related id column
-             * @return {module:user/userColumn~UserColumn}
-             */
-
-
-            UserMappingTable.prototype.getRelatedIdColumn = function () {
-              return this.getColumnWithColumnName(UserMappingTable.COLUMN_RELATED_ID);
-            };
-            /**
-             * Get the required columns
-             * @return {string[]}
-             */
-
-
-            UserMappingTable.requiredColumns = function () {
-              return [UserMappingTable.COLUMN_BASE_ID, UserMappingTable.COLUMN_RELATED_ID];
-            };
+            }
 
             UserMappingTable.COLUMN_BASE_ID = 'base_id';
             UserMappingTable.COLUMN_RELATED_ID = 'related_id';
@@ -37713,64 +37213,66 @@
              * @param  {module:dao/columnValues~ColumnValues[]} values      values
              */
 
-            var UserMappingRow = function (userMappingTable, columnTypes, values) {
-              UserRow.call(this, userMappingTable, columnTypes, values);
-            };
-
-            util.inherits(UserMappingRow, UserRow);
-            /**
-             * Get the base id column
-             * @return {module:user/userColumn~UserColumn}
-             */
-
-            UserMappingRow.prototype.getBaseIdColumn = function () {
-              return this.table.getBaseIdColumn();
-            };
-            /**
-             * Gets the base id
-             * @return {Number}
-             */
+            class UserMappingRow extends UserRow {
+              constructor(userMappingTable, columnTypes, values) {
+                super(userMappingTable, columnTypes, values);
+              }
+              /**
+               * Get the base id column
+               * @return {module:user/userColumn~UserColumn}
+               */
 
 
-            UserMappingRow.prototype.getBaseId = function () {
-              return this.getValueWithColumnName(this.getBaseIdColumn().name);
-            };
-            /**
-             * Sets the base id
-             * @param  {Number} baseId base id
-             */
+              getBaseIdColumn() {
+                return this.table.getBaseIdColumn();
+              }
+              /**
+               * Gets the base id
+               * @return {Number}
+               */
 
 
-            UserMappingRow.prototype.setBaseId = function (baseId) {
-              this.setValueWithColumnName(this.getBaseIdColumn().name, baseId);
-            };
-            /**
-             * Get the related id column
-             * @return {module:user/userColumn~UserColumn}
-             */
+              getBaseId() {
+                return this.getValueWithColumnName(this.getBaseIdColumn().name);
+              }
+              /**
+               * Sets the base id
+               * @param  {Number} baseId base id
+               */
 
 
-            UserMappingRow.prototype.getRelatedIdColumn = function () {
-              return this.table.getRelatedIdColumn();
-            };
-            /**
-             * Gets the related id
-             * @return {Number}
-             */
+              setBaseId(baseId) {
+                this.setValueWithColumnName(this.getBaseIdColumn().name, baseId);
+              }
+              /**
+               * Get the related id column
+               * @return {module:user/userColumn~UserColumn}
+               */
 
 
-            UserMappingRow.prototype.getRelatedId = function () {
-              return this.getValueWithColumnName(this.getRelatedIdColumn().name);
-            };
-            /**
-             * Sets the related id
-             * @param  {Number} relatedId related id
-             */
+              getRelatedIdColumn() {
+                return this.table.getRelatedIdColumn();
+              }
+              /**
+               * Gets the related id
+               * @return {Number}
+               */
 
 
-            UserMappingRow.prototype.setRelatedId = function (relatedId) {
-              this.setValueWithColumnName(this.getRelatedIdColumn().name, relatedId);
-            };
+              getRelatedId() {
+                return this.getValueWithColumnName(this.getRelatedIdColumn().name);
+              }
+              /**
+               * Sets the related id
+               * @param  {Number} relatedId related id
+               */
+
+
+              setRelatedId(relatedId) {
+                this.setValueWithColumnName(this.getRelatedIdColumn().name, relatedId);
+              }
+
+            }
 
             /**
              * @module user/custom
@@ -37784,29 +37286,30 @@
              * @param  {string[]} requiredColumns required columns
              */
 
-            var UserCustomTable = function (tableName, columns, requiredColumns) {
-              UserTable.call(this, tableName, columns);
+            class UserCustomTable extends UserTable {
+              constructor(tableName, columns, requiredColumns) {
+                super(tableName, columns);
 
-              if (requiredColumns && requiredColumns.length) {
-                var found = {};
+                if (requiredColumns && requiredColumns.length) {
+                  var found = {};
 
-                for (var i = 0; i < columns.length; i++) {
-                  var column = columns[i];
+                  for (var i = 0; i < columns.length; i++) {
+                    var column = columns[i];
 
-                  if (requiredColumns.indexOf(column.name) !== -1) {
-                    var previousIndex = found[column.name];
-                    this.duplicateCheck(column.index, previousIndex, column.name);
-                    found[column.name] = column.index;
+                    if (requiredColumns.indexOf(column.name) !== -1) {
+                      var previousIndex = found[column.name];
+                      this.duplicateCheck(column.index, previousIndex, column.name);
+                      found[column.name] = column.index;
+                    }
+                  }
+
+                  for (var i = 0; i < requiredColumns.length; i++) {
+                    this.missingCheck(found[requiredColumns[i]], requiredColumns);
                   }
                 }
-
-                for (var i = 0; i < requiredColumns.length; i++) {
-                  this.missingCheck(found[requiredColumns[i]], requiredColumns);
-                }
               }
-            };
 
-            util.inherits(UserCustomTable, UserTable);
+            }
 
             /**
              * @module user/custom
@@ -37819,40 +37322,37 @@
              * @param  {string[]} requiredColumns required columns
              */
 
-            var UserCustomTableReader = function (tableName, requiredColumns) {
-              UserTableReader.call(this, tableName, requiredColumns);
-            };
-
-            util.inherits(UserCustomTableReader, UserTableReader);
-            /**
-             * Creates user custom column
-             * @param  {string} tableName       table name
-             * @param  {module:user/userCustom~UserCustomColumn[]} columnList      columns
-             * @param  {string[]} requiredColumns required columns
-             * @return {module:user/userCustom~UserCustomTable}
-             */
-
-            UserCustomTableReader.prototype.createTable = function (tableName, columnList, requiredColumns) {
-              return new UserCustomTable(tableName, columnList, requiredColumns);
-            };
-            /**
-             * Creates a user custom column
-             * @param {Object} result
-             * @param {Number} index        column index
-             * @param {string} name         column name
-             * @param {module:db/dataTypes~GPKGDataType} type         data type
-             * @param {Number} max max value
-             * @param {Boolean} notNull      not null
-             * @param {Object} defaultValue default value or nil
-             * @param {Boolean} primaryKey primary key
-             * @return {module:user/custom~UserCustomColumn}
-             */
+            class UserCustomTableReader extends UserTableReader {
+              /**
+               * Creates user custom column
+               * @param  {string} tableName       table name
+               * @param  {module:user/userCustom~UserCustomColumn[]} columnList      columns
+               * @param  {string[]} requiredColumns required columns
+               * @return {module:user/userCustom~UserCustomTable}
+               */
+              createTable(tableName, columnList, requiredColumns) {
+                return new UserCustomTable(tableName, columnList, requiredColumns);
+              }
+              /**
+               * Creates a user custom column
+               * @param {Object} result
+               * @param {Number} index        column index
+               * @param {string} name         column name
+               * @param {module:db/dataTypes~GPKGDataType} type         data type
+               * @param {Number} max max value
+               * @param {Boolean} notNull      not null
+               * @param {Object} defaultValue default value or nil
+               * @param {Boolean} primaryKey primary key
+               * @return {module:user/custom~UserCustomColumn}
+               */
 
 
-            UserCustomTableReader.prototype.createColumnWithResults = function (result, index, name, type, max, notNull, defaultValue, primaryKey) {
-              var dataType = types.fromName(type);
-              return new UserCustomColumn(index, name, dataType, max, notNull, defaultValue, primaryKey);
-            };
+              createColumnWithResults(result, index, name, type, max, notNull, defaultValue, primaryKey) {
+                var dataType = types.fromName(type);
+                return new UserCustomColumn(index, name, dataType, max, notNull, defaultValue, primaryKey);
+              }
+
+            }
 
             /**
              * @module user/custom
@@ -38080,146 +37580,298 @@
              * @extends {module:extension/baseExtension~BaseExtension}
              */
 
-            var RelatedTablesExtension = function (geoPackage) {
-              BaseExtension.call(this, geoPackage);
-              this.extendedRelationDao = geoPackage.getExtendedRelationDao();
-            };
-
-            util.inherits(RelatedTablesExtension, BaseExtension);
-            /**
-             * Get or create the extension
-             * @return {Promise}
-             */
-
-            RelatedTablesExtension.prototype.getOrCreateExtension = function () {
-              return this.getOrCreate(RelatedTablesExtension.EXTENSION_NAME, 'gpkgext_relations', undefined, RelatedTablesExtension.EXTENSION_RELATED_TABLES_DEFINITION, Extension.READ_WRITE).then(function () {
-                return this.extendedRelationDao.createTable();
-              }.bind(this));
-            };
-            /**
-             * Get or create the extension for the mapping table
-             * @param  {string} mappingTableName user mapping table
-             * @return {Promise}
-             */
-
-
-            RelatedTablesExtension.prototype.getOrCreateMappingTable = function (mappingTableName) {
-              return this.getOrCreateExtension().then(function () {
-                this.getOrCreate(RelatedTablesExtension.EXTENSION_NAME, mappingTableName, undefined, RelatedTablesExtension.EXTENSION_RELATED_TABLES_DEFINITION, Extension.READ_WRITE);
-              }.bind(this));
-            };
-            /**
-             * Set the contents in the UserRelatedTable
-             * @param  {module:extension/relatedTables~UserRelatedTable} userRelatedTable user related table
-             */
-
-
-            RelatedTablesExtension.prototype.setContents = function (userRelatedTable) {
-              var contents = this.geoPackage.getContentsDao().queryForId(userRelatedTable.table_name);
-              userRelatedTable.setContents(contents);
-            };
-            /**
-             * Reads the user table and creates a UserCustomDao
-             * @param  {string} tableName       table name to reader
-             * @param  {string[]} requiredColumns required columns
-             * @return {module:user/custom~UserCustomDao}
-             */
-
-
-            RelatedTablesExtension.prototype.getUserDao = function (tableName, requiredColumns) {
-              return UserCustomDao.readTable(this.geoPackage, tableName, requiredColumns);
-            };
-            /**
-             * Gets the UserMappingDao from the mapping table name
-             * @param  {string|module:extension/relatedTables~ExtendedRelation} tableName user mapping table name or ExtendedRelation object
-             * @return {module:extension/relatedTables~UserMappingDao}
-             */
-
-
-            RelatedTablesExtension.prototype.getMappingDao = function (tableName) {
-              if (tableName.mapping_table_name) {
-                tableName = tableName.mapping_table_name;
+            class RelatedTablesExtension extends BaseExtension {
+              constructor(geoPackage) {
+                super(geoPackage);
+                this.extendedRelationDao = geoPackage.getExtendedRelationDao();
               }
-
-              return new UserMappingDao(this.getUserDao(tableName, UserMappingTable.requiredColumns()), this.geoPackage);
-            };
-            /**
-             * Gets all relationships in the GeoPackage with an optional base table name and an optional base id
-             * @param {string} [baseTableName] base table name
-             * @return {module:extension/relatedTables~ExtendedRelation[]}
-             */
+              /**
+               * Get or create the extension
+               * @return {Promise}
+               */
 
 
-            RelatedTablesExtension.prototype.getRelationships = function (baseTableName) {
-              if (this.extendedRelationDao.isTableExists()) {
-                if (baseTableName) {
-                  return this.geoPackage.getExtendedRelationDao().getBaseTableRelations(baseTableName);
+              getOrCreateExtension() {
+                return this.getOrCreate(RelatedTablesExtension.EXTENSION_NAME, 'gpkgext_relations', undefined, RelatedTablesExtension.EXTENSION_RELATED_TABLES_DEFINITION, Extension.READ_WRITE).then(function () {
+                  return this.extendedRelationDao.createTable();
+                }.bind(this));
+              }
+              /**
+               * Get or create the extension for the mapping table
+               * @param  {string} mappingTableName user mapping table
+               * @return {Promise}
+               */
+
+
+              getOrCreateMappingTable(mappingTableName) {
+                return this.getOrCreateExtension().then(function () {
+                  this.getOrCreate(RelatedTablesExtension.EXTENSION_NAME, mappingTableName, undefined, RelatedTablesExtension.EXTENSION_RELATED_TABLES_DEFINITION, Extension.READ_WRITE);
+                }.bind(this));
+              }
+              /**
+               * Set the contents in the UserRelatedTable
+               * @param  {module:extension/relatedTables~UserRelatedTable} userRelatedTable user related table
+               */
+
+
+              setContents(userRelatedTable) {
+                var contents = this.geoPackage.getContentsDao().queryForId(userRelatedTable.table_name);
+                userRelatedTable.setContents(contents);
+              }
+              /**
+               * Reads the user table and creates a UserCustomDao
+               * @param  {string} tableName       table name to reader
+               * @param  {string[]} requiredColumns required columns
+               * @return {module:user/custom~UserCustomDao}
+               */
+
+
+              getUserDao(tableName, requiredColumns) {
+                return UserCustomDao.readTable(this.geoPackage, tableName, requiredColumns);
+              }
+              /**
+               * Gets the UserMappingDao from the mapping table name
+               * @param  {string|module:extension/relatedTables~ExtendedRelation} tableName user mapping table name or ExtendedRelation object
+               * @return {module:extension/relatedTables~UserMappingDao}
+               */
+
+
+              getMappingDao(tableName) {
+                if (tableName.mapping_table_name) {
+                  tableName = tableName.mapping_table_name;
                 }
 
-                return this.extendedRelationDao.queryForAll();
+                return new UserMappingDao(this.getUserDao(tableName, UserMappingTable.requiredColumns()), this.geoPackage);
+              }
+              /**
+               * Gets all relationships in the GeoPackage with an optional base table name and an optional base id
+               * @param {string} [baseTableName] base table name
+               * @return {module:extension/relatedTables~ExtendedRelation[]}
+               */
+
+
+              getRelationships(baseTableName) {
+                if (this.extendedRelationDao.isTableExists()) {
+                  if (baseTableName) {
+                    return this.geoPackage.getExtendedRelationDao().getBaseTableRelations(baseTableName);
+                  }
+
+                  return this.extendedRelationDao.queryForAll();
+                }
+
+                return [];
               }
 
-              return [];
-            };
+              getRelatedRows(baseTableName, baseId) {
+                var relationships = this.getRelationships(baseTableName);
 
-            RelatedTablesExtension.prototype.getRelatedRows = function (baseTableName, baseId) {
-              var relationships = this.getRelationships(baseTableName);
+                for (var i = 0; i < relationships.length; i++) {
+                  var relation = relationships[i];
+                  var mappingRows = this.getMappingRowsForBase(relation.mapping_table_name, baseId);
+                  relation.mappingRows = mappingRows;
+                  var userDao; // TODO do this for all known types
 
-              for (var i = 0; i < relationships.length; i++) {
-                var relation = relationships[i];
-                var mappingRows = this.getMappingRowsForBase(relation.mapping_table_name, baseId);
-                relation.mappingRows = mappingRows;
-                var userDao; // TODO do this for all known types
+                  if (relation.relation_name === 'media') {
+                    userDao = MediaDao.readTable(this.geoPackage, relation.related_table_name);
+                  } else {
+                    userDao = UserDao.readTable(this.geoPackage, relation.related_table_name);
+                  }
 
-                if (relation.relation_name === 'media') {
-                  userDao = MediaDao.readTable(this.geoPackage, relation.related_table_name);
+                  for (var m = 0; m < mappingRows.length; m++) {
+                    var mappingRow = mappingRows[m];
+                    mappingRow.row = userDao.queryForId(mappingRow.related_id);
+                  }
+                }
+
+                return relationships;
+              }
+              /**
+               * Convience object to build a Relationship object for querying and adding
+               * @typedef {Object} module:extension/relatedTables~Relationship
+               * @property  {module:extension/relatedTables~RelationType} relationType type of relationship
+               * @property  {string} baseTableName base table name
+               * @property  {string} relatedTableName related table name
+               * @property  {string} relationAuthor relationship author
+               * @property  {string} mappingTableName mapping table name
+               * @property  {module:extension/relatedTables~UserMappingTable} userMappingTable UserMappingTable
+               * @property  {module:extension/relatedTables~UserRelatedTable} relatedTable UserRelatedTable
+               */
+
+
+              getRelationshipBuilder() {
+                return RelatedTablesExtension.RelationshipBuilder();
+              }
+              /**
+               * Adds a relationship to the GeoPackage
+               * @param  {module:extension/relatedTables~Relationship|module:extension/relatedTables~ExtendedRelation} relationship relationship to add
+               * @return {Promise<module:extension/relatedTables~ExtendedRelation>}
+               */
+
+
+              addRelationship(relationship) {
+                var extendedRelation = this.extendedRelationDao.createObject();
+                var userMappingTable = relationship.userMappingTable;
+
+                if (relationship.hasOwnProperty('base_table_name')) {
+                  extendedRelation = relationship;
+                  userMappingTable = UserMappingTable.create(extendedRelation.mapping_table_name);
                 } else {
-                  userDao = UserDao.readTable(this.geoPackage, relation.related_table_name);
+                  if (relationship.relationType) {
+                    relationship.relationName = relationship.relationType.name;
+                  }
+
+                  if (relationship.relationAuthor) {
+                    relationship.relationName = this.buildRelationName(relationship.relationAuthor, relationship.relationName);
+                  }
+
+                  if (relationship.mappingTableName) {
+                    userMappingTable = UserMappingTable.create(relationship.mappingTableName);
+                  }
+
+                  if (relationship.relatedTable) {
+                    this.createRelatedTable(relationship.relatedTable);
+                    relationship.relatedTableName = relationship.relatedTable.table_name;
+                    relationship.relationName = relationship.relatedTable.relation_name;
+                  }
+
+                  extendedRelation.base_table_name = relationship.baseTableName;
+                  extendedRelation.base_primary_column = this.getPrimaryKeyColumnName(relationship.baseTableName);
+                  extendedRelation.related_table_name = relationship.relatedTableName;
+                  extendedRelation.related_primary_column = this.getPrimaryKeyColumnName(relationship.relatedTableName);
+                  extendedRelation.mapping_table_name = userMappingTable.table_name;
+                  extendedRelation.relation_name = relationship.relationName;
                 }
 
-                for (var m = 0; m < mappingRows.length; m++) {
-                  var mappingRow = mappingRows[m];
-                  mappingRow.row = userDao.queryForId(mappingRow.related_id);
+                if (!this.validateRelationship(extendedRelation.base_table_name, extendedRelation.related_table_name, extendedRelation.relation_name)) {
+                  return Promise.resolve(false);
                 }
+
+                return this.createUserMappingTable(userMappingTable).then(function () {
+                  var mappingTableRelations = this.extendedRelationDao.queryByMappingTableName(extendedRelation.mapping_table_name);
+
+                  if (mappingTableRelations.length) {
+                    return mappingTableRelations[0];
+                  }
+
+                  this.extendedRelationDao.create(extendedRelation);
+                  return extendedRelation;
+                }.bind(this));
               }
-
-              return relationships;
-            };
-
-            RelatedTablesExtension.RelationshipBuilder = function () {
-              return OptionBuilder(['baseTableName', 'relatedTableName', 'userMappingTable', 'mappingTableName', 'relationName', 'relationAuthor', 'relationType', 'relatedTable']);
-            };
-            /**
-             * Convience object to build a Relationship object for querying and adding
-             * @typedef {Object} module:extension/relatedTables~Relationship
-             * @property  {module:extension/relatedTables~RelationType} relationType type of relationship
-             * @property  {string} baseTableName base table name
-             * @property  {string} relatedTableName related table name
-             * @property  {string} relationAuthor relationship author
-             * @property  {string} mappingTableName mapping table name
-             * @property  {module:extension/relatedTables~UserMappingTable} userMappingTable UserMappingTable
-             * @property  {module:extension/relatedTables~UserRelatedTable} relatedTable UserRelatedTable
-             */
+              /**
+               * Get the primary key column name from the specified table
+               * @param  {string} tableName table name
+               * @return {string}
+               */
 
 
-            RelatedTablesExtension.prototype.getRelationshipBuilder = function () {
-              return RelatedTablesExtension.RelationshipBuilder();
-            };
-            /**
-             * Adds a relationship to the GeoPackage
-             * @param  {module:extension/relatedTables~Relationship|module:extension/relatedTables~ExtendedRelation} relationship relationship to add
-             * @return {Promise<module:extension/relatedTables~ExtendedRelation>}
-             */
+              getPrimaryKeyColumnName(tableName) {
+                var reader = new UserTableReader(tableName);
+                var table = reader.readTable(this.geoPackage.getDatabase());
+                return table.getPkColumn().name;
+              }
+              /**
+               * Adds a features relationship between the base feature and related feature
+               * table. Creates a default user mapping table if needed.
+               * @param  {module:extension/relatedTables~Relationship|module:extension/relatedTables~ExtendedRelation} relationship relationship to add
+               * @return {Promise<module:extension/relatedTables~ExtendedRelation>}
+               */
 
 
-            RelatedTablesExtension.prototype.addRelationship = function (relationship) {
-              var extendedRelation = this.extendedRelationDao.createObject();
-              var userMappingTable = relationship.userMappingTable;
+              addFeaturesRelationship(relationship) {
+                if (relationship.hasOwnProperty('relation_name')) {
+                  relationship.relation_name = relationship.relation_name || RelationType.FEATURES.name;
+                } else {
+                  relationship.relationType = RelationType.FEATURES;
+                }
 
-              if (relationship.hasOwnProperty('base_table_name')) {
-                extendedRelation = relationship;
-                userMappingTable = UserMappingTable.create(extendedRelation.mapping_table_name);
-              } else {
+                return this.addRelationship(relationship);
+              }
+              /**
+               * Adds a tiles relationship between the base table and related tile
+               * table. Creates a default user mapping table if needed.
+               * @param  {module:extension/relatedTables~Relationship|module:extension/relatedTables~ExtendedRelation} relationship relationship to add
+               * @return {Promise<module:extension/relatedTables~ExtendedRelation>}
+               */
+
+
+              addTilesRelationship(relationship) {
+                if (relationship.hasOwnProperty('relation_name')) {
+                  relationship.relation_name = relationship.relation_name || RelationType.TILES.name;
+                } else {
+                  relationship.relationType = RelationType.TILES;
+                }
+
+                return this.addRelationship(relationship);
+              }
+              /**
+               * Adds an attributes relationship between the base table and related attribute
+               * table. Creates a default user mapping table if needed.
+               * @param  {module:extension/relatedTables~Relationship|module:extension/relatedTables~ExtendedRelation} relationship relationship to add
+               * @return {Promise<module:extension/relatedTables~ExtendedRelation>}
+               */
+
+
+              addAttributesRelationship(relationship) {
+                if (relationship.hasOwnProperty('relation_name')) {
+                  relationship.relation_name = relationship.relation_name || RelationType.ATTRIBUTES.name;
+                } else {
+                  relationship.relationType = RelationType.ATTRIBUTES;
+                }
+
+                return this.addRelationship(relationship);
+              }
+              /**
+               * Adds a simple attributes relationship between the base table and user
+               * simple attributes related table. Creates a default user mapping table and
+               * the simple attributes table if needed.
+               * @param  {module:extension/relatedTables~Relationship|module:extension/relatedTables~ExtendedRelation} relationship relationship to add
+               * @return {Promise<module:extension/relatedTables~ExtendedRelation>}
+               */
+
+
+              addSimpleAttributesRelationship(relationship) {
+                if (relationship.hasOwnProperty('relation_name')) {
+                  relationship.relation_name = relationship.relation_name || RelationType.SIMPLE_ATTRIBUTES.name;
+                } else {
+                  relationship.relationType = RelationType.SIMPLE_ATTRIBUTES;
+                }
+
+                return this.addRelationship(relationship);
+              }
+              /**
+               * Adds a media relationship between the base table and user media related
+               * table. Creates a default user mapping table and the media table if
+               * needed.
+               * @param  {module:extension/relatedTables~Relationship|module:extension/relatedTables~ExtendedRelation} relationship relationship to add
+               * @return {Promise<module:extension/relatedTables~ExtendedRelation>}
+               */
+
+
+              addMediaRelationship(relationship) {
+                if (relationship.hasOwnProperty('relation_name')) {
+                  relationship.relation_name = relationship.relation_name || RelationType.MEDIA.name;
+                } else {
+                  relationship.relationType = RelationType.MEDIA;
+                }
+
+                return this.addRelationship(relationship);
+              }
+              /**
+               * Remove a specific relationship from the GeoPackage
+               * @param  {module:extension/relatedTables~Relationship|module:extension/relatedTables~ExtendedRelation} relationship relationship to remove
+               * @return {Number} number of relationships removed
+               */
+
+
+              removeRelationship(relationship) {
+                // this is an ExtendedRelation
+                if (relationship.hasOwnProperty('base_table_name')) {
+                  relationship.baseTableName = relationship.base_table_name;
+                  relationship.relatedTableName = relationship.related_table_name;
+                  relationship.relationName = relationship.relation_name;
+                  relationship.userMappingTable = relationship.mapping_table_name;
+                }
+
                 if (relationship.relationType) {
                   relationship.relationName = relationship.relationType.name;
                 }
@@ -38228,428 +37880,278 @@
                   relationship.relationName = this.buildRelationName(relationship.relationAuthor, relationship.relationName);
                 }
 
-                if (relationship.mappingTableName) {
-                  userMappingTable = UserMappingTable.create(relationship.mappingTableName);
+                if (this.extendedRelationDao.isTableExists()) {
+                  var values = new ColumnValues();
+                  values.addColumn(ExtendedRelationDao.COLUMN_BASE_TABLE_NAME, relationship.baseTableName);
+                  values.addColumn(ExtendedRelationDao.COLUMN_RELATED_TABLE_NAME, relationship.relatedTableName);
+                  values.addColumn(ExtendedRelationDao.COLUMN_RELATION_NAME, relationship.relationName);
+                  var iterator = this.extendedRelationDao.queryForFieldValues(values);
+                  var tablesToDelete = [];
+
+                  for (var extendedRelation of iterator) {
+                    tablesToDelete.push(extendedRelation.mapping_table_name);
+                  }
+
+                  tablesToDelete.forEach(function (table) {
+                    this.geoPackage.deleteTable(table);
+                  }.bind(this));
+                  this.extensionsDao.deleteByExtensionAndTableName(RelatedTablesExtension.EXTENSION_NAME, relationship.userMappingTable);
+                  return this.extendedRelationDao.delete(extendedRelation);
                 }
 
-                if (relationship.relatedTable) {
-                  this.createRelatedTable(relationship.relatedTable);
-                  relationship.relatedTableName = relationship.relatedTable.table_name;
-                  relationship.relationName = relationship.relatedTable.relation_name;
+                return 0;
+              }
+              /**
+               * Create a default user mapping table and extension row if either does not
+               * exist. When not created, there is no guarantee that an existing table has
+               * the same schema as the provided tabled.
+               * @param  {string|module:extension/relatedTables~UserMappingTable} userMappingTableOrName user mapping table or name
+               * @return {Promise<Boolean>}
+               */
+
+
+              createUserMappingTable(userMappingTableOrName) {
+                var userMappingTable = userMappingTableOrName;
+
+                if (typeof userMappingTableOrName === 'string') {
+                  userMappingTable = UserMappingTable.create(userMappingTableOrName);
                 }
 
-                extendedRelation.base_table_name = relationship.baseTableName;
-                extendedRelation.base_primary_column = this.getPrimaryKeyColumnName(relationship.baseTableName);
-                extendedRelation.related_table_name = relationship.relatedTableName;
-                extendedRelation.related_primary_column = this.getPrimaryKeyColumnName(relationship.relatedTableName);
-                extendedRelation.mapping_table_name = userMappingTable.table_name;
-                extendedRelation.relation_name = relationship.relationName;
-              }
+                return this.getOrCreateMappingTable(userMappingTable.table_name).then(function () {
+                  if (!this.geoPackage.isTable(userMappingTable.table_name)) {
+                    return this.geoPackage.tableCreator.createUserTable(userMappingTable);
+                  }
 
-              if (!this.validateRelationship(extendedRelation.base_table_name, extendedRelation.related_table_name, extendedRelation.relation_name)) {
-                return Promise.resolve(false);
-              }
-
-              return this.createUserMappingTable(userMappingTable).then(function () {
-                var mappingTableRelations = this.extendedRelationDao.queryByMappingTableName(extendedRelation.mapping_table_name);
-
-                if (mappingTableRelations.length) {
-                  return mappingTableRelations[0];
-                }
-
-                this.extendedRelationDao.create(extendedRelation);
-                return extendedRelation;
-              }.bind(this));
-            };
-            /**
-             * Get the primary key column name from the specified table
-             * @param  {string} tableName table name
-             * @return {string}
-             */
-
-
-            RelatedTablesExtension.prototype.getPrimaryKeyColumnName = function (tableName) {
-              var reader = new UserTableReader(tableName);
-              var table = reader.readTable(this.geoPackage.getDatabase());
-              return table.getPkColumn().name;
-            };
-            /**
-             * Adds a features relationship between the base feature and related feature
-             * table. Creates a default user mapping table if needed.
-             * @param  {module:extension/relatedTables~Relationship|module:extension/relatedTables~ExtendedRelation} relationship relationship to add
-             * @return {Promise<module:extension/relatedTables~ExtendedRelation>}
-             */
-
-
-            RelatedTablesExtension.prototype.addFeaturesRelationship = function (relationship) {
-              if (relationship.hasOwnProperty('relation_name')) {
-                relationship.relation_name = relationship.relation_name || RelationType.FEATURES.name;
-              } else {
-                relationship.relationType = RelationType.FEATURES;
-              }
-
-              return this.addRelationship(relationship);
-            };
-            /**
-             * Adds a tiles relationship between the base table and related tile
-             * table. Creates a default user mapping table if needed.
-             * @param  {module:extension/relatedTables~Relationship|module:extension/relatedTables~ExtendedRelation} relationship relationship to add
-             * @return {Promise<module:extension/relatedTables~ExtendedRelation>}
-             */
-
-
-            RelatedTablesExtension.prototype.addTilesRelationship = function (relationship) {
-              if (relationship.hasOwnProperty('relation_name')) {
-                relationship.relation_name = relationship.relation_name || RelationType.TILES.name;
-              } else {
-                relationship.relationType = RelationType.TILES;
-              }
-
-              return this.addRelationship(relationship);
-            };
-            /**
-             * Adds an attributes relationship between the base table and related attribute
-             * table. Creates a default user mapping table if needed.
-             * @param  {module:extension/relatedTables~Relationship|module:extension/relatedTables~ExtendedRelation} relationship relationship to add
-             * @return {Promise<module:extension/relatedTables~ExtendedRelation>}
-             */
-
-
-            RelatedTablesExtension.prototype.addAttributesRelationship = function (relationship) {
-              if (relationship.hasOwnProperty('relation_name')) {
-                relationship.relation_name = relationship.relation_name || RelationType.ATTRIBUTES.name;
-              } else {
-                relationship.relationType = RelationType.ATTRIBUTES;
-              }
-
-              return this.addRelationship(relationship);
-            };
-            /**
-             * Adds a simple attributes relationship between the base table and user
-             * simple attributes related table. Creates a default user mapping table and
-             * the simple attributes table if needed.
-             * @param  {module:extension/relatedTables~Relationship|module:extension/relatedTables~ExtendedRelation} relationship relationship to add
-             * @return {Promise<module:extension/relatedTables~ExtendedRelation>}
-             */
-
-
-            RelatedTablesExtension.prototype.addSimpleAttributesRelationship = function (relationship) {
-              if (relationship.hasOwnProperty('relation_name')) {
-                relationship.relation_name = relationship.relation_name || RelationType.SIMPLE_ATTRIBUTES.name;
-              } else {
-                relationship.relationType = RelationType.SIMPLE_ATTRIBUTES;
-              }
-
-              return this.addRelationship(relationship);
-            };
-            /**
-             * Adds a media relationship between the base table and user media related
-             * table. Creates a default user mapping table and the media table if
-             * needed.
-             * @param  {module:extension/relatedTables~Relationship|module:extension/relatedTables~ExtendedRelation} relationship relationship to add
-             * @return {Promise<module:extension/relatedTables~ExtendedRelation>}
-             */
-
-
-            RelatedTablesExtension.prototype.addMediaRelationship = function (relationship) {
-              if (relationship.hasOwnProperty('relation_name')) {
-                relationship.relation_name = relationship.relation_name || RelationType.MEDIA.name;
-              } else {
-                relationship.relationType = RelationType.MEDIA;
-              }
-
-              return this.addRelationship(relationship);
-            };
-            /**
-             * Remove a specific relationship from the GeoPackage
-             * @param  {module:extension/relatedTables~Relationship|module:extension/relatedTables~ExtendedRelation} relationship relationship to remove
-             * @return {Number} number of relationships removed
-             */
-
-
-            RelatedTablesExtension.prototype.removeRelationship = function (relationship) {
-              // this is an ExtendedRelation
-              if (relationship.hasOwnProperty('base_table_name')) {
-                relationship.baseTableName = relationship.base_table_name;
-                relationship.relatedTableName = relationship.related_table_name;
-                relationship.relationName = relationship.relation_name;
-                relationship.userMappingTable = relationship.mapping_table_name;
-              }
-
-              if (relationship.relationType) {
-                relationship.relationName = relationship.relationType.name;
-              }
-
-              if (relationship.relationAuthor) {
-                relationship.relationName = this.buildRelationName(relationship.relationAuthor, relationship.relationName);
-              }
-
-              if (this.extendedRelationDao.isTableExists()) {
-                var values = new ColumnValues();
-                values.addColumn(ExtendedRelationDao.COLUMN_BASE_TABLE_NAME, relationship.baseTableName);
-                values.addColumn(ExtendedRelationDao.COLUMN_RELATED_TABLE_NAME, relationship.relatedTableName);
-                values.addColumn(ExtendedRelationDao.COLUMN_RELATION_NAME, relationship.relationName);
-                var iterator = this.extendedRelationDao.queryForFieldValues(values);
-                var tablesToDelete = [];
-
-                for (var extendedRelation of iterator) {
-                  tablesToDelete.push(extendedRelation.mapping_table_name);
-                }
-
-                tablesToDelete.forEach(function (table) {
-                  this.geoPackage.deleteTable(table);
+                  return true;
                 }.bind(this));
-                this.extensionsDao.deleteByExtensionAndTableName(RelatedTablesExtension.EXTENSION_NAME, relationship.userMappingTable);
-                return this.extendedRelationDao.delete(extendedRelation);
               }
-
-              return 0;
-            };
-            /**
-             * Create a default user mapping table and extension row if either does not
-             * exist. When not created, there is no guarantee that an existing table has
-             * the same schema as the provided tabled.
-             * @param  {string|module:extension/relatedTables~UserMappingTable} userMappingTableOrName user mapping table or name
-             * @return {Promise<Boolean>}
-             */
+              /**
+               * Create a user related table if it does not exist. When not created, there
+               * is no guarantee that an existing table has the same schema as the
+               * provided tabled.
+               * @param  {module:extension/relatedTables~UserRelatedTable} relatedTable user related table
+               * @return {Boolean} true if the table now exists
+               */
 
 
-            RelatedTablesExtension.prototype.createUserMappingTable = function (userMappingTableOrName) {
-              var userMappingTable = userMappingTableOrName;
-
-              if (typeof userMappingTableOrName === 'string') {
-                userMappingTable = UserMappingTable.create(userMappingTableOrName);
-              }
-
-              return this.getOrCreateMappingTable(userMappingTable.table_name).then(function () {
-                if (!this.geoPackage.isTable(userMappingTable.table_name)) {
-                  return this.geoPackage.tableCreator.createUserTable(userMappingTable);
+              createRelatedTable(relatedTable) {
+                if (!this.geoPackage.isTable(relatedTable.table_name)) {
+                  this.geoPackage.tableCreator.createUserTable(relatedTable);
+                  var contents = new Contents();
+                  contents.table_name = relatedTable.table_name;
+                  contents.data_type = relatedTable.data_type;
+                  contents.identifier = relatedTable.table_name;
+                  this.geoPackage.getContentsDao().create(contents);
+                  var refreshed = this.geoPackage.getContentsDao().refresh(contents);
+                  relatedTable.setContents(refreshed);
                 }
 
                 return true;
-              }.bind(this));
-            };
-            /**
-             * Create a user related table if it does not exist. When not created, there
-             * is no guarantee that an existing table has the same schema as the
-             * provided tabled.
-             * @param  {module:extension/relatedTables~UserRelatedTable} relatedTable user related table
-             * @return {Boolean} true if the table now exists
-             */
-
-
-            RelatedTablesExtension.prototype.createRelatedTable = function (relatedTable) {
-              if (!this.geoPackage.isTable(relatedTable.table_name)) {
-                this.geoPackage.tableCreator.createUserTable(relatedTable);
-                var contents = new Contents();
-                contents.table_name = relatedTable.table_name;
-                contents.data_type = relatedTable.data_type;
-                contents.identifier = relatedTable.table_name;
-                this.geoPackage.getContentsDao().create(contents);
-                var refreshed = this.geoPackage.getContentsDao().refresh(contents);
-                relatedTable.setContents(refreshed);
               }
-
-              return true;
-            };
-            /**
-             * Validate that the relation name is valid between the base and related tables
-             * @param  {string} baseTableName    base table name
-             * @param  {string} relatedTableName related table name
-             * @param  {string} relationName     relation name
-             * @return {Boolean}
-             */
+              /**
+               * Validate that the relation name is valid between the base and related tables
+               * @param  {string} baseTableName    base table name
+               * @param  {string} relatedTableName related table name
+               * @param  {string} relationName     relation name
+               * @return {Boolean}
+               */
 
 
-            RelatedTablesExtension.prototype.validateRelationship = function (baseTableName, relatedTableName, relationName) {
-              // Verify the base and related tables exist
-              if (!this.geoPackage.isTable(baseTableName)) {
-                console.log('Base relationship table does not exist: ' + baseTableName + ', Relation: ' + relationName);
-                return false;
-              }
-
-              if (!this.geoPackage.isTable(relatedTableName)) {
-                console.log('Related relationship table does not exist: ' + relatedTableName + ', Relation: ' + relationName);
-                return false;
-              } // Verify spec defined relation types
-
-
-              var relationType = RelationType.fromName(relationName);
-
-              if (relationType) {
-                if (!this.geoPackage.isTableType(relationType.dataType, relatedTableName)) {
-                  console.log('The related table must be a ' + relationType.dataType + ' table.  Related Table: ' + relatedTableName + ', Type: ' + this.geoPackage.getTableType(relatedTableName));
+              validateRelationship(baseTableName, relatedTableName, relationName) {
+                // Verify the base and related tables exist
+                if (!this.geoPackage.isTable(baseTableName)) {
+                  console.log('Base relationship table does not exist: ' + baseTableName + ', Relation: ' + relationName);
                   return false;
                 }
 
+                if (!this.geoPackage.isTable(relatedTableName)) {
+                  console.log('Related relationship table does not exist: ' + relatedTableName + ', Relation: ' + relationName);
+                  return false;
+                } // Verify spec defined relation types
+
+
+                var relationType = RelationType.fromName(relationName);
+
+                if (relationType) {
+                  if (!this.geoPackage.isTableType(relationType.dataType, relatedTableName)) {
+                    console.log('The related table must be a ' + relationType.dataType + ' table.  Related Table: ' + relatedTableName + ', Type: ' + this.geoPackage.getTableType(relatedTableName));
+                    return false;
+                  }
+
+                  return true;
+                }
+
                 return true;
               }
-
-              return true;
-            };
-            /**
-             * Link related Ids
-             * @param  {string} baseTableName    base table name
-             * @param  {Number} baseId           base row id
-             * @param  {string} relatedTableName related table name
-             * @param  {Number} relatedId        related row id
-             * @param  {module:extension/relatedTables~RelationType} relationType     relation type
-             * @return {Promise}
-             */
+              /**
+               * Link related Ids
+               * @param  {string} baseTableName    base table name
+               * @param  {Number} baseId           base row id
+               * @param  {string} relatedTableName related table name
+               * @param  {Number} relatedId        related row id
+               * @param  {module:extension/relatedTables~RelationType} relationType     relation type
+               * @return {Promise}
+               */
 
 
-            RelatedTablesExtension.prototype.linkRelatedIds = function (baseTableName, baseId, relatedTableName, relatedId, relationType) {
-              var baseDao = UserDao.readTable(this.geoPackage, baseTableName);
-              var relatedDao = UserDao.readTable(this.geoPackage, relatedTableName);
-              var baseRow = baseDao.queryForId(baseId);
-              var relatedRow = relatedDao.queryForId(relatedId);
-              return baseDao.linkRelatedRow(baseRow, relatedRow, relationType);
-            };
-            /**
-             * Get the related id mappings for the base id
-             * @param  {string} mappingTableName mapping table name
-             * @param  {Number} baseId           base id
-             * @return {Number[]} ids of related items
-             */
-
-
-            RelatedTablesExtension.prototype.getMappingsForBase = function (mappingTableName, baseId) {
-              var mappingDao = this.getMappingDao(mappingTableName);
-              var results = mappingDao.queryByBaseId(baseId);
-              var relatedIds = [];
-
-              for (var i = 0; i < results.length; i++) {
-                var row = mappingDao.getUserMappingRow(results[i]);
-                relatedIds.push(row.getRelatedId());
+              linkRelatedIds(baseTableName, baseId, relatedTableName, relatedId, relationType) {
+                var baseDao = UserDao.readTable(this.geoPackage, baseTableName);
+                var relatedDao = UserDao.readTable(this.geoPackage, relatedTableName);
+                var baseRow = baseDao.queryForId(baseId);
+                var relatedRow = relatedDao.queryForId(relatedId);
+                return baseDao.linkRelatedRow(baseRow, relatedRow, relationType);
               }
-
-              return relatedIds;
-            };
-            /**
-             * Get the related id mapping rows for the base id
-             * @param  {string} mappingTableName mapping table name
-             * @param  {Number} baseId           base id
-             * @return {module:extension/relatedTables~UserMappingRow[]} user mapping rows
-             */
+              /**
+               * Get the related id mappings for the base id
+               * @param  {string} mappingTableName mapping table name
+               * @param  {Number} baseId           base id
+               * @return {Number[]} ids of related items
+               */
 
 
-            RelatedTablesExtension.prototype.getMappingRowsForBase = function (mappingTableName, baseId) {
-              var mappingDao = this.getMappingDao(mappingTableName);
-              return mappingDao.queryByBaseId(baseId);
-            };
-            /**
-             * Get the base id mappings for the base id
-             * @param  {string} mappingTableName mapping table name
-             * @param  {Number} relatedId           related id
-             * @return {Number[]} ids of base items
-             */
+              getMappingsForBase(mappingTableName, baseId) {
+                var mappingDao = this.getMappingDao(mappingTableName);
+                var results = mappingDao.queryByBaseId(baseId);
+                var relatedIds = [];
 
-
-            RelatedTablesExtension.prototype.getMappingsForRelated = function (mappingTableName, relatedId) {
-              var mappingDao = this.getMappingDao(mappingTableName);
-              var results = mappingDao.queryByRelatedId(relatedId);
-              var baseIds = [];
-
-              for (var i = 0; i < results.length; i++) {
-                var row = mappingDao.getUserMappingRow(results[i]);
-                baseIds.push(row.getBaseId());
-              }
-
-              return baseIds;
-            };
-            /**
-             * Returns a {module:extension/relatedTables~MediaDao} from the table specified
-             * @param  {string|module:extension/relatedTables~MediaTable} tableName either a table name or a MediaTable
-             * @return {module:extension/relatedTables~MediaDao}
-             */
-
-
-            RelatedTablesExtension.prototype.getMediaDao = function (tableName) {
-              var table;
-
-              if (tableName.TABLE_TYPE && tableName.TABLE_TYPE === 'media') {
-                table = tableName;
-              } else {
-                if (tableName.related_table_name) {
-                  tableName = tableName.related_table_name;
+                for (var i = 0; i < results.length; i++) {
+                  var row = mappingDao.getUserMappingRow(results[i]);
+                  relatedIds.push(row.getRelatedId());
                 }
 
-                var reader = new UserTableReader(tableName, MediaTable.requiredColumns());
-                var userTable = reader.readTable(this.geoPackage.getDatabase());
-                table = new MediaTable(userTable.table_name, userTable.columns, MediaTable.requiredColumns());
-                table.setContents(this.geoPackage.getContentsDao().queryForId(table.table_name));
+                return relatedIds;
               }
-
-              return new MediaDao(this.geoPackage, table);
-            };
-            /**
-             * Returns a {module:extension/relatedTables~SimpleAttributesDao} from the table specified
-             * @param  {string|module:extension/relatedTables~SimpleAttributesDao} tableName either a table name or a SimpleAttributesDao
-             * @return {module:extension/relatedTables~SimpleAttributesDao}
-             */
+              /**
+               * Get the related id mapping rows for the base id
+               * @param  {string} mappingTableName mapping table name
+               * @param  {Number} baseId           base id
+               * @return {module:extension/relatedTables~UserMappingRow[]} user mapping rows
+               */
 
 
-            RelatedTablesExtension.prototype.getSimpleAttributesDao = function (tableName) {
-              var table;
+              getMappingRowsForBase(mappingTableName, baseId) {
+                var mappingDao = this.getMappingDao(mappingTableName);
+                return mappingDao.queryByBaseId(baseId);
+              }
+              /**
+               * Get the base id mappings for the base id
+               * @param  {string} mappingTableName mapping table name
+               * @param  {Number} relatedId           related id
+               * @return {Number[]} ids of base items
+               */
 
-              if (tableName.TABLE_TYPE && tableName.TABLE_TYPE === 'simple_attributes') {
-                table = tableName;
-              } else {
-                if (tableName.related_table_name) {
-                  tableName = tableName.related_table_name;
+
+              getMappingsForRelated(mappingTableName, relatedId) {
+                var mappingDao = this.getMappingDao(mappingTableName);
+                var results = mappingDao.queryByRelatedId(relatedId);
+                var baseIds = [];
+
+                for (var i = 0; i < results.length; i++) {
+                  var row = mappingDao.getUserMappingRow(results[i]);
+                  baseIds.push(row.getBaseId());
                 }
 
-                var reader = new UserTableReader(tableName, SimpleAttributesTable.requiredColumns());
-                var userTable = reader.readTable(this.geoPackage.getDatabase());
-                table = new SimpleAttributesTable(userTable.table_name, userTable.columns, SimpleAttributesTable.requiredColumns());
-                table.setContents(this.geoPackage.getContentsDao().queryForId(table.table_name));
+                return baseIds;
+              }
+              /**
+               * Returns a {module:extension/relatedTables~MediaDao} from the table specified
+               * @param  {string|module:extension/relatedTables~MediaTable} tableName either a table name or a MediaTable
+               * @return {module:extension/relatedTables~MediaDao}
+               */
+
+
+              getMediaDao(tableName) {
+                var table;
+
+                if (tableName.TABLE_TYPE && tableName.TABLE_TYPE === 'media') {
+                  table = tableName;
+                } else {
+                  if (tableName.related_table_name) {
+                    tableName = tableName.related_table_name;
+                  }
+
+                  var reader = new UserTableReader(tableName, MediaTable.requiredColumns());
+                  var userTable = reader.readTable(this.geoPackage.getDatabase());
+                  table = new MediaTable(userTable.table_name, userTable.columns, MediaTable.requiredColumns());
+                  table.setContents(this.geoPackage.getContentsDao().queryForId(table.table_name));
+                }
+
+                return new MediaDao(this.geoPackage, table);
+              }
+              /**
+               * Returns a {module:extension/relatedTables~SimpleAttributesDao} from the table specified
+               * @param  {string|module:extension/relatedTables~SimpleAttributesDao} tableName either a table name or a SimpleAttributesDao
+               * @return {module:extension/relatedTables~SimpleAttributesDao}
+               */
+
+
+              getSimpleAttributesDao(tableName) {
+                var table;
+
+                if (tableName.TABLE_TYPE && tableName.TABLE_TYPE === 'simple_attributes') {
+                  table = tableName;
+                } else {
+                  if (tableName.related_table_name) {
+                    tableName = tableName.related_table_name;
+                  }
+
+                  var reader = new UserTableReader(tableName, SimpleAttributesTable.requiredColumns());
+                  var userTable = reader.readTable(this.geoPackage.getDatabase());
+                  table = new SimpleAttributesTable(userTable.table_name, userTable.columns, SimpleAttributesTable.requiredColumns());
+                  table.setContents(this.geoPackage.getContentsDao().queryForId(table.table_name));
+                }
+
+                return new SimpleAttributesDao(this.geoPackage, table);
+              }
+              /**
+               * Builds the custom relation name with the author
+               * @param  {string} author author
+               * @param  {string} name   name
+               * @return {string}
+               */
+
+
+              buildRelationName(author, name) {
+                return 'x-' + author + '_' + name;
+              }
+              /**
+               * Remove all traces of the extension
+               */
+
+
+              removeExtension() {
+                if (this.extendedRelationDao.isTableExists()) {
+                  var extendedRelations = this.extendedRelationDao.queryForAll();
+                  extendedRelations.forEach(function (relation) {
+                    this.geoPackage.deleteTable(relation.mapping_table_name);
+                  }.bind(this));
+                  this.geoPackage.deleteTable(ExtendedRelationDao.TABLE_NAME);
+                }
+
+                if (this.extensionsDao.isTableExists()) {
+                  this.extensionsDao.deleteByExtension(RelatedTablesExtension.EXTENSION_NAME);
+                }
+              }
+              /**
+               * Determine if the GeoPackage has the extension
+               * @param  {string} [mappingTableName] mapping table name to check, if not specified, this checks for any mapping table name
+               * @return {Boolean}
+               */
+
+
+              has(mappingTableName) {
+                if (mappingTableName) {
+                  return this.hasExtension(RelatedTablesExtension.EXTENSION_NAME, ExtendedRelationDao.TABLE_NAME) && this.hasExtension(RelatedTablesExtension.EXTENSION_NAME, mappingTableName);
+                }
+
+                return this.hasExtension(RelatedTablesExtension.EXTENSION_NAME, ExtendedRelationDao.TABLE_NAME);
               }
 
-              return new SimpleAttributesDao(this.geoPackage, table);
-            };
-            /**
-             * Builds the custom relation name with the author
-             * @param  {string} author author
-             * @param  {string} name   name
-             * @return {string}
-             */
-
-
-            RelatedTablesExtension.prototype.buildRelationName = function (author, name) {
-              return 'x-' + author + '_' + name;
-            };
-            /**
-             * Remove all traces of the extension
-             */
-
-
-            RelatedTablesExtension.prototype.removeExtension = function () {
-              if (this.extendedRelationDao.isTableExists()) {
-                var extendedRelations = this.extendedRelationDao.queryForAll();
-                extendedRelations.forEach(function (relation) {
-                  this.geoPackage.deleteTable(relation.mapping_table_name);
-                }.bind(this));
-                this.geoPackage.deleteTable(ExtendedRelationDao.TABLE_NAME);
+              static RelationshipBuilder() {
+                return OptionBuilder(['baseTableName', 'relatedTableName', 'userMappingTable', 'mappingTableName', 'relationName', 'relationAuthor', 'relationType', 'relatedTable']);
               }
 
-              if (this.extensionsDao.isTableExists()) {
-                this.extensionsDao.deleteByExtension(RelatedTablesExtension.EXTENSION_NAME);
-              }
-            };
-            /**
-             * Determine if the GeoPackage has the extension
-             * @param  {string} [mappingTableName] mapping table name to check, if not specified, this checks for any mapping table name
-             * @return {Boolean}
-             */
-
-
-            RelatedTablesExtension.prototype.has = function (mappingTableName) {
-              if (mappingTableName) {
-                return this.hasExtension(RelatedTablesExtension.EXTENSION_NAME, ExtendedRelationDao.TABLE_NAME) && this.hasExtension(RelatedTablesExtension.EXTENSION_NAME, mappingTableName);
-              }
-
-              return this.hasExtension(RelatedTablesExtension.EXTENSION_NAME, ExtendedRelationDao.TABLE_NAME);
-            };
+            }
 
             RelatedTablesExtension.EXTENSION_NAME = 'related_tables';
             RelatedTablesExtension.EXTENSION_RELATED_TABLES_AUTHOR = 'gpkg';
@@ -38754,28 +38256,31 @@
              * @param  {module:user/userColumn~UserColumn[]} columns   attribute columns
              */
 
-            var AttributeTable = function (tableName, columns) {
-              /**
-               * Contents of this AttributeTable
-               * @member {module:core/contents~Contents}
-               */
-              this.contents;
-              UserTable.call(this, tableName, columns);
-            };
+            class AttributeTable extends UserTable {
+              constructor(tableName, columns) {
+                super(tableName, columns);
+                /**
+                 * Contents of this AttributeTable
+                 * @member {module:core/contents~Contents}
+                 */
 
-            util.inherits(AttributeTable, UserTable);
-            /**
-             * Set the contents
-             * @param  {module:core/contents~Contents} contents the contents
-             */
-
-            AttributeTable.prototype.setContents = function (contents) {
-              this.contents = contents;
-
-              if (contents.data_type !== ContentsDao.GPKG_CDT_ATTRIBUTES_NAME) {
-                throw new Error('The Contents of an Attributes Table must have a data type of ' + ContentsDao.GPKG_CDT_ATTRIBUTES_NAME);
+                this.contents;
               }
-            };
+              /**
+               * Set the contents
+               * @param  {module:core/contents~Contents} contents the contents
+               */
+
+
+              setContents(contents) {
+                this.contents = contents;
+
+                if (contents.data_type !== ContentsDao.GPKG_CDT_ATTRIBUTES_NAME) {
+                  throw new Error('The Contents of an Attributes Table must have a data type of ' + ContentsDao.GPKG_CDT_ATTRIBUTES_NAME);
+                }
+              }
+
+            }
 
             /**
              * attributeTableReader module.
@@ -38788,18 +38293,15 @@
             * @classdesc Reads the metadata from an existing attributes table
             */
 
-            var AttributeTableReader = function (tableName) {
-              UserTableReader.call(this, tableName);
-            };
+            class AttributeTableReader extends UserTableReader {
+              /**
+               * @inheritdoc
+               */
+              createTable(tableName, columns) {
+                return new AttributeTable(tableName, columns);
+              }
 
-            util.inherits(AttributeTableReader, UserTableReader);
-            /**
-             * @inheritdoc
-             */
-
-            AttributeTableReader.prototype.createTable = function (tableName, columns) {
-              return new AttributeTable(tableName, columns);
-            };
+            }
 
             /**
              * AttributeRow module.
@@ -38814,11 +38316,7 @@
              * @param  {module:dao/columnValues~ColumnValues[]} values      values
              */
 
-            var AttributeRow = function (attributeTable, columnTypes, values) {
-              UserRow.call(this, attributeTable, columnTypes, values);
-            };
-
-            util.inherits(AttributeRow, UserRow);
+            class AttributeRow extends UserRow {}
 
             /**
              * @module attributes/attributeDao
@@ -42280,6 +41778,557 @@
 
               return ret;
             }
+
+            var inherits$1;
+
+            if (typeof Object.create === 'function') {
+              inherits$1 = function inherits(ctor, superCtor) {
+                // implementation from standard node.js 'util' module
+                ctor.super_ = superCtor;
+                ctor.prototype = Object.create(superCtor.prototype, {
+                  constructor: {
+                    value: ctor,
+                    enumerable: false,
+                    writable: true,
+                    configurable: true
+                  }
+                });
+              };
+            } else {
+              inherits$1 = function inherits(ctor, superCtor) {
+                ctor.super_ = superCtor;
+
+                var TempCtor = function () {};
+
+                TempCtor.prototype = superCtor.prototype;
+                ctor.prototype = new TempCtor();
+                ctor.prototype.constructor = ctor;
+              };
+            }
+
+            var inherits$2 = inherits$1;
+
+            var formatRegExp = /%[sdj%]/g;
+            function format(f) {
+              if (!isString(f)) {
+                var objects = [];
+
+                for (var i = 0; i < arguments.length; i++) {
+                  objects.push(inspect(arguments[i]));
+                }
+
+                return objects.join(' ');
+              }
+
+              var i = 1;
+              var args = arguments;
+              var len = args.length;
+              var str = String(f).replace(formatRegExp, function (x) {
+                if (x === '%%') return '%';
+                if (i >= len) return x;
+
+                switch (x) {
+                  case '%s':
+                    return String(args[i++]);
+
+                  case '%d':
+                    return Number(args[i++]);
+
+                  case '%j':
+                    try {
+                      return JSON.stringify(args[i++]);
+                    } catch (_) {
+                      return '[Circular]';
+                    }
+
+                  default:
+                    return x;
+                }
+              });
+
+              for (var x = args[i]; i < len; x = args[++i]) {
+                if (isNull(x) || !isObject(x)) {
+                  str += ' ' + x;
+                } else {
+                  str += ' ' + inspect(x);
+                }
+              }
+
+              return str;
+            }
+            // Returns a modified function which warns once by default.
+            // If --no-deprecation is set, then it is a no-op.
+
+            function deprecate(fn, msg) {
+              // Allow for deprecating things in the process of starting up.
+              if (isUndefined(global$1.process)) {
+                return function () {
+                  return deprecate(fn, msg).apply(this, arguments);
+                };
+              }
+
+              var warned = false;
+
+              function deprecated() {
+                if (!warned) {
+                  {
+                    console.error(msg);
+                  }
+
+                  warned = true;
+                }
+
+                return fn.apply(this, arguments);
+              }
+
+              return deprecated;
+            }
+            var debugs = {};
+            var debugEnviron;
+            function debuglog(set) {
+              if (isUndefined(debugEnviron)) debugEnviron = '';
+              set = set.toUpperCase();
+
+              if (!debugs[set]) {
+                if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
+                  var pid = 0;
+
+                  debugs[set] = function () {
+                    var msg = format.apply(null, arguments);
+                    console.error('%s %d: %s', set, pid, msg);
+                  };
+                } else {
+                  debugs[set] = function () {};
+                }
+              }
+
+              return debugs[set];
+            }
+            /**
+             * Echos the value of a value. Trys to print the value out
+             * in the best way possible given the different types.
+             *
+             * @param {Object} obj The object to print out.
+             * @param {Object} opts Optional options object that alters the output.
+             */
+
+            /* legacy: obj, showHidden, depth, colors*/
+
+            function inspect(obj, opts) {
+              // default options
+              var ctx = {
+                seen: [],
+                stylize: stylizeNoColor
+              }; // legacy...
+
+              if (arguments.length >= 3) ctx.depth = arguments[2];
+              if (arguments.length >= 4) ctx.colors = arguments[3];
+
+              if (isBoolean(opts)) {
+                // legacy...
+                ctx.showHidden = opts;
+              } else if (opts) {
+                // got an "options" object
+                _extend(ctx, opts);
+              } // set default options
+
+
+              if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
+              if (isUndefined(ctx.depth)) ctx.depth = 2;
+              if (isUndefined(ctx.colors)) ctx.colors = false;
+              if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
+              if (ctx.colors) ctx.stylize = stylizeWithColor;
+              return formatValue(ctx, obj, ctx.depth);
+            } // http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
+
+            inspect.colors = {
+              'bold': [1, 22],
+              'italic': [3, 23],
+              'underline': [4, 24],
+              'inverse': [7, 27],
+              'white': [37, 39],
+              'grey': [90, 39],
+              'black': [30, 39],
+              'blue': [34, 39],
+              'cyan': [36, 39],
+              'green': [32, 39],
+              'magenta': [35, 39],
+              'red': [31, 39],
+              'yellow': [33, 39]
+            }; // Don't use 'blue' not visible on cmd.exe
+
+            inspect.styles = {
+              'special': 'cyan',
+              'number': 'yellow',
+              'boolean': 'yellow',
+              'undefined': 'grey',
+              'null': 'bold',
+              'string': 'green',
+              'date': 'magenta',
+              // "name": intentionally not styling
+              'regexp': 'red'
+            };
+
+            function stylizeWithColor(str, styleType) {
+              var style = inspect.styles[styleType];
+
+              if (style) {
+                return '\u001b[' + inspect.colors[style][0] + 'm' + str + '\u001b[' + inspect.colors[style][1] + 'm';
+              } else {
+                return str;
+              }
+            }
+
+            function stylizeNoColor(str, styleType) {
+              return str;
+            }
+
+            function arrayToHash(array) {
+              var hash = {};
+              array.forEach(function (val, idx) {
+                hash[val] = true;
+              });
+              return hash;
+            }
+
+            function formatValue(ctx, value, recurseTimes) {
+              // Provide a hook for user-specified inspect functions.
+              // Check that value is an object with an inspect function on it
+              if (ctx.customInspect && value && isFunction(value.inspect) && // Filter out the util module, it's inspect function is special
+              value.inspect !== inspect && // Also filter out any prototype objects using the circular check.
+              !(value.constructor && value.constructor.prototype === value)) {
+                var ret = value.inspect(recurseTimes, ctx);
+
+                if (!isString(ret)) {
+                  ret = formatValue(ctx, ret, recurseTimes);
+                }
+
+                return ret;
+              } // Primitive types cannot have properties
+
+
+              var primitive = formatPrimitive(ctx, value);
+
+              if (primitive) {
+                return primitive;
+              } // Look up the keys of the object.
+
+
+              var keys = Object.keys(value);
+              var visibleKeys = arrayToHash(keys);
+
+              if (ctx.showHidden) {
+                keys = Object.getOwnPropertyNames(value);
+              } // IE doesn't make error fields non-enumerable
+              // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
+
+
+              if (isError(value) && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
+                return formatError(value);
+              } // Some type of object without properties can be shortcutted.
+
+
+              if (keys.length === 0) {
+                if (isFunction(value)) {
+                  var name = value.name ? ': ' + value.name : '';
+                  return ctx.stylize('[Function' + name + ']', 'special');
+                }
+
+                if (isRegExp(value)) {
+                  return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+                }
+
+                if (isDate(value)) {
+                  return ctx.stylize(Date.prototype.toString.call(value), 'date');
+                }
+
+                if (isError(value)) {
+                  return formatError(value);
+                }
+              }
+
+              var base = '',
+                  array = false,
+                  braces = ['{', '}']; // Make Array say that they are Array
+
+              if (isArray$1(value)) {
+                array = true;
+                braces = ['[', ']'];
+              } // Make functions say that they are functions
+
+
+              if (isFunction(value)) {
+                var n = value.name ? ': ' + value.name : '';
+                base = ' [Function' + n + ']';
+              } // Make RegExps say that they are RegExps
+
+
+              if (isRegExp(value)) {
+                base = ' ' + RegExp.prototype.toString.call(value);
+              } // Make dates with properties first say the date
+
+
+              if (isDate(value)) {
+                base = ' ' + Date.prototype.toUTCString.call(value);
+              } // Make error with message first say the error
+
+
+              if (isError(value)) {
+                base = ' ' + formatError(value);
+              }
+
+              if (keys.length === 0 && (!array || value.length == 0)) {
+                return braces[0] + base + braces[1];
+              }
+
+              if (recurseTimes < 0) {
+                if (isRegExp(value)) {
+                  return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+                } else {
+                  return ctx.stylize('[Object]', 'special');
+                }
+              }
+
+              ctx.seen.push(value);
+              var output;
+
+              if (array) {
+                output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
+              } else {
+                output = keys.map(function (key) {
+                  return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
+                });
+              }
+
+              ctx.seen.pop();
+              return reduceToSingleString(output, base, braces);
+            }
+
+            function formatPrimitive(ctx, value) {
+              if (isUndefined(value)) return ctx.stylize('undefined', 'undefined');
+
+              if (isString(value)) {
+                var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '').replace(/'/g, "\\'").replace(/\\"/g, '"') + '\'';
+                return ctx.stylize(simple, 'string');
+              }
+
+              if (isNumber(value)) return ctx.stylize('' + value, 'number');
+              if (isBoolean(value)) return ctx.stylize('' + value, 'boolean'); // For some reason typeof null is "object", so special case here.
+
+              if (isNull(value)) return ctx.stylize('null', 'null');
+            }
+
+            function formatError(value) {
+              return '[' + Error.prototype.toString.call(value) + ']';
+            }
+
+            function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
+              var output = [];
+
+              for (var i = 0, l = value.length; i < l; ++i) {
+                if (hasOwnProperty(value, String(i))) {
+                  output.push(formatProperty(ctx, value, recurseTimes, visibleKeys, String(i), true));
+                } else {
+                  output.push('');
+                }
+              }
+
+              keys.forEach(function (key) {
+                if (!key.match(/^\d+$/)) {
+                  output.push(formatProperty(ctx, value, recurseTimes, visibleKeys, key, true));
+                }
+              });
+              return output;
+            }
+
+            function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
+              var name, str, desc;
+              desc = Object.getOwnPropertyDescriptor(value, key) || {
+                value: value[key]
+              };
+
+              if (desc.get) {
+                if (desc.set) {
+                  str = ctx.stylize('[Getter/Setter]', 'special');
+                } else {
+                  str = ctx.stylize('[Getter]', 'special');
+                }
+              } else {
+                if (desc.set) {
+                  str = ctx.stylize('[Setter]', 'special');
+                }
+              }
+
+              if (!hasOwnProperty(visibleKeys, key)) {
+                name = '[' + key + ']';
+              }
+
+              if (!str) {
+                if (ctx.seen.indexOf(desc.value) < 0) {
+                  if (isNull(recurseTimes)) {
+                    str = formatValue(ctx, desc.value, null);
+                  } else {
+                    str = formatValue(ctx, desc.value, recurseTimes - 1);
+                  }
+
+                  if (str.indexOf('\n') > -1) {
+                    if (array) {
+                      str = str.split('\n').map(function (line) {
+                        return '  ' + line;
+                      }).join('\n').substr(2);
+                    } else {
+                      str = '\n' + str.split('\n').map(function (line) {
+                        return '   ' + line;
+                      }).join('\n');
+                    }
+                  }
+                } else {
+                  str = ctx.stylize('[Circular]', 'special');
+                }
+              }
+
+              if (isUndefined(name)) {
+                if (array && key.match(/^\d+$/)) {
+                  return str;
+                }
+
+                name = JSON.stringify('' + key);
+
+                if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
+                  name = name.substr(1, name.length - 2);
+                  name = ctx.stylize(name, 'name');
+                } else {
+                  name = name.replace(/'/g, "\\'").replace(/\\"/g, '"').replace(/(^"|"$)/g, "'");
+                  name = ctx.stylize(name, 'string');
+                }
+              }
+
+              return name + ': ' + str;
+            }
+
+            function reduceToSingleString(output, base, braces) {
+              var length = output.reduce(function (prev, cur) {
+                if (cur.indexOf('\n') >= 0) ;
+                return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
+              }, 0);
+
+              if (length > 60) {
+                return braces[0] + (base === '' ? '' : base + '\n ') + ' ' + output.join(',\n  ') + ' ' + braces[1];
+              }
+
+              return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
+            } // NOTE: These type checking functions intentionally don't use `instanceof`
+            // because it is fragile and can be easily faked with `Object.create()`.
+
+
+            function isArray$1(ar) {
+              return Array.isArray(ar);
+            }
+            function isBoolean(arg) {
+              return typeof arg === 'boolean';
+            }
+            function isNull(arg) {
+              return arg === null;
+            }
+            function isNullOrUndefined(arg) {
+              return arg == null;
+            }
+            function isNumber(arg) {
+              return typeof arg === 'number';
+            }
+            function isString(arg) {
+              return typeof arg === 'string';
+            }
+            function isSymbol(arg) {
+              return typeof arg === 'symbol';
+            }
+            function isUndefined(arg) {
+              return arg === void 0;
+            }
+            function isRegExp(re) {
+              return isObject(re) && objectToString(re) === '[object RegExp]';
+            }
+            function isObject(arg) {
+              return typeof arg === 'object' && arg !== null;
+            }
+            function isDate(d) {
+              return isObject(d) && objectToString(d) === '[object Date]';
+            }
+            function isError(e) {
+              return isObject(e) && (objectToString(e) === '[object Error]' || e instanceof Error);
+            }
+            function isFunction(arg) {
+              return typeof arg === 'function';
+            }
+            function isPrimitive(arg) {
+              return arg === null || typeof arg === 'boolean' || typeof arg === 'number' || typeof arg === 'string' || typeof arg === 'symbol' || // ES6 symbol
+              typeof arg === 'undefined';
+            }
+            function isBuffer$1(maybeBuf) {
+              return isBuffer(maybeBuf);
+            }
+
+            function objectToString(o) {
+              return Object.prototype.toString.call(o);
+            }
+
+            function pad(n) {
+              return n < 10 ? '0' + n.toString(10) : n.toString(10);
+            }
+
+            var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']; // 26 Feb 16:19:34
+
+            function timestamp() {
+              var d = new Date();
+              var time = [pad(d.getHours()), pad(d.getMinutes()), pad(d.getSeconds())].join(':');
+              return [d.getDate(), months[d.getMonth()], time].join(' ');
+            } // log is just a thin wrapper to console.log that prepends a timestamp
+
+
+            function log() {
+              console.log('%s - %s', timestamp(), format.apply(null, arguments));
+            }
+            function _extend(origin, add) {
+              // Don't do anything if add isn't an object
+              if (!add || !isObject(add)) return origin;
+              var keys = Object.keys(add);
+              var i = keys.length;
+
+              while (i--) {
+                origin[keys[i]] = add[keys[i]];
+              }
+
+              return origin;
+            }
+
+            function hasOwnProperty(obj, prop) {
+              return Object.prototype.hasOwnProperty.call(obj, prop);
+            }
+
+            var util = {
+              inherits: inherits$2,
+              _extend: _extend,
+              log: log,
+              isBuffer: isBuffer$1,
+              isPrimitive: isPrimitive,
+              isFunction: isFunction,
+              isError: isError,
+              isDate: isDate,
+              isObject: isObject,
+              isRegExp: isRegExp,
+              isUndefined: isUndefined,
+              isSymbol: isSymbol,
+              isString: isString,
+              isNumber: isNumber,
+              isNullOrUndefined: isNullOrUndefined,
+              isNull: isNull,
+              isBoolean: isBoolean,
+              isArray: isArray$1,
+              inspect: inspect,
+              deprecate: deprecate,
+              format: format,
+              debuglog: debuglog
+            };
 
             function BufferList() {
               this.head = null;
@@ -69048,70 +69097,74 @@
              * @class
              */
 
-            var BaseExtension$1 = function (geoPackage) {
-              this.geoPackage = geoPackage;
-              this.connection = geoPackage.connection;
-              this.extensionsDao = geoPackage.getExtensionDao();
-            };
-            /**
-             * Get the extension or create as needed
-             * @param  {String}   extensionName extension name
-             * @param  {String}   tableName     table name
-             * @param  {String}   columnName    column name
-             * @param  {String}   definition    extension definition
-             * @param  {String}   scopeType     extension scope type
-             * @return {Promise<module:extension/baseExtension~BaseExtension>}
-             */
+            class BaseExtension$1 {
+              constructor(geoPackage) {
+                this.geoPackage = geoPackage;
+                this.connection = geoPackage.connection;
+                this.extensionsDao = geoPackage.getExtensionDao();
+              }
+              /**
+               * Get the extension or create as needed
+               * @param  {String}   extensionName extension name
+               * @param  {String}   tableName     table name
+               * @param  {String}   columnName    column name
+               * @param  {String}   definition    extension definition
+               * @param  {String}   scopeType     extension scope type
+               * @return {Promise<module:extension/baseExtension~BaseExtension>}
+               */
 
-            BaseExtension$1.prototype.getOrCreate = function (extensionName, tableName, columnName, definition, scopeType) {
-              var extension = this.getExtension(extensionName, tableName, columnName);
 
-              if (extension) {
-                return Promise.resolve(extension);
+              getOrCreate(extensionName, tableName, columnName, definition, scopeType) {
+                var extension = this.getExtension(extensionName, tableName, columnName);
+
+                if (extension) {
+                  return Promise.resolve(extension);
+                }
+
+                return this.extensionsDao.createTable().then(function () {
+                  return this.createExtension(extensionName, tableName, columnName, definition, scopeType);
+                }.bind(this));
+              }
+              /**
+               * Get the extension for the name, table name and column name
+               * @param  {String}   extensionName extension name
+               * @param  {String}   tableName     table name
+               * @param  {String}   columnName    column name
+               * @param  {Function} callback      Called with err if one occurred and the extension
+               */
+
+
+              getExtension(extensionName, tableName, columnName) {
+                if (!this.extensionsDao.isTableExists()) {
+                  return false;
+                }
+
+                return this.extensionsDao.queryByExtensionAndTableNameAndColumnName(extensionName, tableName, columnName);
+              }
+              /**
+               * Determine if the GeoPackage has the extension
+               * @param  {String}   extensionName extension name
+               * @param  {String}   tableName     table name
+               * @param  {String}   columnName    column name
+               */
+
+
+              hasExtension(extensionName, tableName, columnName) {
+                var exists = this.getExtension(extensionName, tableName, columnName);
+                return !!this.getExtension(extensionName, tableName, columnName).length;
               }
 
-              return this.extensionsDao.createTable().then(function () {
-                return this.createExtension(extensionName, tableName, columnName, definition, scopeType);
-              }.bind(this));
-            };
-            /**
-             * Get the extension for the name, table name and column name
-             * @param  {String}   extensionName extension name
-             * @param  {String}   tableName     table name
-             * @param  {String}   columnName    column name
-             * @param  {Function} callback      Called with err if one occurred and the extension
-             */
-
-
-            BaseExtension$1.prototype.getExtension = function (extensionName, tableName, columnName) {
-              if (!this.extensionsDao.isTableExists()) {
-                return false;
+              createExtension(extensionName, tableName, columnName, definition, scopeType) {
+                var extension = new Extension();
+                extension.table_name = tableName;
+                extension.column_name = columnName;
+                extension.extension_name = extensionName;
+                extension.definition = definition;
+                extension.scope = scopeType;
+                return this.extensionsDao.create(extension);
               }
 
-              return this.extensionsDao.queryByExtensionAndTableNameAndColumnName(extensionName, tableName, columnName);
-            };
-            /**
-             * Determine if the GeoPackage has the extension
-             * @param  {String}   extensionName extension name
-             * @param  {String}   tableName     table name
-             * @param  {String}   columnName    column name
-             */
-
-
-            BaseExtension$1.prototype.hasExtension = function (extensionName, tableName, columnName) {
-              var exists = this.getExtension(extensionName, tableName, columnName);
-              return !!this.getExtension(extensionName, tableName, columnName).length;
-            };
-
-            BaseExtension$1.prototype.createExtension = function (extensionName, tableName, columnName, definition, scopeType) {
-              var extension = new Extension();
-              extension.table_name = tableName;
-              extension.column_name = columnName;
-              extension.extension_name = extensionName;
-              extension.definition = definition;
-              extension.scope = scopeType;
-              return this.extensionsDao.create(extension);
-            };
+            }
 
             /**
              * MetadataExtension module.
@@ -69124,21 +69177,23 @@
              * @extends {module:extension/baseExtension~BaseExtension}
              */
 
-            var MetadataExtension = function (geoPackage) {
-              BaseExtension$1.call(this, geoPackage);
-              this.extensionName = MetadataExtension.EXTENSION_NAME;
-              this.extensionDefinition = MetadataExtension.EXTENSION_Metadata_DEFINITION;
-            };
+            class MetadataExtension extends BaseExtension$1 {
+              constructor(geoPackage) {
+                super(geoPackage);
+                this.extensionName = MetadataExtension.EXTENSION_NAME;
+                this.extensionDefinition = MetadataExtension.EXTENSION_Metadata_DEFINITION;
+              }
+              /**
+               * Get or create the metadata extension
+               * @return {Promise}
+               */
 
-            util.inherits(MetadataExtension, BaseExtension$1);
-            /**
-             * Get or create the metadata extension
-             * @return {Promise}
-             */
 
-            MetadataExtension.prototype.getOrCreateExtension = function () {
-              return this.getOrCreate(this.extensionName, null, null, this.extensionDefinition, Extension.READ_WRITE);
-            };
+              getOrCreateExtension() {
+                return this.getOrCreate(this.extensionName, null, null, this.extensionDefinition, Extension.READ_WRITE);
+              }
+
+            }
 
             MetadataExtension.EXTENSION_NAME = 'gpkg_metadata';
             MetadataExtension.EXTENSION_Metadata_AUTHOR = 'gpkg';
@@ -69151,16 +69206,17 @@
              * @see module:extension/BaseExtension
              */
 
-            var WebPExtension = function (geoPackage, tableName) {
-              BaseExtension.call(this, geoPackage);
-              this.tableName = tableName;
-            };
+            class WebPExtension extends BaseExtension {
+              constructor(geoPackage, tableName) {
+                super(geoPackage);
+                this.tableName = tableName;
+              }
 
-            util.inherits(WebPExtension, BaseExtension);
+              getOrCreateExtension() {
+                return this.getOrCreate(WebPExtension.EXTENSION_NAME, this.tableName, 'tile_data', WebPExtension.EXTENSION_WEBP_DEFINITION, Extension.READ_WRITE);
+              }
 
-            WebPExtension.prototype.getOrCreateExtension = function () {
-              return this.getOrCreate(WebPExtension.EXTENSION_NAME, this.tableName, 'tile_data', WebPExtension.EXTENSION_WEBP_DEFINITION, Extension.READ_WRITE);
-            };
+            }
 
             WebPExtension.EXTENSION_NAME = 'gpkg_webp';
             WebPExtension.EXTENSION_WEBP_AUTHOR = 'gpkg';
