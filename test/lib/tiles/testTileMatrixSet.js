@@ -1,4 +1,4 @@
-var GeoPackageAPI = require('../../..').GeoPackage
+var GeoPackageAPI = require('../../../lib').GeoPackage
   , TileMatrixSetDao = require('../../../lib/tiles/matrixset').TileMatrixSetDao
   , TileMatrixSet = require('../../../lib/tiles/matrixset').TileMatrixSet
   , BoundingBox = require('../../../lib/boundingBox').default
@@ -10,17 +10,13 @@ describe('Tile Matrix Set tests', function() {
   var geoPackage;
   var tileMatrixSetDao;
 
-  beforeEach('should open the geopackage', function(done) {
+  beforeEach('should open the geopackage', async function() {
     var filename = path.join(__dirname, '..', '..', 'fixtures', 'rivers.gpkg');
-    GeoPackageAPI.open(filename, function(err, gp) {
-      geoPackage = gp;
-      should.not.exist(err);
-      should.exist(gp);
-      should.exist(gp.getDatabase().getDBConnection());
-      gp.getPath().should.be.equal(filename);
-      tileMatrixSetDao = new TileMatrixSetDao(gp);
-      done();
-    });
+    geoPackage = await GeoPackageAPI.open(filename)
+    should.exist(geoPackage);
+    should.exist(geoPackage.getDatabase().getDBConnection());
+    geoPackage.getPath().should.be.equal(filename);
+    tileMatrixSetDao = new TileMatrixSetDao(geoPackage);
   });
 
   afterEach('should close the geopackage', function() {

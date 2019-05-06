@@ -1,4 +1,4 @@
-var GeoPackageAPI = require('../../../..').GeoPackage
+var GeoPackageAPI = require('../../../../lib').GeoPackage
   , ContentsDao = require('../../../../lib/core/contents').ContentsDao
   , Contents = require('../../../../lib/core/contents').Contents
   , TileMatrix = require('../../../../lib/tiles/matrix').TileMatrix
@@ -25,16 +25,13 @@ describe('Contents tests', function() {
   beforeEach('should open the geopackage', function(done) {
     var originalFilename = path.join(__dirname, '..', '..', '..', 'fixtures', 'rivers.gpkg');
     filename = path.join(__dirname, '..', '..', '..', 'fixtures', 'tmp', testSetup.createTempName());
-    copyGeopackage(originalFilename, filename, function() {
-      GeoPackageAPI.open(filename, function(err, gp) {
-        geoPackage = gp;
-        should.not.exist(err);
-        should.exist(gp);
-        should.exist(gp.getDatabase().getDBConnection());
-        gp.getPath().should.be.equal(filename);
-        contentsDao = new ContentsDao(gp);
-        done();
-      });
+    copyGeopackage(originalFilename, filename, async function() {
+      geoPackage = await GeoPackageAPI.open(filename)
+      should.exist(geoPackage);
+      should.exist(geoPackage.getDatabase().getDBConnection());
+      geoPackage.getPath().should.be.equal(filename);
+      contentsDao = new ContentsDao(geoPackage);
+      done();
     });
   });
 

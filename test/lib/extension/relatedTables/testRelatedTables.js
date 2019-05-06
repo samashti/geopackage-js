@@ -1,4 +1,4 @@
-var GeoPackageAPI = require('../../../../.').GeoPackage
+var GeoPackageAPI = require('../../../../lib').GeoPackage
   , Verification = require('../../../fixtures/verification')
   , RelatedTablesExtension = require('../../../../lib/extension/relatedTables').default
   , UserMappingTable = require('../../../../lib/extension/relatedTables/userMappingTable').default
@@ -30,11 +30,12 @@ describe('Related Tables tests', function() {
 
       var originalFilename = path.join(__dirname, '..', '..', '..', 'fixtures', 'rte.gpkg');
       filename = path.join(__dirname, '..', '..', '..', 'fixtures', 'tmp', testSetup.createTempName());
-      copyGeopackage(originalFilename, filename, function() {
-        GeoPackageAPI.open(filename, function(err, gp) {
-          geoPackage = gp;
-          done();
-        });
+      copyGeopackage(originalFilename, filename, async function() {
+        geoPackage = await GeoPackageAPI.open(filename)
+        should.exist(geoPackage);
+        should.exist(geoPackage.getDatabase().getDBConnection());
+        geoPackage.getPath().should.be.equal(filename);
+        done();
       });
     });
 
@@ -143,11 +144,12 @@ describe('Related Tables tests', function() {
 
       var originalFilename = path.join(__dirname, '..', '..', '..', 'fixtures', 'gdal_sample.gpkg');
       filename = path.join(__dirname, '..', '..', '..', 'fixtures', 'tmp', testSetup.createTempName());
-      copyGeopackage(originalFilename, filename, function() {
-        GeoPackageAPI.open(filename, function(err, gp) {
-          geoPackage = gp;
-          done();
-        });
+      copyGeopackage(originalFilename, filename, async function() {
+        geoPackage = await GeoPackageAPI.open(filename)
+        should.exist(geoPackage);
+        should.exist(geoPackage.getDatabase().getDBConnection());
+        geoPackage.getPath().should.be.equal(filename);
+        done();
       });
     });
 

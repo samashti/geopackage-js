@@ -1,4 +1,4 @@
-var GeoPackageAPI = require('../index').GeoPackage
+var GeoPackageAPI = require('../lib/index').GeoPackage
   , GeoPackageUtils = require('./geopackageUtils');
 
 var path = require('path')
@@ -23,42 +23,32 @@ describe('Create GeoPackage samples', function() {
       }
     });
 
-    it('output a 1.2 compliant GeoPackage', function() {
+    it('output a 1.2 compliant GeoPackage', async function() {
       this.timeout(60000);
       console.log('Create GeoPackage');
       try {
-
-      return GeoPackageAPI.create(testGeoPackage)
-      .then(function(gp) {
-        console.log('Created GeoPackage');
-        return geopackage = gp;
-      })
-      .then(GeoPackageUtils.createCRSWKTExtension)
-      .then(GeoPackageUtils.createFeatures)
-      .then(GeoPackageUtils.createSchemaExtension)
-      .then(GeoPackageUtils.createGeometryIndexExtension)
-      .then(GeoPackageUtils.createFeatureTileLinkExtension)
-      .then(GeoPackageUtils.createNonLinearGeometryTypesExtension)
-      .then(GeoPackageUtils.createRTreeSpatialIndexExtension)
-      .then(GeoPackageUtils.createRelatedTablesMediaExtension)
-      .then(GeoPackageUtils.createRelatedTablesFeaturesExtension)
-      .then(GeoPackageUtils.createTiles)
-      .then(GeoPackageUtils.createWebPExtension)
-      .then(GeoPackageUtils.createAttributes)
-      .then(GeoPackageUtils.createRelatedTablesSimpleAttributesExtension)
-      .then(GeoPackageUtils.createMetadataExtension)
-      .then(GeoPackageUtils.createCoverageDataExtension)
-      .then(GeoPackageUtils.createPropertiesExtension)
-      .then(function() {
+        let geopackage = await GeoPackageAPI.create(testGeoPackage)
+        GeoPackageUtils.createCRSWKTExtension(geopackage)
+        await GeoPackageUtils.createFeatures(geopackage)
+        await GeoPackageUtils.createSchemaExtension(geopackage)
+        await GeoPackageUtils.createGeometryIndexExtension(geopackage)
+        GeoPackageUtils.createFeatureTileLinkExtension(geopackage)
+        GeoPackageUtils.createNonLinearGeometryTypesExtension(geopackage)
+        await GeoPackageUtils.createRTreeSpatialIndexExtension(geopackage)
+        await GeoPackageUtils.createRelatedTablesMediaExtension(geopackage)
+        await GeoPackageUtils.createRelatedTablesFeaturesExtension(geopackage)
+        await GeoPackageUtils.createTiles(geopackage)
+        await GeoPackageUtils.createWebPExtension(geopackage)
+        await GeoPackageUtils.createAttributes(geopackage)
+        GeoPackageUtils.createRelatedTablesSimpleAttributesExtension(geopackage)
+        await GeoPackageUtils.createMetadataExtension(geopackage)
+        await GeoPackageUtils.createCoverageDataExtension(geopackage)
+        GeoPackageUtils.createPropertiesExtension(geopackage)
         geopackage.close();
-      })
-      .catch(function(error) {
-        console.log('error', error);
-        false.should.be.equal(true);
-      });
-    } catch (e) {
-      console.log('error', e)
-    }
+      } catch (e) {
+        console.log('error', e)
+        should.fail(e)
+      }
     });
   });
 

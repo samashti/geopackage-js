@@ -1,6 +1,6 @@
 var GeoPackageConnection = require('../../lib/db/geoPackageConnection').default
   , GeoPackage = require('../../lib/geoPackage').default
-  , GeoPackageAPI = require('../../.').GeoPackage
+  , GeoPackageAPI = require('../../lib').GeoPackage
   , FeatureColumn = require('../../lib/features/user/featureColumn').default
   , DataColumns = require('../../lib/dataColumns').DataColumns
   , DataColumnsDao = require('../../lib/dataColumns').DataColumnsDao

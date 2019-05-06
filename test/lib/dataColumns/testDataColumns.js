@@ -2,7 +2,7 @@ var DataColumnsDao = require('../../../lib/dataColumns').DataColumnsDao
   , DataColumns = require('../../../lib/dataColumns').DataColumns
   , DataColumnConstraintsDao = require('../../../lib/dataColumnConstraints').DataColumnConstraintsDao
   , DataColumnConstraints = require('../../../lib/dataColumnConstraints').DataColumnConstraints
-  , GeoPackageAPI = require('../../../.').GeoPackage
+  , GeoPackageAPI = require('../../../lib/.').GeoPackage
   , TableCreator = require('../../../lib/db/tableCreator').default
   , testSetup = require('../../fixtures/testSetup')
   , path = require('path')
@@ -28,15 +28,12 @@ describe('Data Columns tests', function() {
 
   beforeEach('create the GeoPackage connection', function(done) {
     filename = path.join(__dirname, '..', '..', 'fixtures', 'tmp', testSetup.createTempName());
-    copyGeopackage(originalFilename, filename, function(err) {
-      GeoPackageAPI.open(filename, function(err, gp) {
-        geoPackage = gp;
-        should.not.exist(err);
-        should.exist(gp);
-        should.exist(gp.getDatabase().getDBConnection());
-        gp.getPath().should.be.equal(filename);
-        done();
-      });
+    copyGeopackage(originalFilename, filename, async function(err) {
+      geoPackage = await GeoPackageAPI.open(filename)
+      should.exist(geoPackage);
+      should.exist(geoPackage.getDatabase().getDBConnection());
+      geoPackage.getPath().should.be.equal(filename);
+      done();
     });
   });
 

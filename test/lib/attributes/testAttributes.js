@@ -1,5 +1,5 @@
 var GeoPackage = require('../../../lib/geoPackage').default
-  , GeoPackageAPI = require('../../../.').GeoPackage
+  , GeoPackageAPI = require('../../../lib/.').GeoPackage
   , testSetup = require('../../fixtures/testSetup')
   , Verification = require('../../fixtures/verification')
   , DataColumns = require('../../../lib/dataColumns').DataColumns
@@ -15,7 +15,7 @@ var GeoPackage = require('../../../lib/geoPackage').default
 
 describe('GeoPackage Attribute table create tests', function() {
   var testGeoPackage;
-  var testPath = path.join(__dirname, '..', 'tmp');
+  var testPath = path.join(__dirname, '..', '..', 'tmp');
   var tableName = 'test_attributes.test';
   var geopackage;
 

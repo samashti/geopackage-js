@@ -1,7 +1,7 @@
 var FeatureDao = require('../../../../lib/features/user/featureDao').default
   , FeatureColumn = require('../../../../lib/features/user/featureColumn').default
   , DataTypes = require('../../../../lib/db/dataTypes').default
-  , GeoPackageAPI = require('../../../../index.js').GeoPackage
+  , GeoPackageAPI = require('../../../../lib/index.js').GeoPackage
   , BoundingBox = require('../../../../lib/boundingBox.js').default
   , GeometryData = require('../../../../lib/geom/geometryData').default
   , testSetup = require('../../../fixtures/testSetup')
@@ -32,11 +32,12 @@ describe('FeatureDao tests', function() {
     beforeEach('create the GeoPackage connection', function(done) {
       var originalFilename = path.join(__dirname, '..', '..', '..', 'fixtures', 'rivers.gpkg');
       filename = path.join(__dirname, '..', '..', '..', 'fixtures', 'tmp', testSetup.createTempName());
-      copyGeopackage(originalFilename, filename, function() {
-        GeoPackageAPI.open(filename, function(err, gp) {
-          geoPackage = gp;
-          done();
-        });
+      copyGeopackage(originalFilename, filename, async function() {
+        geoPackage = await GeoPackageAPI.open(filename)
+        should.exist(geoPackage);
+        should.exist(geoPackage.getDatabase().getDBConnection());
+        geoPackage.getPath().should.be.equal(filename);
+        done();
       });
     });
 
@@ -84,16 +85,13 @@ describe('FeatureDao tests', function() {
 
     beforeEach('should open the geopackage', function(done) {
       filename = path.join(__dirname, '..', '..', '..', 'fixtures', 'tmp', testSetup.createTempName());
-      copyGeopackage(originalFilename, filename, function(err) {
-        GeoPackageAPI.open(filename, function(err, gp) {
-          geoPackage = gp;
-          should.not.exist(err);
-          should.exist(gp);
-          should.exist(gp.getDatabase().getDBConnection());
-          gp.getPath().should.be.equal(filename);
-          featureDao = geoPackage.getFeatureDao('rivers');
-          done();
-        });
+      copyGeopackage(originalFilename, filename, async function(err) {
+        geoPackage = await GeoPackageAPI.open(filename)
+        should.exist(geoPackage);
+        should.exist(geoPackage.getDatabase().getDBConnection());
+        geoPackage.getPath().should.be.equal(filename);
+        featureDao = geoPackage.getFeatureDao('rivers');
+        done();
       });
     });
 
@@ -186,16 +184,13 @@ describe('FeatureDao tests', function() {
 
     beforeEach('should open the geopackage', function(done) {
       filename = path.join(__dirname, '..', '..', '..', 'fixtures', 'tmp', testSetup.createTempName());
-      copyGeopackage(originalFilename, filename, function(err) {
-        GeoPackageAPI.open(filename, function(err, gp) {
-          geoPackage = gp;
-          should.not.exist(err);
-          should.exist(gp);
-          should.exist(gp.getDatabase().getDBConnection());
-          gp.getPath().should.be.equal(filename);
-          featureDao = geoPackage.getFeatureDao('FEATURESriversds');
-          done();
-        });
+      copyGeopackage(originalFilename, filename, async function(err) {
+        geoPackage = await GeoPackageAPI.open(filename)
+        should.exist(geoPackage);
+        should.exist(geoPackage.getDatabase().getDBConnection());
+        geoPackage.getPath().should.be.equal(filename);
+        featureDao = geoPackage.getFeatureDao('FEATURESriversds');
+        done();
       });
     });
 

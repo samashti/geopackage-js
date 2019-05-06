@@ -1,21 +1,17 @@
 var UserTableReader = require('../../../lib/user/userTableReader').default
   , UserDao = require('../../../lib/user/userDao').default
-  , GeoPackageAPI = require('../../../.').GeoPackage
+  , GeoPackageAPI = require('../../../lib').GeoPackage
   , path = require('path')
   , should = require('chai').should();
 
 describe('UserTableReader tests', function() {
   var geoPackage;
-  beforeEach('create the GeoPackage connection', function(done) {
+  beforeEach('create the GeoPackage connection', async function() {
     var filename = path.join(__dirname, '..', '..', 'fixtures', 'gdal_sample.gpkg');
-    GeoPackageAPI.open(filename, function(err, gp) {
-      geoPackage = gp;
-      should.not.exist(err);
-      should.exist(gp);
-      should.exist(gp.getDatabase().getDBConnection());
-      gp.getPath().should.be.equal(filename);
-      done();
-    });
+    geoPackage = await GeoPackageAPI.open(filename)
+    should.exist(geoPackage);
+    should.exist(geoPackage.getDatabase().getDBConnection());
+    geoPackage.getPath().should.be.equal(filename);
   });
 
   afterEach('close the geopackage connection', function() {

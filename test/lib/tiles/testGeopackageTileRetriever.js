@@ -1,5 +1,5 @@
 var GeoPackageTileRetriever = require('../../../lib/tiles/retriever').default
-  , GeoPackageAPI = require('../../..').GeoPackage
+  , GeoPackageAPI = require('../../../lib').GeoPackage
   , BoundingBox = require('../../../lib/boundingBox').default
   , testSetup = require('../../fixtures/testSetup')
   , proj4 = require('proj4')
@@ -14,17 +14,13 @@ describe('GeoPackage Tile Retriever tests', function() {
     var geoPackage;
     var tileDao;
 
-    beforeEach('should open the geopackage', function(done) {
+    beforeEach('should open the geopackage', async function() {
       var filename = path.join(__dirname, '..', '..', 'fixtures', 'rivers.gpkg');
-      GeoPackageAPI.open(filename, function(err, gp) {
-        geoPackage = gp;
-        should.not.exist(err);
-        should.exist(gp);
-        should.exist(gp.getDatabase().getDBConnection());
-        gp.getPath().should.be.equal(filename);
-        tileDao = geoPackage.getTileDao('TILESosmds');
-        done();
-      });
+      geoPackage = await GeoPackageAPI.open(filename)
+      should.exist(geoPackage);
+      should.exist(geoPackage.getDatabase().getDBConnection());
+      geoPackage.getPath().should.be.equal(filename);
+      tileDao = geoPackage.getTileDao('TILESosmds');
     });
 
     afterEach('should close the geopackage', function() {
@@ -205,17 +201,13 @@ describe('GeoPackage Tile Retriever tests', function() {
     var geoPackage;
     var tileDao;
 
-    beforeEach('should open the geopackage', function(done) {
+    beforeEach('should open the geopackage', async function() {
       var filename = path.join(__dirname, '..', '..', 'fixtures', '3857.gpkg');
-      GeoPackageAPI.open(filename, function(err, gp) {
-        geoPackage = gp;
-        should.not.exist(err);
-        should.exist(gp);
-        should.exist(gp.getDatabase().getDBConnection());
-        gp.getPath().should.be.equal(filename);
-        tileDao = geoPackage.getTileDao('imagery');
-        done();
-      });
+      geoPackage = await GeoPackageAPI.open(filename)
+      should.exist(geoPackage);
+      should.exist(geoPackage.getDatabase().getDBConnection());
+      geoPackage.getPath().should.be.equal(filename);
+      tileDao = geoPackage.getTileDao('imagery');
     });
 
     it('should get the x: 0, y: 4, z: 4 tile', function(done) {
@@ -266,17 +258,13 @@ describe('GeoPackage Tile Retriever tests', function() {
       }
     }
 
-    beforeEach('should open the geopackage', function(done) {
+    beforeEach('should open the geopackage', async function() {
       var filename = path.join(__dirname, '..', '..', 'fixtures', 'wgs84.gpkg');
-      GeoPackageAPI.open(filename, function(err, gp) {
-        geoPackage = gp;
-        should.not.exist(err);
-        should.exist(gp);
-        should.exist(gp.getDatabase().getDBConnection());
-        gp.getPath().should.be.equal(filename);
-        tileDao = geoPackage.getTileDao('imagery');
-        done();
-      });
+      geoPackage = await GeoPackageAPI.open(filename)
+      should.exist(geoPackage);
+      should.exist(geoPackage.getDatabase().getDBConnection());
+      geoPackage.getPath().should.be.equal(filename);
+      tileDao = geoPackage.getTileDao('imagery');
     });
 
     it('should get the web mercator bounding box', function() {

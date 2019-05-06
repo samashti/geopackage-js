@@ -7,7 +7,7 @@ var fs = require('fs')
 
 import TableCreator from '../../lib/db/tableCreator'
 import GeoPackage from '../../lib/geoPackage'
-import {GeoPackage as GeoPackageAPI} from '../..'
+import {GeoPackage as GeoPackageAPI} from '../../lib'
 import {connect as GeoPackageConnection} from '../../lib/db/geoPackageConnection'
 
 module.exports.createTempName = function() {
@@ -20,7 +20,6 @@ module.exports.createGeoPackage = function(gppath, callback) {
       fs.open(gppath, 'w', function() {
         GeoPackageAPI.create(gppath)
         .then(function(geopackage) {
-          console.log('created the geopackage')
           callback(null, geopackage);
         });
       });
@@ -137,6 +136,9 @@ module.exports.diffImagesWithDimensions = function(actualTile, expectedTilePath,
             var actualRGBA = actualImage.getPixelRGBA(x,y);
             var expectedRGBA = expectedImage.getPixelRGBA(x,y);
             same = actualRGBA === expectedRGBA;
+            if (!same) {
+              console.log(`actualRGBA ${actualRGBA} expectedRGBA ${expectedRGBA} x ${x}, y${y}`)
+            }
           }
         }
         callback(null, same);

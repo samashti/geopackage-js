@@ -1,5 +1,5 @@
 
-var GeoPackageAPI = require('../../../..').GeoPackage
+var GeoPackageAPI = require('../../../../lib').GeoPackage
   , GeoPackage = require('../../../../lib/geoPackage').default
   , FeatureTableIndex = require('../../../../lib/extension/index/featureTableIndex').default
   , RTreeIndexDao = require('../../../../lib/extension/rtree').RTreeIndexDao
@@ -33,16 +33,13 @@ describe('RTree tests', function() {
     beforeEach('should open the geopackage', function(done) {
       this.timeout(0);
       filename = path.join(__dirname, '..', '..', '..', 'fixtures', 'tmp', testSetup.createTempName());
-      copyGeopackage(originalFilename, filename, function(err) {
-        GeoPackageAPI.open(filename, function(err, gp) {
-          geoPackage = gp;
-          should.not.exist(err);
-          should.exist(gp);
-          should.exist(gp.getDatabase().getDBConnection());
-          gp.getPath().should.be.equal(filename);
-          featureDao = geoPackage.getFeatureDao('line1');
-          done();
-        });
+      copyGeopackage(originalFilename, filename, async function(err) {
+        geoPackage = await GeoPackageAPI.open(filename)
+        should.exist(geoPackage);
+        should.exist(geoPackage.getDatabase().getDBConnection());
+        geoPackage.getPath().should.be.equal(filename);
+        featureDao = geoPackage.getFeatureDao('line1');
+        done();
       });
     });
 
@@ -136,16 +133,13 @@ describe('RTree tests', function() {
     beforeEach('should open the geopackage', function(done) {
       this.timeout(0);
       filename = path.join(__dirname, '..', '..', '..', 'fixtures', 'tmp', testSetup.createTempName());
-      copyGeopackage(originalFilename, filename, function(err) {
-        GeoPackageAPI.open(filename, function(err, gp) {
-          geoPackage = gp;
-          should.not.exist(err);
-          should.exist(gp);
-          should.exist(gp.getDatabase().getDBConnection());
-          gp.getPath().should.be.equal(filename);
-          featureDao = geoPackage.getFeatureDao('FEATURESriversds');
-          done();
-        });
+      copyGeopackage(originalFilename, filename, async function(err) {
+        geoPackage = await GeoPackageAPI.open(filename)
+        should.exist(geoPackage);
+        should.exist(geoPackage.getDatabase().getDBConnection());
+        geoPackage.getPath().should.be.equal(filename);
+        featureDao = geoPackage.getFeatureDao('FEATURESriversds');
+        done();
       });
     });
 

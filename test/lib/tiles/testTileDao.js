@@ -1,4 +1,4 @@
-const GeoPackageAPI = require('../../..').GeoPackage
+const GeoPackageAPI = require('../../../lib').GeoPackage
   , testSetup = require('../../fixtures/testSetup')
   , should = require('chai').should()
   , path = require('path');
@@ -25,16 +25,13 @@ describe('TileDao tests', function() {
     beforeEach('create the GeoPackage connection', function(done) {
       var originalFilename = path.join(fixturesDir, 'rivers.gpkg');
       filename = path.join(fixturesDir, 'tmp', testSetup.createTempName());
-      copyGeopackage(originalFilename, filename, function() {
-        GeoPackageAPI.open(filename, function(err, gp) {
-          geoPackage = gp;
-          should.not.exist(err);
-          should.exist(gp);
-          should.exist(gp.getDatabase().getDBConnection());
-          gp.getPath().should.be.equal(filename);
-          tileDao = geoPackage.getTileDao('TILESosmds');
-          done();
-        });
+      copyGeopackage(originalFilename, filename, async function() {
+        geoPackage = await GeoPackageAPI.open(filename)
+        should.exist(geoPackage);
+        should.exist(geoPackage.getDatabase().getDBConnection());
+        geoPackage.getPath().should.be.equal(filename);
+        tileDao = geoPackage.getTileDao('TILESosmds');
+        done();
       });
     });
 
@@ -218,17 +215,13 @@ describe('TileDao tests', function() {
     var geoPackage;
     var tileDao;
 
-    beforeEach('should open the geopackage', function(done) {
+    beforeEach('should open the geopackage', async function() {
       var filename = path.join(__dirname, '..', '..', 'fixtures', 'private', 'alaska.gpkg');
-      GeoPackageAPI.open(filename, function(err, gp) {
-        geoPackage = gp;
-        should.not.exist(err);
-        should.exist(gp);
-        should.exist(gp.getDatabase().getDBConnection());
-        gp.getPath().should.be.equal(filename);
-        tileDao = geoPackage.getTileDao('alaska');
-        done();
-      });
+      geoPackage = await GeoPackageAPI.open(filename)
+      should.exist(geoPackage);
+      should.exist(geoPackage.getDatabase().getDBConnection());
+      geoPackage.getPath().should.be.equal(filename);
+      tileDao = geoPackage.getTileDao('alaska');
     });
 
     it('should get the zoom levels', function() {

@@ -1,4 +1,4 @@
-var GeoPackageAPI = require('../../../..').GeoPackage
+var GeoPackageAPI = require('../../../../lib').GeoPackage
   , SpatialReferenceSystemDao = require('../../../../lib/core/srs').SpatialReferenceSystemDao
   , SpatialReferenceSystem = require('../../../../lib/core/srs').SpatialReferenceSystem
   , should = require('chai').should()
@@ -8,16 +8,12 @@ describe('SpatialReferenceSystem tests', function() {
 
   var geoPackage;
 
-  beforeEach('should open the geopackage', function(done) {
+  beforeEach('should open the geopackage', async function() {
     var filename = path.join(__dirname, '..', '..', '..', 'fixtures', 'gdal_sample.gpkg');
-    GeoPackageAPI.open(filename, function(err, gp) {
-      geoPackage = gp;
-      should.not.exist(err);
-      should.exist(gp);
-      should.exist(gp.getDatabase().getDBConnection());
-      gp.getPath().should.be.equal(filename);
-      done();
-    });
+    geoPackage = await GeoPackageAPI.open(filename);
+    should.exist(geoPackage);
+    should.exist(geoPackage.getDatabase().getDBConnection());
+    geoPackage.getPath().should.be.equal(filename);
   });
 
   afterEach('should close the geopackage', function(){
@@ -59,7 +55,7 @@ describe('SpatialReferenceSystem tests', function() {
 
     var projection = srs.getProjection();
     should.exist(projection);
-    projection.oProj.PROJECTION.should.be.equal('Mercator_1SP');
+    projection.oProj.title.should.be.equal('WGS 84 / Pseudo-Mercator');
   });
 
   it('should get the 4326 SRS', function() {

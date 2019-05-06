@@ -1,4 +1,4 @@
-var GeoPackageAPI = require('../..').GeoPackage
+var GeoPackageAPI = require('../../lib').GeoPackage
   , testSetup = require('../fixtures/testSetup')
   , should = require('chai').should()
   , path = require('path');
@@ -22,25 +22,23 @@ describe('GeoPackageAPI Create tests', function() {
     testSetup.deleteGeoPackage(testGeoPackage, done);
   });
 
-  it('should not allow a file without a gpkg extension', function(done) {
-    GeoPackageAPI.create('/tmp/test.g', function(err, geopackage) {
+  it('should not allow a file without a gpkg extension', async function() {
+    try {
+      await GeoPackageAPI.create('/tmp/test.g')
+      should.fail()
+    } catch (err) {
       should.exist(err);
-      should.not.exist(geopackage);
-      done();
-    });
+    }
   });
 
-  it('should create the geopackage file', function(done) {
-    GeoPackageAPI.create(testGeoPackage, function(err, geopackage) {
-      should.not.exist(err);
-      should.exist(geopackage);
-      var applicationId = geopackage.getApplicationId();
-      var buff = new Buffer(4);
-      buff.writeUInt32BE(applicationId);
-      var idString = buff.toString('ascii', 0, 4);
-      idString.should.be.equal('GPKG');
-      done();
-    });
+  it('should create the geopackage file', async function() {
+    let geopackage = await GeoPackageAPI.create(testGeoPackage)
+    should.exist(geopackage);
+    var applicationId = geopackage.getApplicationId();
+    var buff = new Buffer(4);
+    buff.writeUInt32BE(applicationId);
+    var idString = buff.toString('ascii', 0, 4);
+    idString.should.be.equal('GPKG');
   });
 
 });

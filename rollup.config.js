@@ -1,5 +1,4 @@
-import { terser } from "rollup-plugin-terser";
-import babel from 'rollup-plugin-babel';
+
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import json from 'rollup-plugin-json';
@@ -7,7 +6,7 @@ import builtins from 'rollup-plugin-node-builtins';
 import replace from 'rollup-plugin-re'
 import globals from 'rollup-plugin-node-globals';
 
-const input = "index.js";
+const input = "lib/index.js";
 const sourcemap = true;
 
 export default [
@@ -128,9 +127,6 @@ export default [
         jsnext: true,
         main: true,
         browser: true,
-      }),
-      babel({
-        babelrc: false
       })
     ]
   }

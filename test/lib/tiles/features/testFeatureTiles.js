@@ -1,5 +1,5 @@
 var FeatureTiles = require('../../../../lib/tiles/features').default
-  , GeoPackageAPI = require('../../../..').GeoPackage
+  , GeoPackageAPI = require('../../../../lib').GeoPackage
   , testSetup = require('../../../fixtures/testSetup')
   , fs = require('fs')
   , should = require('chai').should()
@@ -49,6 +49,7 @@ describe('GeoPackage FeatureTiles tests', function() {
       var ft = new FeatureTiles(featureDao);
       ft.drawTile(1, 0, 1)
       .then(function(image) {
+        // fs.writeFileSync(path.join(__dirname, '..','..','..', 'fixtures','featuretiles','1_1_0.png'), image)
         testSetup.diffImages(image, path.join(__dirname, '..','..','..', 'fixtures','featuretiles','1_1_0.png'), function(err, equal) {
           equal.should.be.equal(true);
           done();
@@ -77,6 +78,7 @@ describe('GeoPackage FeatureTiles tests', function() {
       .then(function(data) {
         should.exist(data);
         console.timeEnd('Generating non indexed tiles');
+        // fs.writeFileSync(path.join(__dirname, '..','..','..', 'fixtures','featuretiles','5_8_12.png'), data)
         testSetup.diffImages(data, path.join(__dirname, '..','..','..','fixtures','featuretiles','5_8_12.png'), function(err, equal) {
           equal.should.be.equal(true);
           done();
@@ -90,17 +92,13 @@ describe('GeoPackage FeatureTiles tests', function() {
     var geoPackage;
     var featureDao;
 
-    beforeEach('should open the geopackage', function(done) {
+    beforeEach('should open the geopackage', async function() {
       var filename = path.join(__dirname, '..', '..', '..', 'fixtures', 'rivers_indexed.gpkg');
-      GeoPackageAPI.open(filename, function(err, gp) {
-        geoPackage = gp;
-        should.not.exist(err);
-        should.exist(gp);
-        should.exist(gp.getDatabase().getDBConnection());
-        gp.getPath().should.be.equal(filename);
-        featureDao = geoPackage.getFeatureDao('rivers');
-        done();
-      });
+      geoPackage = await GeoPackageAPI.open(filename)
+      should.exist(geoPackage);
+      should.exist(geoPackage.getDatabase().getDBConnection());
+      geoPackage.getPath().should.be.equal(filename);
+      featureDao = geoPackage.getFeatureDao('rivers');
     });
 
     afterEach('should close the geopackage', function() {
@@ -112,6 +110,7 @@ describe('GeoPackage FeatureTiles tests', function() {
       var ft = new FeatureTiles(featureDao);
       ft.drawTile(1, 0, 1)
       .then(function(imageStream) {
+        // fs.writeFileSync(path.join(__dirname, '..','..','..', 'fixtures','featuretiles','1_1_0_indexed.png'), imageStream)
         testSetup.diffImages(imageStream, path.join(__dirname, '..','..','..','fixtures','featuretiles','1_1_0_indexed.png'), function(err, equal) {
           equal.should.be.equal(true);
           done();
@@ -140,6 +139,7 @@ describe('GeoPackage FeatureTiles tests', function() {
       .then(function(data) {
         should.exist(data);
         console.timeEnd('generating indexed tile');
+        // fs.writeFileSync(path.join(__dirname, '..','..','..', 'fixtures','featuretiles','0_0_0_indexed.png'), data)
         testSetup.diffImages(data, path.join(__dirname, '..','..','..','fixtures','featuretiles','0_0_0_indexed.png'), function(err, equal) {
           equal.should.be.equal(true);
           done();
@@ -154,6 +154,7 @@ describe('GeoPackage FeatureTiles tests', function() {
       .then(function(data) {
         should.exist(data);
         console.timeEnd('generating indexed tile');
+        // fs.writeFileSync(path.join(__dirname, '..','..','..', 'fixtures','featuretiles','5_8_12_indexed.png'), data)
         testSetup.diffImages(data, path.join(__dirname, '..','..','..','fixtures','featuretiles','5_8_12_indexed.png'), function(err, equal) {
           equal.should.be.equal(true);
           done();

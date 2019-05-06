@@ -1,4 +1,4 @@
-var GeoPackageAPI = require('../../../../.').GeoPackage
+var GeoPackageAPI = require('../../../../lib').GeoPackage
   , DataType = require('../../../../lib/db/dataTypes').default
   , Verification = require('../../../fixtures/verification')
   , ContentsDao = require('../../../../lib/core/contents').ContentsDao
@@ -34,13 +34,14 @@ describe('Related Media tests', function() {
 
     var originalFilename = path.join(__dirname, '..', '..', '..', 'fixtures', 'gdal_sample.gpkg');
     filename = path.join(__dirname, '..', '..', '..', 'fixtures', 'tmp', testSetup.createTempName());
-    copyGeopackage(originalFilename, filename, function() {
-      GeoPackageAPI.open(filename, function(err, gp) {
-        geoPackage = gp;
-        testSetup.loadTile(path.join(__dirname, '..', '..', '..', 'fixtures', 'tiles', '0', '0', '0.png'), function(err, buffer) {
-          tileBuffer = buffer;
-          done();
-        });
+    copyGeopackage(originalFilename, filename, async function() {
+      geoPackage = await GeoPackageAPI.open(filename)
+      should.exist(geoPackage);
+      should.exist(geoPackage.getDatabase().getDBConnection());
+      geoPackage.getPath().should.be.equal(filename);
+      testSetup.loadTile(path.join(__dirname, '..', '..', '..', 'fixtures', 'tiles', '0', '0', '0.png'), function(err, buffer) {
+        tileBuffer = buffer;
+        done();
       });
     });
   });

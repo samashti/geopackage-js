@@ -1,4 +1,4 @@
-var GeoPackageAPI = require('../../../..').GeoPackage
+var GeoPackageAPI = require('../../../../lib').GeoPackage
   , GeoPackage = require('../../../../lib/geoPackage').default
   , ContentsIdExtension = require('../../../../lib/extension/contents').default
   , ContentsId = require('../../../../lib/extension/contents/contentsId').ContentsId

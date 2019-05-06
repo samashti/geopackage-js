@@ -1,4 +1,4 @@
-var GeoPackageAPI = require('../index')
+var GeoPackageAPI = require('../lib/index')
   , GeoPackage = GeoPackageAPI.GeoPackage
   , DataTypes = GeoPackageAPI.DataTypes
   , GeometryColumns = GeoPackageAPI.GeometryColumns

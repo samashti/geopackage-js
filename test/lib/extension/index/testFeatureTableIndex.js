@@ -1,4 +1,4 @@
-var GeoPackageAPI = require('../../../..').GeoPackage
+var GeoPackageAPI = require('../../../../lib').GeoPackage
   , GeoPackage = require('../../../../lib/geoPackage').default
   , FeatureTableIndex = require('../../../../lib/extension/index/featureTableIndex').default
   , sqliteQueryBuilder = require('../../../../lib/db/sqliteQueryBuilder').default
@@ -158,16 +158,13 @@ describe('GeoPackage Feature Table Index Extension tests', function() {
 
     beforeEach('should open the geopackage', function(done) {
       filename = path.join(__dirname, '..', '..', '..', 'fixtures', 'tmp', testSetup.createTempName());
-      copyGeopackage(originalFilename, filename, function(err) {
-        GeoPackageAPI.open(filename, function(err, gp) {
-          geoPackage = gp;
-          should.not.exist(err);
-          should.exist(gp);
-          should.exist(gp.getDatabase().getDBConnection());
-          gp.getPath().should.be.equal(filename);
-          featureDao = geoPackage.getFeatureDao('rivers');
-          done();
-        });
+      copyGeopackage(originalFilename, filename, async function(err) {
+        geoPackage = await GeoPackageAPI.open(filename)
+        should.exist(geoPackage);
+        should.exist(geoPackage.getDatabase().getDBConnection());
+        geoPackage.getPath().should.be.equal(filename);
+        featureDao = geoPackage.getFeatureDao('rivers');
+        done();
       });
     });
 
