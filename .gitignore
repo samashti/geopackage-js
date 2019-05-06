@@ -46,7 +46,7 @@ test/private
 test/fixtures/private
 **/*/tmp
 
-dist
+dist/*
 
 docs/coverage
 *tmp-browserify-*
