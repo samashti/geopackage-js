@@ -44,7 +44,7 @@
     "reproject": "1.2.2",
     "sql.js": "https://github.com/danielbarela/sql.js.git",
     "vt-pbf": "^3.1.1",
-    "wkx": "file:./vendor/wkx-esm"
+    "wkx": "file:vendor/wkx-esm"
   },
   "devDependencies": {
     "@babel/polyfill": "^7.4.3",
