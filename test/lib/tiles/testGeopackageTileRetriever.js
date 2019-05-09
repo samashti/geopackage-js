@@ -41,6 +41,11 @@ describe('GeoPackage Tile Retriever tests', function() {
       tiles.tiles.length.should.be.equal(4);
     });
 
+    it('should fail to get tiles when the zoom level does not exist', function() {
+      var tiles = GeoPackageAPI.getTilesInBoundingBox(geoPackage, 'TILESosmds', 100, -180, 180, -85, 85);
+      tiles.tiles.length.should.be.equal(0);
+    });
+
     it('should get the x: 2, y: 1, z: 2 tile', function(done) {
       this.timeout(30000);
       var gpr = new GeoPackageTileRetriever(tileDao, 256, 256);

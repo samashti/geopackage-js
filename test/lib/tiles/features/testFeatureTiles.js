@@ -57,6 +57,15 @@ describe('GeoPackage FeatureTiles tests', function() {
       });
     });
 
+    it('should return nothing from a feature table which does not exist', async function() {
+      try {
+        await GeoPackageAPI.getFeatureTileFromXYZ(geoPackage, 'nope', 1, 0, 1, 256, 256)
+        false.should.be.equal(true);
+      } catch (e) {
+        should.exist(e)
+      }
+    });
+
     it('should get the x: 1, y: 0, z: 1 tile from the GeoPackage api', function(done) {
       this.timeout(30000);
       console.time('Generating non indexed tiles');

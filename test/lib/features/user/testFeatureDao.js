@@ -46,8 +46,27 @@ describe('FeatureDao tests', function() {
       testSetup.deleteGeoPackage(filename, done);
     });
 
+    it('will not get a feature dao without a null geometry columns', () => {
+      try {
+        geoPackage.getFeatureDaoWithGeometryColumns()
+        false.should.be.equal(true)
+      } catch (e) {
+        should.exist(e)
+      }
+    })
+
+    it('will not get a feature dao that does not exist', () => {
+      try {
+        geoPackage.getFeatureDao('nope')
+        false.should.be.equal(true)
+      } catch (e) {
+        should.exist(e)
+      }
+    })
+
     it('should read the geometry', function() {
       var featureDao = geoPackage.getFeatureDao('FEATURESriversds');
+      should.exist(featureDao);
       var each = featureDao.queryForEach();
       var srs = featureDao.srs;
       for (var row of each) {
@@ -411,6 +430,20 @@ describe('FeatureDao tests', function() {
           featureRow.setValueWithColumnName('_properties_id', 'properties' + name);
           return featureDao.create(featureRow);
         }
+
+        var createWKTRow = function(wkt, name, featureDao) {
+          var srs = featureDao.getSrs();
+          var featureRow = featureDao.newRow();
+          var geometryData = new GeometryData();
+          geometryData.setSrsId(srs.srs_id);
+          var geometry = wkx.Geometry._parseWkt(wkt)
+          geometryData.setGeometry(geometry);
+          featureRow.setGeometry(geometryData);
+          featureRow.setValueWithColumnName('name', name);
+          featureRow.setValueWithColumnName('_feature_id', name);
+          featureRow.setValueWithColumnName('_properties_id', 'properties' + name);
+          return featureDao.create(featureRow);
+        }
         // create the features
         // Two intersecting boxes with a line going through the intersection and a point on the line
         // ---------- / 3
@@ -429,6 +462,7 @@ describe('FeatureDao tests', function() {
           createRow(line, 'line', featureDao);
           createRow(point, 'point', featureDao);
           createRow(point2, 'point2', featureDao);
+          createWKTRow("LINESTRING ZM (2 3 1 2,-1 0 3 4)", 'linemz', featureDao);
           featureDao.featureTableIndex.index()
           .then(function() {
             done();
@@ -484,6 +518,16 @@ describe('FeatureDao tests', function() {
       });
     });
 
+    it('should not get features in the bounding box when the table does not exist', async function() {
+      var bb = new BoundingBox(-.4, -.6, 2.4, 2.6);
+      try {
+        await GeoPackageAPI.getFeaturesInBoundingBox(geopackage, 'nope', -.4, -.6, 2.4, 2.6)
+        false.should.be.equal(true)
+      } catch (error) {
+        should.exist(error)
+      }
+    });
+
     it('should query for box 1', function() {
       // var bb = new BoundingBox(minLongitudeOrBoundingBox, maxLongitude, minLatitude, maxLatitude)
       var bb = new BoundingBox(-.4, -.6, 2.4, 2.6);
@@ -501,7 +545,7 @@ describe('FeatureDao tests', function() {
       };
     });
 
-    it('should query for box1, box 2 and line', function() {
+    it('should query for box1, box 2 and line and linemz', function() {
       var bb = new BoundingBox(-.1, .1, .9, 1.1);
       var foundFeatures = [];
       var iterator = queryTestFeatureDao.queryIndexedFeaturesWithBoundingBox(bb);
@@ -509,17 +553,51 @@ describe('FeatureDao tests', function() {
       for (var row of iterator) {
         foundFeatures.push(row.values.name);
       }
-      foundFeatures.should.be.deep.equal(['box1', 'box2', 'line']);
+      foundFeatures.should.be.deep.equal(['box1', 'box2', 'line', 'linemz']);
     });
 
-    it('should query for box1, box 2, line, and point', function() {
+    it('should query for box1, box 2, line, linemz, and point', function() {
       var bb = new BoundingBox(.4, .6, 1.4, 1.6);
       var foundFeatures = [];
       var iterator = queryTestFeatureDao.queryIndexedFeaturesWithBoundingBox(bb);
       for (var row of iterator) {
         foundFeatures.push(row.values.name);
       }
-      foundFeatures.should.be.deep.equal(['box1', 'box2', 'line', 'point']);
+      foundFeatures.should.be.deep.equal(['box1', 'box2', 'line', 'point', 'linemz']);
+    });
+
+    it('should query using an envelope and find nothing', function() {
+      var bb = new BoundingBox(.4, .6, 1.4, 1.6);
+      var envelope = bb.buildEnvelope();
+      envelope.minM = 0
+      envelope.maxM = 1
+      envelope.minZ = -1
+      envelope.maxZ = 0
+      envelope.hasZ = true;
+      envelope.hasM = true;
+      var foundFeatures = [];
+      var iterator = queryTestFeatureDao.featureTableIndex.queryWithGeometryEnvelope(envelope);
+      for (var row of iterator) {
+        foundFeatures.push(row.name);
+      }
+      foundFeatures.should.be.deep.equal([]);
+    });
+
+    it('should query for box1, box 2, line, linemz, and point with envelope', function() {
+      var bb = new BoundingBox(.4, .6, 1.4, 1.6);
+      var envelope = bb.buildEnvelope();
+      envelope.minM = 0
+      envelope.maxM = 10
+      envelope.minZ = 0
+      envelope.maxZ = 10
+      envelope.hasZ = true;
+      envelope.hasM = true;
+      var foundFeatures = [];
+      var iterator = queryTestFeatureDao.featureTableIndex.queryWithGeometryEnvelope(envelope);
+      for (var row of iterator) {
+        foundFeatures.push(row.name);
+      }
+      foundFeatures.should.be.deep.equal(['linemz']);
     });
 
     it('should query for box1, box 2, line, and point and calculate distance from a center point', function() {
@@ -550,35 +628,41 @@ describe('FeatureDao tests', function() {
       var foundFeatures = [];
       var closestDistance = 100000000000;
       var closest;
+      var closestType;
 
       var iterator = queryTestFeatureDao.queryIndexedFeaturesWithBoundingBox(bb);
 
       for (var row of iterator) {
         foundFeatures.push(row.values.name);
+        // console.log('row.values.name', row)
         var geometry = row.getGeometry().toGeoJSON();
-
         if (geometry.type == 'Point') {
           var distance = pointDistance(centerPoint, geometry);
           if (distance < closestDistance) {
             closest = row;
+            closestType = geometry.type
             closestDistance = distance;
-          } else if (distance == closestDistance && closest.type != 'Point') {
+          } else if (distance == closestDistance && closestType !== 'Point') {
             closest = row;
+            closestType = geometry.type
             closestDistance = distance;
           }
         } else if (geometry.type == 'LineString') {
           var distance = pointToLineDistance(centerPoint, geometry);
           if (distance < closestDistance) {
             closest = row;
+            closestType = geometry.type
             closestDistance = distance;
-          } else if (distance == closestDistance && closest.type != 'Point') {
+          } else if (distance == closestDistance && closestType !== 'Point') {
             closest = row;
+            closestType = geometry.type
             closestDistance = distance;
           }
         } else if (geometry.type == 'Polygon') {
           if (booleanPointInPolygon(centerPoint, geometry)) {
             if (closestDistance != 0) {
               closest = row;
+              closestType = geometry.type
               closestDistance = 0;
             }
           } else {
@@ -586,13 +670,15 @@ describe('FeatureDao tests', function() {
             var distance = pointToLineDistance(centerPoint, line);
             if (distance < closestDistance) {
               closest = row;
+              closestType = geometry.type
               closestDistance = distance;
             }
           }
         }
       }
+      foundFeatures.should.be.deep.equal(['box1', 'box2', 'line', 'point', 'linemz']);
+
       closest.values.name.should.be.equal('point');
-      foundFeatures.should.be.deep.equal(['box1', 'box2', 'line', 'point']);
     });
 
     it('should get the x: 1029, y: 1013, z: 11 tile from the GeoPackage api in a reasonable amount of time', function() {
@@ -622,7 +708,7 @@ describe('FeatureDao tests', function() {
       .then(function(geoJSON) {
         console.timeEnd('generating indexed tile');
         should.exist(geoJSON);
-        geoJSON.length.should.be.equal(5);
+        geoJSON.length.should.be.equal(6);
       });
     });
 

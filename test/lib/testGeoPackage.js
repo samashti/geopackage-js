@@ -11,7 +11,8 @@ describe('GeoPackage tests', function() {
     GeoPackageConnection(path.join(__dirname, '..', 'fixtures', 'gdal_sample.gpkg')).then(function(geoPackageConnection) {
       var connection = geoPackageConnection;
       should.exist(connection);
-      var geoPackage = new GeoPackage('', '', connection);
+      var geoPackage = new GeoPackage('name', '', connection);
+      geoPackage.getName().should.be.equal('name')
       var tables = geoPackage.getFeatureTables();
       should.exist(tables);
       tables.length.should.be.equal(16);
@@ -138,6 +139,13 @@ describe('GeoPackage tests', function() {
     .then(function(connection) {
       var geoPackage = new GeoPackage('', '', connection);
       var tables = geoPackage.getTileTables();
+
+      try {
+        geoPackage.getTileDao('does_not_exist')
+        false.should.be.equal(true)
+      } catch (e) {
+        should.exist(e)
+      }
 
       return tables.reduce(function(sequence, table) {
         return sequence.then(function() {

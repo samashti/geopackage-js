@@ -129,6 +129,10 @@ describe('Related Simple Attributes tests', function() {
 
     var contentsDao = geoPackage.getContentsDao();
     var contentsTables = contentsDao.getTables();
+    for (var ct of contentsTables) {
+      geoPackage.isContentsTable(ct).should.be.equal(true)
+    }
+    geoPackage.isContentsTable(simpleTable.table_name).should.be.equal(false)
     contentsTables.indexOf(simpleTable.table_name).should.be.equal(-1);
     var relationship = RelatedTablesExtension.RelationshipBuilder()
     .setBaseTableName(baseTableName)

@@ -106,7 +106,41 @@ describe('GeoPackage Attribute table create tests', function() {
         description: 'Description',
         mime_type: 'text',
         constraint_name: null });
+    })
+    .then(function() {
+      var inserted = GeoPackageAPI.addAttributeRow(geopackage, 'NewTable', {
+        'Name': 'yep',
+        'Number': 2
+      })
+      inserted.should.be.equal(1)
+      geopackage.getAttributeDaoWithTableName('NewTable').count().should.be.equal(1)
     });
+  });
+
+  it('should create a media table without properties', function() {
+    var dao = GeoPackageAPI.createMediaTableWithProperties(geopackage, 'NewTable');
+    var reader = new UserTableReader('NewTable');
+    var result = reader.readTable(geopackage.connection);
+    var columns = result.columns;
+
+    var plainObject = JSON.parse(JSON.stringify(columns));
+
+    plainObject.should.deep.include.members([ {
+        index: 0,
+        name: 'id',
+        dataType: 5,
+        notNull: true,
+        primaryKey: true },
+      { index: 1,
+        name: 'data',
+        dataType: 10,
+        notNull: true,
+        primaryKey: false },
+      { index: 2,
+        name: 'content_type',
+        dataType: 9,
+        notNull: true,
+        primaryKey: false }]);
   });
 
   it('should create a media table from properties', function() {
@@ -361,8 +395,18 @@ describe('GeoPackage Attribute table create tests', function() {
         contentsVerified.should.be.equal(true);
         var attributesTableExists = Verification.verifyTableExists(geopackage, tableName);
         attributesTableExists.should.be.equal(true);
+        geopackage.hasAttributeTable(tableName).should.be.equal(true)
       });
     });
+
+    it('will not get an attribute dao with a null contents', () => {
+      try {
+        geopackage.getAttributeDaoWithContents()
+        false.should.be.equal(true)
+      } catch (e) {
+        should.exist(e)
+      }
+    })
 
     it('should create an attribute', function() {
       var attributeDao = geopackage.getAttributeDaoWithTableName(tableName);

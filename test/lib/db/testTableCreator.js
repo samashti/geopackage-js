@@ -159,6 +159,15 @@ describe('TableCreator tests', function() {
     });
   });
 
+  it('should create the required tables and get 4326 srs', async function() {
+    var tc = new TableCreator(geopackage);
+    await tc.createRequired()
+    Verification.verifyContents(geopackage).should.be.equal(true);
+    Verification.verifySRS(geopackage).should.be.equal(true);
+    var count = geopackage.getDatabase().count('gpkg_spatial_ref_sys', 'srs_id = ?', [4326]);
+    count.should.be.equal(1);
+  });
+
   it('should create a user tile table', function(done) {
     var columns = TileTable.createRequiredColumns();
     var tileTable = new TileTable('test_tiles', columns);

@@ -19,11 +19,13 @@ var GeoPackageAPI = require('../lib/index')
   , TableCreator = GeoPackageAPI.TableCreator
   , MediaTable = GeoPackageAPI.MediaTable
   , UserMappingTable = GeoPackageAPI.UserMappingTable
-  , DublinCoreType = GeoPackageAPI.DublinCoreType;
+  , DublinCoreType = GeoPackageAPI.DublinCoreType
+  , DataTypes = GeoPackageAPI.DataTypes;
 
 var wkx = require('wkx')
   , path = require('path')
-  , fs = require('fs');
+  , fs = require('fs')
+  , should = require('chai').should();
 
 var GeoPackageUtils = {};
 
@@ -395,7 +397,7 @@ GeoPackageUtils.createRTreeSpatialIndexExtension = function(geopackage) {
 GeoPackageUtils.createRelatedTablesMediaExtension = function(geopackage) {
   console.log('Creating Related Tables Media Extension')
   var relatedTables = geopackage.getRelatedTablesExtension();
-  var mediaTable = MediaTable.create('media');
+  var mediaTable = MediaTable.create('media', [UserColumn.createColumnWithIndex(MediaTable.numRequiredColumns(), 'name', DataTypes.GPKGDataType.GPKG_DT_TEXT, false)]);
   relatedTables.createRelatedTable(mediaTable);
 
   var mediaDao = relatedTables.getMediaDao(mediaTable);
@@ -426,15 +428,20 @@ GeoPackageUtils.createRelatedTablesMediaExtension = function(geopackage) {
   })
   .then(function(ngaLogoBuffer) {
     console.log('Create NGA Logo')
-    var ngaRowId = GeoPackage.addMedia(geopackage, 'media', ngaLogoBuffer, 'image/png');
+    var ngaRowId = GeoPackage.addMedia(geopackage, 'media', ngaLogoBuffer, 'image/png', {
+      name: 'NGA Logo'
+    });
     var ngaLogo = mediaDao.queryForId(ngaRowId);
-
+    should.exist(ngaLogo)
+    ngaLogo.name.should.be.equal('NGA Logo')
     var featureDao = geopackage.getFeatureDao('geometry2');
     var rows = featureDao.queryForLike('text', 'NGA%');
 
     return rows.reduce(function(sequence, row) {
       return sequence.then(function() {
         var featureRow = featureDao.getRow(row);
+        var initialRelationships = GeoPackage.getLinkedMedia(geopackage, 'geometry2', featureRow.getId());
+        initialRelationships.length.should.be.equal(0);
         GeoPackage.linkMedia(geopackage, 'geometry2', featureRow.getId(), 'media', ngaRowId)
         .then(function() {
           var relationships = GeoPackage.getLinkedMedia(geopackage, 'geometry2', featureRow.getId());

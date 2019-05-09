@@ -1,6 +1,7 @@
 var GeoPackageAPI = require('../../../../lib').GeoPackage
   , GeoPackage = require('../../../../lib/geoPackage').default
   , FeatureTableIndex = require('../../../../lib/extension/index/featureTableIndex').default
+  , GeometryIndexDao = require('../../../../lib/extension/index/geometryIndex').GeometryIndexDao
   , sqliteQueryBuilder = require('../../../../lib/db/sqliteQueryBuilder').default
   , Verification = require('../../../fixtures/verification')
   , testSetup = require('../../../fixtures/testSetup')
@@ -121,6 +122,20 @@ describe('GeoPackage Feature Table Index Extension tests', function() {
         var tableIndex = fti.getTableIndex();
         should.exist(tableIndex);
         should.exist(tableIndex.last_indexed);
+        var gid = new GeometryIndexDao(geoPackage, featureDao)
+        var gi = gid.createObject()
+        should.exist(gi)
+        var lastIndex;
+        for (var index of gid.queryForTableName('FEATURESriversds')) {
+          lastIndex = index;
+          index.table_name.should.be.equal('FEATURESriversds')
+        }
+        var ti = gid.getTableIndex(lastIndex);
+        should.exist(ti);
+        ti.table_name.should.be.equal('FEATURESriversds')
+        var count = gid.countByTableName('FEATURESriversds')
+        count.should.be.equal(357)
+        
       });
     });
 

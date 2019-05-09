@@ -1,4 +1,5 @@
 import { GeoPackage, BoundingBox, FeatureColumn, TileColumn, GeometryColumns, DataTypes } from '../lib/index'
+import { connectWithDatabase } from '../lib/db/geoPackageConnection'
 
 var testSetup = require('./fixtures/testSetup');
 
@@ -23,6 +24,7 @@ describe('GeoPackageAPI tests', function() {
   var url = base + urlPath;
   var badUrl = base + '/bad';
   var errorUrl = base + '/error';
+  var tileUrl = base + '/tile';
 
   beforeEach(function() {
     nock(base)
@@ -31,6 +33,9 @@ describe('GeoPackageAPI tests', function() {
     nock(base)
     .get('/bad')
     .reply(404);
+    nock(base)
+    .get('/tile')
+    .replyWithFile(200, tilePath);
     nock(base)
     .get('/error')
     .replyWithError('error');
@@ -61,6 +66,20 @@ describe('GeoPackageAPI tests', function() {
     }
   });
 
+  it('should open the geopackage from an existing db', async function() {
+    try {
+      let geopackage = await GeoPackage.open(existingPath)
+      should.exist(geopackage);
+      should.exist(geopackage.getTables);
+      var db = geopackage.getDatabase().getDBConnection();
+      var connection = connectWithDatabase(db)
+      geopackage.connection = connection;
+      should.exist(geopackage.getTables);
+    } catch (err) {
+      should.fail();
+    }
+  });
+
   it('should open the geopackage with a promise', function() {
     return GeoPackage.open(existingPath)
     .then(function(geopackage) {
@@ -75,6 +94,15 @@ describe('GeoPackageAPI tests', function() {
       should.exist(geopackage);
       should.exist(geopackage.getTables);
     });
+  });
+
+  it('should fail to open a file which is not a geopackage from a URL', async function() {
+    try {
+      await GeoPackage.open(tileUrl);
+      false.should.be.equal(true)
+    } catch (e) {
+      should.exist(e);
+    }
   });
 
   it('should throw an error if the URL does not return 200', function() {
@@ -333,6 +361,20 @@ describe('GeoPackageAPI tests', function() {
       return GeoPackage.drawXYZTileInCanvas(indexedGeopackage, 'rivers_tiles', 0, 0, 0, 256, 256, canvas);
     });
 
+    it('should get the 4326 tile in a canvas', function() {
+      var canvas;
+      if (typeof(process) !== 'undefined' && process.version) {
+        canvas = PureImage.make(256, 256);
+      } else {
+        canvas = document.createElement('canvas');
+      }
+      return GeoPackage.draw4326TileInCanvas(indexedGeopackage, 'rivers_tiles', 0, 0, 45, 45, 1, 256, 256, canvas);
+    });
+
+    it('should not get the table type for a table that does not exist', () => {
+      should.not.exist(indexedGeopackage.getTableType('nope'))
+    });
+
     it('should get the 0 0 0 vector tile', function() {
       var vectorTile = GeoPackage.getVectorTile(indexedGeopackage, 'rivers', 0, 0, 0);
       should.exist(vectorTile);
@@ -341,6 +383,11 @@ describe('GeoPackageAPI tests', function() {
     it('should query for the tiles in the bounding box', function() {
       var tiles = GeoPackage.getTilesInBoundingBoxWebZoom(indexedGeopackage, 'rivers_tiles', 0, -180, 180, -80, 80);
       tiles.tiles.length.should.be.equal(1);
+    });
+
+    it('should query for the tiles in the bounding box bad zoom level', function() {
+      var tiles = GeoPackage.getTilesInBoundingBoxWebZoom(indexedGeopackage, 'rivers_tiles', 100, -180, 180, -80, 80);
+      tiles.tiles.length.should.be.equal(0);
     });
 
     it('should add geojson to the geopackage and keep it indexed', function() {
@@ -361,6 +408,27 @@ describe('GeoPackageAPI tests', function() {
       var db = indexedGeopackage.getDatabase();
       var index = db.get('SELECT * FROM nga_geometry_index where geom_id = ?', [id]);
       index.geom_id.should.be.equal(id);
+    });
+
+    it('should fail to add geojson to the geopackage where the table does not exist', function() {
+      try {
+        var id = GeoPackage.addGeoJSONFeatureToGeoPackageAndIndex(indexedGeopackage, {
+          "type": "Feature",
+          "properties": {
+            'property_0': 'test'
+          },
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -99.84374999999999,
+              40.17887331434696
+            ]
+          }
+        }, 'nope');
+        false.should.be.equal(true)
+      } catch (e) {
+        should.exist(e)
+      }
     });
 
     it('should add geojson to the geopackage and keep it indexed and query it', function() {
@@ -420,6 +488,15 @@ describe('GeoPackageAPI tests', function() {
         should.exist(geoJson.properties);
       }
     });
+
+    it('should fail to pull the features from a table that does not exist', function() {
+      try {
+        GeoPackage.iterateGeoJSONFeaturesFromTable(indexedGeopackage, 'nope');
+        false.should.be.equal(true)
+      } catch (e) {
+        should.exist(e)
+      }
+    });
   });
 
   describe('operating on a new geopackage', function() {
@@ -455,7 +532,89 @@ describe('GeoPackageAPI tests', function() {
       columns.push(FeatureColumn.createColumnWithIndex(5, 'test_blob.test', DataTypes.GPKGDataType.GPKG_DT_BLOB, false, null));
       columns.push(FeatureColumn.createColumnWithIndex(6, 'test_integer.test', DataTypes.GPKGDataType.GPKG_DT_INTEGER, false, ""));
 
+      geopackage.getFeatureTables().length.should.be.equal(0)
+
       return GeoPackage.createFeatureTable(geopackage, tableName, geometryColumns, columns)
+      .then(function(featureDao) {
+        should.exist(featureDao);
+        var exists = geopackage.hasFeatureTable(tableName);
+        exists.should.be.equal(true);
+        var results = geopackage.getFeatureTables();
+        results.length.should.be.equal(1);
+        results[0].should.be.equal(tableName);
+        return GeoPackage.addGeoJSONFeatureToGeoPackage(geopackage, {
+          "type": "Feature",
+          "properties": {
+            'test_text_limited.test': 'test'
+          },
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -99.84374999999999,
+              40.17887331434696
+            ]
+          }
+        }, tableName)
+      })
+      .then(function(id) {
+        id.should.be.equal(1);
+        return GeoPackage.addGeoJSONFeatureToGeoPackage(geopackage, {
+          "type": "Feature",
+          "properties": {
+            'test_text_limited.test': 'test'
+          },
+          "geometry": {
+            "type": "Point",
+            "coordinates": [
+              -99.84374999999999,
+              40.17887331434696
+            ]
+          }
+        }, tableName);
+      })
+      .then(function(id) {
+        id.should.be.equal(2);
+        return GeoPackage.getFeature(geopackage, tableName, 2);
+      })
+      .then(function(feature) {
+        should.exist(feature);
+        feature.id.should.be.equal(2);
+        should.exist(feature.geometry);
+        return GeoPackage.iterateGeoJSONFeaturesFromTable(geopackage, tableName);
+      })
+      .then(function(each) {
+        var count = 0;
+        for (var row of each.results) {
+          count++;
+        }
+        count.should.be.equal(2);
+      });
+    });
+
+    it('should create a 3857 feature table', function() {
+      var columns = [];
+
+      var tableName = 'features';
+
+      var geometryColumns = new GeometryColumns();
+      geometryColumns.table_name = tableName;
+      geometryColumns.column_name = 'geometry';
+      geometryColumns.geometry_type_name = 'GEOMETRY';
+      geometryColumns.z = 0;
+      geometryColumns.m = 0;
+
+      columns.push(FeatureColumn.createPrimaryKeyColumnWithIndexAndName(0, 'id'));
+      columns.push(FeatureColumn.createColumnWithIndexAndMax(7, 'test_text_limited.test', DataTypes.GPKGDataType.GPKG_DT_TEXT, 5, false, null));
+      columns.push(FeatureColumn.createColumnWithIndexAndMax(8, 'test_blob_limited.test', DataTypes.GPKGDataType.GPKG_DT_BLOB, 7, false, null));
+      columns.push(FeatureColumn.createGeometryColumn(1, 'geometry', 'GEOMETRY', false, null));
+      columns.push(FeatureColumn.createColumnWithIndex(2, 'test_text.test', DataTypes.GPKGDataType.GPKG_DT_TEXT, false, ""));
+      columns.push(FeatureColumn.createColumnWithIndex(3, 'test_real.test', DataTypes.GPKGDataType.GPKG_DT_REAL, false, null));
+      columns.push(FeatureColumn.createColumnWithIndex(4, 'test_boolean.test', DataTypes.GPKGDataType.GPKG_DT_BOOLEAN, false, null));
+      columns.push(FeatureColumn.createColumnWithIndex(5, 'test_blob.test', DataTypes.GPKGDataType.GPKG_DT_BLOB, false, null));
+      columns.push(FeatureColumn.createColumnWithIndex(6, 'test_integer.test', DataTypes.GPKGDataType.GPKG_DT_INTEGER, false, ""));
+
+      var boundingBox = new BoundingBox(-20026376.39, 20026376.39, -20048966.10, 20048966.10);
+      return GeoPackage.createFeatureTableWithDataColumnsAndBoundingBox(geopackage, tableName, geometryColumns, columns, null, boundingBox, 3857)
       .then(function(featureDao) {
         should.exist(featureDao);
         var exists = geopackage.hasFeatureTable(tableName);
