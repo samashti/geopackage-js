@@ -15,42 +15,56 @@ module.exports.createTempName = function() {
 }
 
 module.exports.createGeoPackage = function(gppath, callback) {
-  if (typeof(process) !== 'undefined' && process.version) {
-    fs.mkdir(path.dirname(gppath), function() {
-      fs.open(gppath, 'w', function() {
-        GeoPackageAPI.create(gppath)
-        .then(function(geopackage) {
-          callback(null, geopackage);
+  return new Promise(function(resolve) {
+    if (typeof(process) !== 'undefined' && process.version) {
+      fs.mkdir(path.dirname(gppath), function() {
+        fs.open(gppath, 'w', function() {
+          GeoPackageAPI.create(gppath)
+          .then(function(geopackage) {
+            resolve(geopackage)
+            if (callback) callback(null, geopackage);
+          });
         });
       });
-    });
-  } else {
-    callback();
-  }
+    } else {
+      resolve()
+      if (callback) callback();
+    }
+  })
 }
 
 module.exports.createBareGeoPackage = function(gppath, callback) {
-  if (typeof(process) !== 'undefined' && process.version) {
-    fs.mkdir(path.dirname(gppath), function() {
-      fs.open(gppath, 'w', function() {
-        GeoPackageConnection(gppath)
-        .then(function(connection) {
-          var geopackage = new GeoPackage(path.basename(gppath), gppath, connection);
-          callback(null, geopackage);
+  return new Promise(function(resolve) {
+    if (typeof(process) !== 'undefined' && process.version) {
+      fs.mkdir(path.dirname(gppath), function() {
+        fs.open(gppath, 'w', function() {
+          GeoPackageConnection(gppath)
+          .then(function(connection) {
+            var geopackage = new GeoPackage(path.basename(gppath), gppath, connection);
+            resolve(geopackage)
+            if(callback) callback(null, geopackage);
+          });
         });
       });
-    });
-  } else {
-    callback();
-  }
+    } else {
+      resolve()
+      if (callback) callback();
+    }
+  })
 }
 
 module.exports.deleteGeoPackage = function(gppath, callback) {
-  if (typeof(process) !== 'undefined' && process.version) {
-    fs.unlink(gppath, callback);
-  } else {
-    callback();
-  }
+  return new Promise(function(resolve) {
+    if (typeof(process) !== 'undefined' && process.version) {
+      fs.unlink(gppath, function() {
+        if(callback) callback()
+        resolve();
+      });
+    } else {
+      resolve()
+      if(callback) callback();
+    }
+  })
 }
 
 module.exports.loadTile = function(tilePath, callback) {
@@ -79,34 +93,38 @@ module.exports.diffImages = function(actualTile, expectedTilePath, callback) {
 };
 
 module.exports.diffCanvas = function(actualCanvas, expectedTilePath, callback) {
-  if (typeof(process) !== 'undefined' && process.version) {
-    pureimage.decodePNGFromStream(fs.createReadStream(expectedTilePath)).then(function(expectedImage) {
-      var same = true;
-      for (var x = 0; x < actualCanvas.width && same; x++) {
-        for (var y = 0; y < actualCanvas.height && same; y++) {
-          var actualRGBA = actualCanvas.getPixelRGBA(x,y);
-          var expectedRGBA = expectedImage.getPixelRGBA(x,y);
-          same = actualRGBA === expectedRGBA;
+  return new Promise(function(resolve) {
+    if (typeof(process) !== 'undefined' && process.version) {
+      pureimage.decodePNGFromStream(fs.createReadStream(expectedTilePath)).then(function(expectedImage) {
+        var same = true;
+        for (var x = 0; x < actualCanvas.width && same; x++) {
+          for (var y = 0; y < actualCanvas.height && same; y++) {
+            var actualRGBA = actualCanvas.getPixelRGBA(x,y);
+            var expectedRGBA = expectedImage.getPixelRGBA(x,y);
+            same = actualRGBA === expectedRGBA;
+          }
         }
-      }
-      callback(null, same);
-    });
-  } else {
-
-    module.exports.loadTile(expectedTilePath, function(err, expectedTile) {
-      var expectedBase64 = new Buffer(expectedTile).toString('base64');
-      CanvasCompare({
-        baseImageUrl: actualCanvas.toDataURL(),
-        targetImageUrl: 'data:image/png;base64,' + expectedBase64
-      })
-      .then(function(result) {
-        callback(null, true);
-      })
-      .catch(function(reason) {
-        callback(null, false);
+        if (callback) callback(null, same);
+        resolve(same)
       });
-    });
-  }
+    } else {
+      module.exports.loadTile(expectedTilePath, function(err, expectedTile) {
+        var expectedBase64 = new Buffer(expectedTile).toString('base64');
+        CanvasCompare({
+          baseImageUrl: actualCanvas.toDataURL(),
+          targetImageUrl: 'data:image/png;base64,' + expectedBase64
+        })
+        .then(function(result) {
+          if (callback) callback(null, true);
+          resolve(true)
+        })
+        .catch(function(reason) {
+          if (callback) callback(null, false);
+          resolve(false)
+        });
+      });
+    }
+  })
 }
 
 module.exports.diffCanvasesContexts = function(actualCtx, expectedCtx, width, height) {
@@ -123,113 +141,118 @@ module.exports.diffCanvasesContexts = function(actualCtx, expectedCtx, width, he
 }
 
 module.exports.diffImagesWithDimensions = function(actualTile, expectedTilePath, width, height, callback) {
-  if (typeof(process) !== 'undefined' && process.version) {
+  return new Promise(function(resolve) {
+    if (typeof(process) !== 'undefined' && process.version) {
 
-    var chunkStream = new Duplex();
-    chunkStream.push(actualTile);
-    chunkStream.push(null);
-    pureimage.decodePNGFromStream(chunkStream).then(function(actualImage) {
-      pureimage.decodePNGFromStream(fs.createReadStream(expectedTilePath)).then(function(expectedImage) {
-        var same = true;
-        for (var x = 0; x < actualImage.width && same; x++) {
-          for (var y = 0; y < actualImage.height && same; y++) {
-            var actualRGBA = actualImage.getPixelRGBA(x,y);
-            var expectedRGBA = expectedImage.getPixelRGBA(x,y);
-            same = actualRGBA === expectedRGBA;
-            if (!same) {
-              console.log(`actualRGBA ${actualRGBA} expectedRGBA ${expectedRGBA} x ${x}, y${y}`)
+      var chunkStream = new Duplex();
+      chunkStream.push(actualTile);
+      chunkStream.push(null);
+      pureimage.decodePNGFromStream(chunkStream).then(function(actualImage) {
+        pureimage.decodePNGFromStream(fs.createReadStream(expectedTilePath)).then(function(expectedImage) {
+          var same = true;
+          for (var x = 0; x < actualImage.width && same; x++) {
+            for (var y = 0; y < actualImage.height && same; y++) {
+              var actualRGBA = actualImage.getPixelRGBA(x,y);
+              var expectedRGBA = expectedImage.getPixelRGBA(x,y);
+              same = actualRGBA === expectedRGBA;
+              if (!same) {
+                console.log(`actualRGBA ${actualRGBA} expectedRGBA ${expectedRGBA} x ${x}, y${y}`)
+              }
             }
           }
-        }
-        callback(null, same);
+          if (callback) callback(null, same);
+          resolve(same)
+        });
       });
-    });
-  } else {
-    if (actualTile instanceof Uint8Array) {
-      var binary = '';
-      var bytes = actualTile;
-      var len = bytes.byteLength;
-      for (var i = 0; i < len; i++) {
-        binary += String.fromCharCode( bytes[ i ] );
+    } else {
+      if (actualTile instanceof Uint8Array) {
+        var binary = '';
+        var bytes = actualTile;
+        var len = bytes.byteLength;
+        for (var i = 0; i < len; i++) {
+          binary += String.fromCharCode( bytes[ i ] );
+        }
+        actualTile = 'data:image/png;base64,' + btoa( binary );
       }
-      actualTile = 'data:image/png;base64,' + btoa( binary );
-    }
 
 
-    var actual = document.createElement('canvas');
-    actual.width = width;
-    actual.height = height;
-    var ctx = actual.getContext('2d');
+      var actual = document.createElement('canvas');
+      actual.width = width;
+      actual.height = height;
+      var ctx = actual.getContext('2d');
 
-    var image = new Image();
-    image.onload = function() {
-      ctx.drawImage(image, 0, 0);
-      module.exports.loadTile(expectedTilePath, function(err, expectedTile) {
-        var expectedBase64 = new Buffer(expectedTile).toString('base64');
+      var image = new Image();
+      image.onload = function() {
+        ctx.drawImage(image, 0, 0);
+        module.exports.loadTile(expectedTilePath, function(err, expectedTile) {
+          var expectedBase64 = new Buffer(expectedTile).toString('base64');
 
-        var expected = document.createElement('canvas');
-        expected.width = width;
-        expected.height = height;
-        var ctx2 = expected.getContext('2d');
+          var expected = document.createElement('canvas');
+          expected.width = width;
+          expected.height = height;
+          var ctx2 = expected.getContext('2d');
 
-        var image2 = new Image();
-        image2.onload = function() {
-          ctx2.drawImage(image2, 0, 0);
+          var image2 = new Image();
+          image2.onload = function() {
+            ctx2.drawImage(image2, 0, 0);
 
-          var equal = module.exports.diffCanvasesContexts(ctx, ctx2, width, height);
-          if (!equal) {
-            var h1Tags = document.getElementsByTagName('h1');
-            var h2Tags = document.getElementsByTagName('li');
-            var currentTag;
-            if (h2Tags.length === 0) {
-              currentTag = h1Tags.item(h1Tags.length - 1);
+            var equal = module.exports.diffCanvasesContexts(ctx, ctx2, width, height);
+            if (!equal) {
+              var h1Tags = document.getElementsByTagName('h1');
+              var h2Tags = document.getElementsByTagName('li');
+              var currentTag;
+              if (h2Tags.length === 0) {
+                currentTag = h1Tags.item(h1Tags.length - 1);
+              } else {
+                currentTag = h2Tags.item(h2Tags.length -1).parentNode;
+              }
+              var div = document.createElement('div');
+              var span1 = document.createElement('span');
+              span1.style.width = width + 'px';
+              span1.style.display = 'inline-block';
+              span1.innerHTML = 'Actual';
+              var span2 = document.createElement('span');
+              span2.style.width = width + 'px';
+              span2.style.display = 'inline-block';
+              span2.innerHTML = 'Expected';
+              var span3 = document.createElement('span');
+              span3.style.width = width + 'px';
+              span3.style.display = 'inline-block';
+              span3.innerHTML = 'Diff';
+
+              div.appendChild(span1);
+              div.appendChild(span2);
+              div.appendChild(span3);
+              currentTag.appendChild(div);
+              currentTag.appendChild(actual);
+              currentTag.appendChild(expected);
+
+              console.log('canvas compare', CanvasCompare);
+
+              CanvasCompare.canvasCompare({
+                baseImageUrl: actualTile,
+                targetImageUrl: 'data:image/png;base64,' + expectedBase64
+              })
+              .then(function(result) {
+                console.log('result', result);
+                currentTag.appendChild(result.producePreview());
+                if (callback) callback(null, false);
+                resolve(false)
+              })
+              .catch(function(reason) {
+                console.log('reason', reason);
+                if (callback) callback(null, false);
+                resolve(false)
+              });
             } else {
-              currentTag = h2Tags.item(h2Tags.length -1).parentNode;
+              if (callback) callback(null, equal);
+              resolve(equal)
             }
-            var div = document.createElement('div');
-            var span1 = document.createElement('span');
-            span1.style.width = width + 'px';
-            span1.style.display = 'inline-block';
-            span1.innerHTML = 'Actual';
-            var span2 = document.createElement('span');
-            span2.style.width = width + 'px';
-            span2.style.display = 'inline-block';
-            span2.innerHTML = 'Expected';
-            var span3 = document.createElement('span');
-            span3.style.width = width + 'px';
-            span3.style.display = 'inline-block';
-            span3.innerHTML = 'Diff';
-
-            div.appendChild(span1);
-            div.appendChild(span2);
-            div.appendChild(span3);
-            currentTag.appendChild(div);
-            currentTag.appendChild(actual);
-            currentTag.appendChild(expected);
-
-            console.log('canvas compare', CanvasCompare);
-
-            CanvasCompare.canvasCompare({
-              baseImageUrl: actualTile,
-              targetImageUrl: 'data:image/png;base64,' + expectedBase64
-            })
-            .then(function(result) {
-              console.log('result', result);
-              currentTag.appendChild(result.producePreview());
-              callback(null, false);
-            })
-            .catch(function(reason) {
-              console.log('reason', reason);
-              callback(null, false);
-            });
-          } else {
-            callback(null, equal);
           }
-        }
-        image2.src = 'data:image/png;base64,' + expectedBase64;
-      });
-    };
-    image.src = actualTile;
-  }
-
+          image2.src = 'data:image/png;base64,' + expectedBase64;
+        });
+      };
+      image.src = actualTile;
+    }
+  });
 }

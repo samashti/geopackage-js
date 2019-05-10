@@ -1,16 +1,20 @@
 var GeoPackageConnection = require('../../lib/db/geoPackageConnection').default
   , GeoPackage = require('../../lib/geoPackage').default
   , GeoPackageAPI = require('../../lib').GeoPackage
+  , Contents = require('../../lib/core/contents').Contents
+  , ContentsDao = require('../../lib/core/contents').ContentsDao
   , FeatureColumn = require('../../lib/features/user/featureColumn').default
   , DataColumns = require('../../lib/dataColumns').DataColumns
   , DataColumnsDao = require('../../lib/dataColumns').DataColumnsDao
   , Verification = require('../fixtures/verification')
   , FeatureTable = require('../../lib/features/user/featureTable').default
+  , FeatureDao = require('../../lib/features/user/featureDao').default
   , TileTable = require('../../lib/tiles/user/tileTable').default
   , SetupFeatureTable = require('../fixtures/setupFeatureTable')
   , TableCreator = require('../../lib/db/tableCreator').default
   , BoundingBox = require('../../lib/boundingBox').default
   , DataTypes = require('../../lib/db/dataTypes').default
+  , GeometryColumns = require('../../lib/features/columns/index').GeometryColumns
   , GeometryData = require('../../lib/geom/geometryData').default
   , FeatureTableReader = require('../../lib/features/user/featureTableReader').default
   , testSetup = require('../fixtures/testSetup')
@@ -36,6 +40,78 @@ describe('GeoPackage Feature table create tests', function() {
     geopackage.close();
     testSetup.deleteGeoPackage(testGeoPackage, done);
   });
+
+  it('should fail to create a feature column without a datatype or geometry type', () => {
+    try {
+      new FeatureColumn(0, 'name', null, 0, false, '', false, null)
+      false.should.be.equal(true)
+    } catch (e) {
+      should.exist(e)
+    }
+  })
+
+  it('wil not create a feature dao where the table does not exist in the contents table', async () => {
+    var geometryColumns = new GeometryColumns();
+    geometryColumns.table_name = 'nope';
+    geometryColumns.column_name = 'geometry';
+    geometryColumns.geometry_type_name = 'GEOMETRY';
+    geometryColumns.z = 0;
+    geometryColumns.m = 0;
+
+    var boundingBox = new BoundingBox(-180, 180, -80, 80);
+
+    var columns = [];
+    var columnNumber = 0;
+    columns.push(FeatureColumn.createPrimaryKeyColumnWithIndexAndName(columnNumber++, 'id'));
+    columns.push(FeatureColumn.createGeometryColumn(columnNumber++, 'geometry', 'GEOMETRY', false, null));
+
+    let table = new FeatureTable('nope', columns)
+
+    try {
+      new FeatureDao(geopackage, table, geometryColumns)
+    } catch (e) {
+      e.message.startsWith('Contents table entry').should.be.equal(true)
+    }
+  })
+
+  it('will not create a feature dao where the srs is not set', async () => {
+    var geometryColumns = new GeometryColumns();
+    geometryColumns.table_name = 'nope';
+    geometryColumns.column_name = 'geometry';
+    geometryColumns.geometry_type_name = 'GEOMETRY';
+    geometryColumns.z = 0;
+    geometryColumns.m = 0;
+
+    var boundingBox = new BoundingBox(-180, 180, -80, 80);
+
+    var columns = [];
+    var columnNumber = 0;
+    columns.push(FeatureColumn.createPrimaryKeyColumnWithIndexAndName(columnNumber++, 'id'));
+    columns.push(FeatureColumn.createGeometryColumn(columnNumber++, 'geometry', 'GEOMETRY', false, null));
+
+    let table = new FeatureTable('nope', columns)
+
+    await geopackage.createGeometryColumnsTable()
+    var result = geopackage.createFeatureTable(table);
+    var contents = new Contents();
+    contents.table_name = geometryColumns.table_name;
+    contents.data_type = ContentsDao.GPKG_CDT_FEATURES_NAME;
+    contents.identifier = geometryColumns.table_name;
+    contents.last_change = new Date().toISOString();
+    contents.min_x = boundingBox.minLongitude;
+    contents.min_y = boundingBox.minLatitude;
+    contents.max_x = boundingBox.maxLongitude;
+    contents.max_y = boundingBox.maxLatitude;
+    contents.srs_id = 4326;
+    geopackage.getContentsDao().create(contents);
+    geometryColumns.srs_id = 1234;
+
+    try {
+      new FeatureDao(geopackage, table, geometryColumns)
+    } catch (e) {
+      e.message.startsWith('Spatial Reference System for').should.be.equal(true)
+    }
+  })
 
   it('should create a feature table', function() {
     var geometryColumns = SetupFeatureTable.buildGeometryColumns(tableName, 'geom.test', wkx.wkt.Point);
@@ -249,7 +325,7 @@ describe('GeoPackage Feature table create tests', function() {
 
     it('should create a feature', function() {
       var featureDao = geopackage.getFeatureDao(tableName);
-      var featureRow = featureDao.newRow();
+      var featureRow = featureDao.createObject();
       var geometryData = new GeometryData();
       geometryData.setSrsId(4326);
       var point = new wkx.Point(1, 2);
