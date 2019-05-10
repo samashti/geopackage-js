@@ -168,22 +168,35 @@ describe('TableCreator tests', function() {
     count.should.be.equal(1);
   });
 
-  it('should create a user tile table', function(done) {
+  it('should create a user tile table', function() {
     var columns = TileTable.createRequiredColumns();
     var tileTable = new TileTable('test_tiles', columns);
     var tc = new TableCreator(geopackage);
     var result = tc.createUserTable(tileTable);
     should.exist(result);
     Verification.verifyTableExists(geopackage, 'test_tiles').should.be.equal(true);
-    done();
   });
 
-  it('should create a user feature table', function(done) {
+  it('should fail to create a user tile table twice', function() {
+    var columns = TileTable.createRequiredColumns();
+    var tileTable = new TileTable('test_tiles', columns);
+    var tc = new TableCreator(geopackage);
+    var result = tc.createUserTable(tileTable);
+    should.exist(result);
+    Verification.verifyTableExists(geopackage, 'test_tiles').should.be.equal(true);
+    try {
+      tc.createUserTable(tileTable);
+      false.should.be.equal(true)
+    } catch (e) {
+      should.exist(e)
+    }
+  });
+
+  it('should create a user feature table', function() {
     var featureTable = SetupFeatureTable.buildFeatureTable('test_features', 'geom', wkx.wkt.Point);
     var tc = new TableCreator(geopackage);
     var result = tc.createUserTable(featureTable);
     Verification.verifyTableExists(geopackage, 'test_features').should.be.equal(true);
-    done();
   });
 
 });

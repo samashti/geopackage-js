@@ -19,6 +19,25 @@ describe('SqliteQueryBuilder tests', function() {
     query.should.be.equal('select distinct * from test_table join where a = 1 group by grouping_column having having clause order by order_column limit 500');
   });
 
+  it('should not create a query with a having clause and no group by clause', function() {
+    var parameters = {
+      distinct: true,
+      tables: 'test_table',
+      where: 'a = 1',
+      join: 'join',
+      having: 'having clause',
+      orderBy: 'order_column',
+      limit: 500
+    }
+    try {
+      var query = QueryBuilder.buildQuery(parameters.distinct, parameters.tables, parameters.columns, parameters.where, parameters.join, parameters.groupBy, parameters.having, parameters.orderBy, parameters.limit);
+      false.should.be.equal(true)
+    } catch (err) {
+      should.exist(err)
+      err.message.should.be.equal('Illegal Arguments: having clauses require a groupBy clause')
+    }
+  });
+
   it('should create a query with columns', function() {
     var parameters = {
       distinct: true,

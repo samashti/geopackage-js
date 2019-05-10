@@ -24,22 +24,29 @@ describe('GeoPackageAPI tests', function() {
   var url = base + urlPath;
   var badUrl = base + '/bad';
   var errorUrl = base + '/error';
-  var tileUrl = base + '/tile';
+  var tileUrl = base + '/tile.gpkg';
 
   beforeEach(function() {
     nock(base)
+    .log(console.log)
+    .get('/tile.gpkg')
+    .replyWithFile(200, tilePath);
+    nock(base)
+    .log(console.log)
     .get(urlPath)
     .replyWithFile(200, existingPath);
     nock(base)
+    .log(console.log)
     .get('/bad')
     .reply(404);
     nock(base)
-    .get('/tile')
-    .replyWithFile(200, tilePath);
-    nock(base)
+    .log(console.log)
     .get('/error')
-    .replyWithError('error');
+    .reply(500);
     mock.setup();
+    mock.get(tileUrl, {
+      body: fs.readFileSync(tilePath).buffer
+    });
     mock.get(url, {
       body: fs.readFileSync(existingPath).buffer
     });
@@ -52,7 +59,7 @@ describe('GeoPackageAPI tests', function() {
   });
 
   afterEach(function() {
-    nock.restore();
+    nock.cleanAll();
     mock.teardown();
   });
 
@@ -88,12 +95,14 @@ describe('GeoPackageAPI tests', function() {
     });
   });
 
-  it('should open the geopackage from a URL', function() {
-    return GeoPackage.open(url)
-    .then(function(geopackage) {
+  it('should open the geopackage from a URL', async function() {
+    try {
+      let geopackage = await GeoPackage.open(url)
       should.exist(geopackage);
       should.exist(geopackage.getTables);
-    });
+    } catch (err) {
+      false.should.be.equal(true)
+    }
   });
 
   it('should fail to open a file which is not a geopackage from a URL', async function() {
@@ -101,6 +110,7 @@ describe('GeoPackageAPI tests', function() {
       await GeoPackage.open(tileUrl);
       false.should.be.equal(true)
     } catch (e) {
+      console.log('error', e)
       should.exist(e);
     }
   });

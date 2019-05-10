@@ -1,6 +1,7 @@
 var GeoPackageAPI = require('../../../lib').GeoPackage
   , TileMatrixDao = require('../../../lib/tiles/matrix').TileMatrixDao
   , TileMatrix = require('../../../lib/tiles/matrix').TileMatrix
+  , ColumnValues = require('../../../lib/dao/columnValues').default
   , should = require('chai').should()
   , path = require('path');
 
@@ -26,6 +27,18 @@ describe('Tile Matrix tests', function() {
     var tileMatrices = tileMatrixDao.queryForAll();
     tileMatrices.should.have.property('length', 4);
   });
+
+  it('should return the initial object if there is no result', () => {
+    tileMatrixDao.populateObjectFromResult({test: 'yes'}).should.be.deep.equal({test: 'yes'})
+  })
+
+  it('should build where like with multiple options', () => {
+    var values = new ColumnValues();
+    values.addColumn('field1', 'yes');
+    values.addColumn('field2', 'no')
+    var where = tileMatrixDao.buildWhereLike(values, 'AND');
+    where.should.be.equal('field1 like ? AND field2 like ?')
+  })
 
   it('should transform the tile matrix result to a TileMatrix', function() {
     var tileMatrices = tileMatrixDao.queryForAll();
