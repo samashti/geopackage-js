@@ -148,6 +148,17 @@ describe('RTree tests', function() {
       testSetup.deleteGeoPackage(filename, done);
     });
 
+    it('should add the rTree extension', async function() {
+      var rti = new RTreeIndex(geoPackage, featureDao);
+      var e = await rti.getOrCreateExtension()
+      should.exist(e)
+      var exists = rti.hasExtension(rti.extensionName, rti.tableName, rti.columnName)
+      exists.should.be.equal(true);
+      var e2 = await rti.create()
+      should.exist(e2)
+      e.should.be.deep.equal(e2)
+    });
+
     it('should add the RTree extension to the GeoPackage', function() {
       var rtreeIndex = new RTreeIndex(geoPackage, featureDao);
       return rtreeIndex.create()
