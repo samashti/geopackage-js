@@ -2,6 +2,7 @@ var GeoPackageAPI = require('../../../../lib').GeoPackage
   , DataType = require('../../../../lib/db/dataTypes').default
   , Verification = require('../../../fixtures/verification')
   , ContentsDao = require('../../../../lib/core/contents').ContentsDao
+  , ExtendedRelation = require('../../../../lib/extension/relatedTables/extendedRelation').ExtendedRelation
   , RelatedTablesExtension = require('../../../../lib/extension/relatedTables').default
   , UserMappingTable = require('../../../../lib/extension/relatedTables/userMappingTable').default
   , MediaTable = require('../../../../lib/extension/relatedTables/mediaTable').default
@@ -105,6 +106,61 @@ describe('Related Tile tests', function() {
       }, Promise.resolve());
     });
   }
+
+  it('should add a tile relationship', async function() {
+    this.timeout(5000);
+
+    await createTiles()
+    var rte = new RelatedTablesExtension(geoPackage);
+    rte.has().should.be.equal(false);
+
+    var extendedRelationships = rte.getRelationships();
+    extendedRelationships.length.should.be.equal(0);
+
+    var baseTableName = geoPackage.getFeatureTables()[0];;
+    var relatedTableName = tileTableName;
+    var mappingTableName = 'features_tiles';
+
+    var additionalColumns = RelatedTablesUtils.createAdditionalUserColumns(UserMappingTable.numRequiredColumns());
+    var userMappingTable = UserMappingTable.create(mappingTableName, additionalColumns);
+    rte.has(userMappingTable.table_name).should.be.equal(false);
+
+    var numColumns = UserMappingTable.numRequiredColumns() + additionalColumns.length;
+    numColumns.should.be.equal(userMappingTable.columns.length);
+
+    var baseIdColumn = userMappingTable.getBaseIdColumn();
+    should.exist(baseIdColumn);
+    baseIdColumn.name.should.be.equal(UserMappingTable.COLUMN_BASE_ID);
+    baseIdColumn.notNull.should.be.equal(true);
+    baseIdColumn.primaryKey.should.be.equal(false);
+
+    var er = new ExtendedRelation()
+    er.base_table_name = baseTableName;
+    er.base_primary_column = geoPackage.getFeatureDao(baseTableName).table.getPkColumn().name;
+    er.related_table_name = relatedTableName;
+    er.related_primary_column = geoPackage.getTileDao(relatedTableName).table.getPkColumn().name
+    er.mapping_table_name = userMappingTable.table_name;
+    er.relation_name = 'TILES';
+
+    await rte.createUserMappingTable(userMappingTable)
+
+    let extendedRelation = await rte.addTilesRelationship(er)
+    rte.has().should.be.equal(true);
+    rte.has(userMappingTable.table_name).should.be.equal(true);
+    should.exist(extendedRelation);
+    extendedRelation.relation_name.should.be.equal('TILES')
+    var relationships = rte.getRelationships();
+    relationships.length.should.be.equal(1);
+    geoPackage.isTable(mappingTableName).should.be.equal(true);
+
+    rte.removeRelationship(extendedRelation);
+    rte.has(userMappingTable.table_name).should.be.equal(false);
+    relationships = rte.getRelationships();
+    relationships.length.should.be.equal(0);
+    geoPackage.isTable(mappingTableName).should.be.equal(false);
+    rte.removeExtension();
+    rte.has().should.be.equal(false);
+  });
 
   it('should create a tile relationship', function() {
     this.timeout(5000);

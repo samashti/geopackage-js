@@ -1,6 +1,7 @@
 var GeoPackageAPI = require('../../../../lib').GeoPackage
   , Verification = require('../../../fixtures/verification')
   , RelatedTablesExtension = require('../../../../lib/extension/relatedTables').default
+  , ExtendedRelation = require('../../../../lib/extension/relatedTables/extendedRelation').ExtendedRelation
   , UserMappingTable = require('../../../../lib/extension/relatedTables/userMappingTable').default
   , SetupFeatureTable = require('../../../fixtures/setupFeatureTable').default
   , testSetup = require('../../../fixtures/testSetup')
@@ -186,10 +187,12 @@ describe('Related Tables tests', function() {
       var featureRelationship = RelatedTablesExtension.RelationshipBuilder()
       .setBaseTableName(baseTableName)
       .setRelatedTableName(relatedTableName)
+      .setRelationAuthor('author')
       .setUserMappingTable(userMappingTable);
 
       return rte.addFeaturesRelationship(featureRelationship)
       .then(function(extendedRelation){
+        extendedRelation.relation_name.should.be.equal('x-author_features')
         rte.has().should.be.equal(true);
         rte.has(userMappingTable.table_name).should.be.equal(true);
         should.exist(extendedRelation);
@@ -210,6 +213,8 @@ describe('Related Tables tests', function() {
           userMappingRow.setRelatedId(Math.floor(Math.random() * relatedResults.length));
           RelatedTablesUtils.populateRow(userMappingTable, userMappingRow, UserMappingTable.requiredColumns());
           var result = userMappingDao.create(userMappingRow);
+          var relationships = rte.getRelatedRows(baseTableName, userMappingRow.getBaseId());
+          relationships.length.should.be.above(0)
         }
 
         var count = userMappingDao.getCount();
@@ -230,7 +235,7 @@ describe('Related Tables tests', function() {
           rowsDeleted += deleteResult;
         }
         rowsDeleted.should.be.equal(10);
-        rte.removeRelationship(extendedRelation);
+        rte.removeRelationship(featureRelationship).should.be.equal(1);
         rte.has(userMappingTable.table_name).should.be.equal(false);
         relationships = rte.getRelationships();
         relationships.length.should.be.equal(0);
@@ -242,6 +247,272 @@ describe('Related Tables tests', function() {
         console.log('error', error);
         false.should.be.equal(true);
       });
+    });
+
+    it('should add a extended relationship', async function() {
+
+      var rte = new RelatedTablesExtension(geoPackage);
+      rte.has().should.be.equal(false);
+
+      var extendedRelationships = rte.getRelationships();
+      extendedRelationships.length.should.be.equal(0);
+
+      var baseTableName = 'geometry2d';
+      var relatedTableName = 'geometry3d';
+      var mappingTableName = 'g2d_3d';
+
+      var additionalColumns = RelatedTablesUtils.createAdditionalUserColumns(UserMappingTable.numRequiredColumns());
+      var userMappingTable = UserMappingTable.create(mappingTableName, additionalColumns);
+      rte.has(userMappingTable.table_name).should.be.equal(false);
+
+      var numColumns = UserMappingTable.numRequiredColumns() + additionalColumns.length;
+      numColumns.should.be.equal(userMappingTable.columns.length);
+
+      var baseIdColumn = userMappingTable.getBaseIdColumn();
+      should.exist(baseIdColumn);
+      baseIdColumn.name.should.be.equal(UserMappingTable.COLUMN_BASE_ID);
+      baseIdColumn.notNull.should.be.equal(true);
+      baseIdColumn.primaryKey.should.be.equal(false);
+
+      var er = new ExtendedRelation()
+      er.base_table_name = baseTableName;
+      er.base_primary_column = geoPackage.getFeatureDao(baseTableName).table.getPkColumn().name;
+      er.related_table_name = relatedTableName;
+      er.related_primary_column = geoPackage.getFeatureDao(relatedTableName).table.getPkColumn().name
+      er.mapping_table_name = userMappingTable.table_name;
+      er.relation_name = 'FEATURES';
+
+      await rte.createUserMappingTable(userMappingTable)
+
+      let extendedRelation = await rte.addFeaturesRelationship(er)
+      rte.has().should.be.equal(true);
+      rte.has(userMappingTable.table_name).should.be.equal(true);
+      should.exist(extendedRelation);
+      var relationships = rte.getRelationships();
+      relationships.length.should.be.equal(1);
+      geoPackage.isTable(mappingTableName).should.be.equal(true);
+
+      var baseDao = geoPackage.getFeatureDao(baseTableName);
+      var relatedDao = geoPackage.getFeatureDao(relatedTableName);
+      var baseResults = baseDao.queryForAll();
+      var relatedResults = relatedDao.queryForAll();
+
+      var userMappingDao = rte.getMappingDao(mappingTableName);
+      var userMappingRow;
+      for (var i = 0; i < 10; i++) {
+        userMappingRow = userMappingDao.newRow();
+        userMappingRow.setBaseId(Math.floor(Math.random() * baseResults.length));
+        userMappingRow.setRelatedId(Math.floor(Math.random() * relatedResults.length));
+        RelatedTablesUtils.populateRow(userMappingTable, userMappingRow, UserMappingTable.requiredColumns());
+        var result = userMappingDao.create(userMappingRow);
+        var relationships = rte.getRelatedRows(baseTableName, userMappingRow.getBaseId());
+        relationships.length.should.be.above(0)
+      }
+
+      var count = userMappingDao.getCount();
+      count.should.be.equal(10);
+
+      userMappingTable = userMappingDao.table;
+      var columns = userMappingTable.columnNames;
+      var userMappingRows = userMappingDao.queryForAll();
+      userMappingRows.length.should.be.equal(10);
+
+      var rowsDeleted = 0;
+      for (var i = 0; i < userMappingRows.length; i++) {
+        var resultRow = userMappingDao.getUserMappingRow(userMappingRows[i]);
+        should.not.exist(resultRow.getId());
+        RelatedTablesUtils.validateUserRow(columns, resultRow);
+        RelatedTablesUtils.validateDublinCoreColumns(resultRow);
+        var deleteResult = userMappingDao.deleteByIds(resultRow.getBaseId(), resultRow.getRelatedId());
+        rowsDeleted += deleteResult;
+      }
+      rowsDeleted.should.be.equal(10);
+      rte.removeRelationship(extendedRelation);
+      rte.has(userMappingTable.table_name).should.be.equal(false);
+      relationships = rte.getRelationships();
+      relationships.length.should.be.equal(0);
+      geoPackage.isTable(mappingTableName).should.be.equal(false);
+      rte.removeExtension();
+      rte.has().should.be.equal(false);
+    });
+
+    it('should add a extended relationship with a user mapping table name', async function() {
+
+      var rte = new RelatedTablesExtension(geoPackage);
+      rte.has().should.be.equal(false);
+
+      var extendedRelationships = rte.getRelationships();
+      extendedRelationships.length.should.be.equal(0);
+
+      var baseTableName = 'geometry2d';
+      var relatedTableName = 'geometry3d';
+      var mappingTableName = 'g2d_3d';
+
+      var er = new ExtendedRelation()
+      er.base_table_name = baseTableName;
+      er.base_primary_column = geoPackage.getFeatureDao(baseTableName).table.getPkColumn().name;
+      er.related_table_name = relatedTableName;
+      er.related_primary_column = geoPackage.getFeatureDao(relatedTableName).table.getPkColumn().name
+      er.mapping_table_name = mappingTableName;
+      er.relation_name = 'FEATURES';
+
+      await rte.createUserMappingTable(mappingTableName)
+
+      let extendedRelation = await rte.addFeaturesRelationship(er)
+      rte.has().should.be.equal(true);
+      rte.has(mappingTableName).should.be.equal(true);
+      should.exist(extendedRelation);
+      var relationships = rte.getRelationships();
+      relationships.length.should.be.equal(1);
+      geoPackage.isTable(mappingTableName).should.be.equal(true);
+
+      var baseDao = geoPackage.getFeatureDao(baseTableName);
+      var relatedDao = geoPackage.getFeatureDao(relatedTableName);
+      var baseResults = baseDao.queryForAll();
+      var relatedResults = relatedDao.queryForAll();
+
+      var userMappingDao = rte.getMappingDao(mappingTableName);
+      var userMappingRow;
+      for (var i = 0; i < 10; i++) {
+        userMappingRow = userMappingDao.newRow();
+        userMappingRow.setBaseId(Math.floor(Math.random() * baseResults.length));
+        userMappingRow.setRelatedId(Math.floor(Math.random() * relatedResults.length));
+        var result = userMappingDao.create(userMappingRow);
+        var relationships = rte.getRelatedRows(baseTableName, userMappingRow.getBaseId());
+        relationships.length.should.be.above(0)
+      }
+
+      var count = userMappingDao.getCount();
+      count.should.be.equal(10);
+
+      var userMappingRows = userMappingDao.queryForAll();
+      userMappingRows.length.should.be.equal(10);
+
+      var rowsDeleted = 0;
+      for (var i = 0; i < userMappingRows.length; i++) {
+        var resultRow = userMappingDao.getUserMappingRow(userMappingRows[i]);
+        should.not.exist(resultRow.getId());
+        var deleteResult = userMappingDao.deleteByIds(resultRow.getBaseId(), resultRow.getRelatedId());
+        rowsDeleted += deleteResult;
+      }
+      rowsDeleted.should.be.equal(10);
+      rte.removeExtension();
+      rte.has(mappingTableName).should.be.equal(false);
+      relationships = rte.getRelationships();
+      relationships.length.should.be.equal(0);
+      geoPackage.isTable(mappingTableName).should.be.equal(false);
+      rte.has().should.be.equal(false);
+    });
+
+    it('should fail to make a relationship to a related table that does not exist', async function() {
+
+      var rte = new RelatedTablesExtension(geoPackage);
+      rte.has().should.be.equal(false);
+
+      var extendedRelationships = rte.getRelationships();
+      extendedRelationships.length.should.be.equal(0);
+
+      var baseTableName = 'geometry2d';
+      var mappingTableName = 'g2d_3d';
+
+      var additionalColumns = RelatedTablesUtils.createAdditionalUserColumns(UserMappingTable.numRequiredColumns());
+      var userMappingTable = UserMappingTable.create(mappingTableName, additionalColumns);
+      rte.has(userMappingTable.table_name).should.be.equal(false);
+
+      var featureRelationship = RelatedTablesExtension.RelationshipBuilder()
+      .setBaseTableName(baseTableName)
+      .setRelatedTableName('nope')
+      .setRelationAuthor('author')
+      .setUserMappingTable(userMappingTable);
+
+      try {
+        let added = await rte.addRelationship(featureRelationship)
+        added.should.be.equal(false)
+      } catch (e) {
+        should.not.exist(e)
+      }
+    });
+
+    it('should fail to make a relationship to a base table that does not exist', async function() {
+      var rte = new RelatedTablesExtension(geoPackage);
+      rte.has().should.be.equal(false);
+
+      var extendedRelationships = rte.getRelationships();
+      extendedRelationships.length.should.be.equal(0);
+
+      var relatedTableName = 'geometry2d';
+      var mappingTableName = 'g2d_3d';
+
+      var additionalColumns = RelatedTablesUtils.createAdditionalUserColumns(UserMappingTable.numRequiredColumns());
+      var userMappingTable = UserMappingTable.create(mappingTableName, additionalColumns);
+      rte.has(userMappingTable.table_name).should.be.equal(false);
+
+      var featureRelationship = RelatedTablesExtension.RelationshipBuilder()
+      .setBaseTableName('nope')
+      .setRelatedTableName(relatedTableName)
+      .setRelationAuthor('author')
+      .setUserMappingTable(userMappingTable);
+
+      try {
+        let added = await rte.addRelationship(featureRelationship)
+        added.should.be.equal(false)
+      } catch (e) {
+        should.not.exist(e)
+      }
+    });
+
+    it('should fail to make a relationship if the related table is the wrong type', async function() {
+      var rte = new RelatedTablesExtension(geoPackage);
+      rte.has().should.be.equal(false);
+
+      var extendedRelationships = rte.getRelationships();
+      extendedRelationships.length.should.be.equal(0);
+
+      var baseTableName = 'geometry2d';
+      var relatedTableName = 'geometry3d';
+      var mappingTableName = 'g2d_3d';
+
+      var additionalColumns = RelatedTablesUtils.createAdditionalUserColumns(UserMappingTable.numRequiredColumns());
+      var userMappingTable = UserMappingTable.create(mappingTableName, additionalColumns);
+      rte.has(userMappingTable.table_name).should.be.equal(false);
+
+      var featureRelationship = RelatedTablesExtension.RelationshipBuilder()
+      .setBaseTableName(baseTableName)
+      .setRelatedTableName(relatedTableName)
+      .setRelationName('TILES')
+      .setUserMappingTable(userMappingTable);
+
+      try {
+        let added = await rte.addRelationship(featureRelationship)
+        added.should.be.equal(false)
+      } catch (e) {
+        console.log('e', e)
+        should.not.exist(e)
+      }
+    });
+
+    it('should not fail when removing a relationship that does not exist', async function() {
+      var rte = new RelatedTablesExtension(geoPackage);
+      rte.has().should.be.equal(false);
+
+      var extendedRelationships = rte.getRelationships();
+      extendedRelationships.length.should.be.equal(0);
+
+      var baseTableName = 'geometry2d';
+      var relatedTableName = 'geometry3d';
+      var mappingTableName = 'g2d_3d';
+
+      var additionalColumns = RelatedTablesUtils.createAdditionalUserColumns(UserMappingTable.numRequiredColumns());
+      var userMappingTable = UserMappingTable.create(mappingTableName, additionalColumns);
+      rte.has(userMappingTable.table_name).should.be.equal(false);
+
+      var featureRelationship = RelatedTablesExtension.RelationshipBuilder()
+      .setBaseTableName(baseTableName)
+      .setRelatedTableName(relatedTableName)
+      .setRelationName('TILES')
+      .setUserMappingTable(userMappingTable);
+
+      rte.removeRelationship(featureRelationship).should.be.equal(0)
     });
   });
 });

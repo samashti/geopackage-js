@@ -18,29 +18,26 @@ describe('GeoPackage Feature Table Index Extension tests', function() {
     var originalFilename = path.join(__dirname, '..', '..', '..', 'fixtures', 'rivers.gpkg');
     var filename;
 
-    function copyGeopackage(originalFilename, filename, callback) {
+    async function copyGeopackage(originalFilename, filename, callback) {
       if (typeof(process) !== 'undefined' && process.version) {
-        var fsExtra = require('fs-extra');
-        fsExtra.copy(originalFilename, filename, callback);
+        var fsExtra = require('fs-extra')
+        fsExtra.copySync(originalFilename, filename);
+        if (callback) callback()
       } else {
         filename = originalFilename;
-        callback();
+        if (callback) callback();
       }
     }
 
-    beforeEach('should open the geopackage', function(done) {
+    beforeEach('should open the geopackage', async function() {
       filename = path.join(__dirname, '..', '..', '..', 'fixtures', 'tmp', testSetup.createTempName());
-      copyGeopackage(originalFilename, filename, function(err) {
-        GeoPackageAPI.open(filename)
-        .then(function(gp) {
-          geoPackage = gp;
-          should.exist(gp);
-          should.exist(gp.getDatabase().getDBConnection());
-          gp.getPath().should.be.equal(filename);
-          featureDao = geoPackage.getFeatureDao('FEATURESriversds');
-          done();
-        });
-      });
+      copyGeopackage(originalFilename, filename)
+
+      geoPackage = await GeoPackageAPI.open(filename)
+      should.exist(geoPackage);
+      should.exist(geoPackage.getDatabase().getDBConnection());
+      geoPackage.getPath().should.be.equal(filename);
+      featureDao = geoPackage.getFeatureDao('FEATURESriversds');
     });
 
     afterEach('should close the geopackage', function(done) {
@@ -210,20 +207,32 @@ describe('GeoPackage Feature Table Index Extension tests', function() {
       indexed.should.be.equal(true);
     });
 
-    it('should force index the table', function() {
+    it('should force index the table', async function() {
       this.timeout(30000);
       var fti = featureDao.featureTableIndex;
       var tableIndex = fti.getTableIndex();
       tableIndex.last_indexed.should.be.equal('2016-05-02T12:08:14.144Z');
-      return fti.indexWithForce(true)
-      .then(function(indexed) {
-        indexed.should.be.equal(true);
-        // ensure it was created
-        var fti2 = new FeatureTableIndex(geoPackage, featureDao);
-        tableIndex = fti2.getTableIndex();
-        should.exist(tableIndex);
-        tableIndex.last_indexed.should.not.be.equal('2016-05-02T12:08:14.144Z');
-      });
+      let indexed = await fti.indexWithForce(true)
+      indexed.should.be.equal(true);
+      // ensure it was created
+      var fti2 = new FeatureTableIndex(geoPackage, featureDao);
+      tableIndex = fti2.getTableIndex();
+      should.exist(tableIndex);
+      tableIndex.last_indexed.should.not.be.equal('2016-05-02T12:08:14.144Z');
+    });
+
+    it('should index the already indexed table and just return', async function() {
+      this.timeout(30000);
+      var fti = featureDao.featureTableIndex;
+      var tableIndex = fti.getTableIndex();
+      tableIndex.last_indexed.should.be.equal('2016-05-02T12:08:14.144Z');
+      let indexed = await fti.index()
+      indexed.should.be.equal(true);
+      // ensure it was created
+      var fti2 = new FeatureTableIndex(geoPackage, featureDao);
+      tableIndex = fti2.getTableIndex();
+      should.exist(tableIndex);
+      tableIndex.last_indexed.should.be.equal('2016-05-02T12:08:14.144Z');
     });
   });
 });

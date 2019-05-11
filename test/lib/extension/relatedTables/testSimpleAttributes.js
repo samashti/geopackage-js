@@ -2,6 +2,7 @@ var GeoPackageAPI = require('../../../../lib').GeoPackage
   , DataType = require('../../../../lib/db/dataTypes').default
   , Verification = require('../../../fixtures/verification')
   , ContentsDao = require('../../../../lib/core/contents').ContentsDao
+  , ExtendedRelation = require('../../../../lib/extension/relatedTables/extendedRelation').ExtendedRelation
   , RelatedTablesExtension = require('../../../../lib/extension/relatedTables').default
   , UserMappingTable = require('../../../../lib/extension/relatedTables/userMappingTable').default
   , SimpleAttributesTable = require('../../../../lib/extension/relatedTables/simpleAttributesTable').default
@@ -53,6 +54,74 @@ describe('Related Simple Attributes tests', function() {
     simpleAttributesTable.table_name.should.be.equal(contents.table_name);
     should.exist(contents.last_change);
   }
+
+  it('should add a simple attributes relationship', async function() {
+    this.timeout(5000);
+
+    var rte = new RelatedTablesExtension(geoPackage);
+    rte.has().should.be.equal(false);
+
+    var extendedRelationships = rte.getRelationships();
+    extendedRelationships.length.should.be.equal(0);
+
+    var simpleUserColumns = RelatedTablesUtils.createSimpleUserColumns(SimpleAttributesTable.numRequiredColumns(), true);
+    var simpleTable = SimpleAttributesTable.create('simple_table', simpleUserColumns);
+    var simpleColumns = simpleTable.columnNames;
+    simpleColumns.length.should.be.equal(SimpleAttributesTable.numRequiredColumns() + simpleUserColumns.length);
+
+    var idColumn = simpleTable.getIdColumn();
+    should.exist(idColumn);
+    idColumn.name.should.be.equal(SimpleAttributesTable.COLUMN_ID);
+    idColumn.dataType.should.be.equal(DataType.GPKGDataType.GPKG_DT_INTEGER);
+    idColumn.notNull.should.be.equal(true);
+    idColumn.primaryKey.should.be.equal(true);
+
+    rte.createRelatedTable(simpleTable);
+
+    var baseTableName = geoPackage.getAttributesTables()[0];
+    var relatedTableName = 'simple_table';
+    var mappingTableName = 'features_simple';
+
+    var additionalColumns = RelatedTablesUtils.createAdditionalUserColumns(UserMappingTable.numRequiredColumns());
+    var userMappingTable = UserMappingTable.create(mappingTableName, additionalColumns);
+    rte.has(userMappingTable.table_name).should.be.equal(false);
+
+    var numColumns = UserMappingTable.numRequiredColumns() + additionalColumns.length;
+    numColumns.should.be.equal(userMappingTable.columns.length);
+
+    var baseIdColumn = userMappingTable.getBaseIdColumn();
+    should.exist(baseIdColumn);
+    baseIdColumn.name.should.be.equal(UserMappingTable.COLUMN_BASE_ID);
+    baseIdColumn.notNull.should.be.equal(true);
+    baseIdColumn.primaryKey.should.be.equal(false);
+
+    var er = new ExtendedRelation()
+    er.base_table_name = baseTableName;
+    er.base_primary_column = SimpleAttributesTable.COLUMN_ID;
+    er.related_table_name = relatedTableName;
+    er.related_primary_column = idColumn.name
+    er.mapping_table_name = userMappingTable.table_name;
+    er.relation_name = 'SIMPLE_ATTRIBUTES';
+
+    await rte.createUserMappingTable(userMappingTable)
+
+    let extendedRelation = await rte.addSimpleAttributesRelationship(er)
+    rte.has().should.be.equal(true);
+    rte.has(userMappingTable.table_name).should.be.equal(true);
+    should.exist(extendedRelation);
+    extendedRelation.relation_name.should.be.equal('SIMPLE_ATTRIBUTES')
+    var relationships = rte.getRelationships();
+    relationships.length.should.be.equal(1);
+    geoPackage.isTable(mappingTableName).should.be.equal(true);
+
+    rte.removeRelationship(extendedRelation);
+    rte.has(userMappingTable.table_name).should.be.equal(false);
+    relationships = rte.getRelationships();
+    relationships.length.should.be.equal(0);
+    geoPackage.isTable(mappingTableName).should.be.equal(false);
+    rte.removeExtension();
+    rte.has().should.be.equal(false);
+  });
 
   it('should create a simple attributes relationship', function() {
     var rte = new RelatedTablesExtension(geoPackage);

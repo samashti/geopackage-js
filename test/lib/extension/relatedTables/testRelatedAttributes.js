@@ -1,15 +1,12 @@
 var GeoPackageAPI = require('../../../../lib').GeoPackage
   , DataType = require('../../../../lib/db/dataTypes').default
-  , Verification = require('../../../fixtures/verification')
-  , ContentsDao = require('../../../../lib/core/contents').ContentsDao
   , RelatedTablesExtension = require('../../../../lib/extension/relatedTables').default
   , UserMappingTable = require('../../../../lib/extension/relatedTables/userMappingTable').default
-  , SimpleAttributesTable = require('../../../../lib/extension/relatedTables/simpleAttributesTable').default
-  , SimpleAttributesRow = require('../../../../lib/extension/relatedTables/simpleAttributesRow').default
+  , ExtendedRelation = require('../../../../lib/extension/relatedTables/extendedRelation').ExtendedRelation
+  , AttributesTable = require('../../../../lib/attributes/attributeTable').default
   , testSetup = require('../../../fixtures/testSetup')
   , RelatedTablesUtils = require('./relatedTablesUtils')
   , should = require('chai').should()
-  , wkx = require('wkx')
   , path = require('path');
 
 describe('Related Attributes tests', function() {
@@ -47,6 +44,60 @@ describe('Related Attributes tests', function() {
     attributesTable.table_name.should.be.equal(contents.table_name);
     should.exist(contents.last_change);
   }
+
+  it('should add a simple attributes relationship', async function() {
+    this.timeout(5000);
+
+    var rte = new RelatedTablesExtension(geoPackage);
+    rte.has().should.be.equal(false);
+
+    var extendedRelationships = rte.getRelationships();
+    extendedRelationships.length.should.be.equal(0);
+
+    var baseTableName = geoPackage.getAttributesTables()[0];
+    var relatedTableName = geoPackage.getAttributesTables()[0];
+    var mappingTableName = 'attributes_attributes';
+
+    var additionalColumns = RelatedTablesUtils.createAdditionalUserColumns(UserMappingTable.numRequiredColumns());
+    var userMappingTable = UserMappingTable.create(mappingTableName, additionalColumns);
+    rte.has(userMappingTable.table_name).should.be.equal(false);
+
+    var numColumns = UserMappingTable.numRequiredColumns() + additionalColumns.length;
+    numColumns.should.be.equal(userMappingTable.columns.length);
+
+    var baseIdColumn = userMappingTable.getBaseIdColumn();
+    should.exist(baseIdColumn);
+    baseIdColumn.name.should.be.equal(UserMappingTable.COLUMN_BASE_ID);
+    baseIdColumn.notNull.should.be.equal(true);
+    baseIdColumn.primaryKey.should.be.equal(false);
+
+    var er = new ExtendedRelation()
+    er.base_table_name = baseTableName;
+    er.base_primary_column = AttributesTable.COLUMN_ID;
+    er.related_table_name = relatedTableName;
+    er.related_primary_column = UserMappingTable.COLUMN_BASE_ID
+    er.mapping_table_name = userMappingTable.table_name;
+    er.relation_name = 'ATTRIBUTES';
+
+    await rte.createUserMappingTable(userMappingTable)
+
+    let extendedRelation = await rte.addAttributesRelationship(er)
+    rte.has().should.be.equal(true);
+    rte.has(userMappingTable.table_name).should.be.equal(true);
+    should.exist(extendedRelation);
+    extendedRelation.relation_name.should.be.equal('ATTRIBUTES')
+    var relationships = rte.getRelationships();
+    relationships.length.should.be.equal(1);
+    geoPackage.isTable(mappingTableName).should.be.equal(true);
+
+    rte.removeRelationship(extendedRelation);
+    rte.has(userMappingTable.table_name).should.be.equal(false);
+    relationships = rte.getRelationships();
+    relationships.length.should.be.equal(0);
+    geoPackage.isTable(mappingTableName).should.be.equal(false);
+    rte.removeExtension();
+    rte.has().should.be.equal(false);
+  });
 
   it('should create an attributes relationship', function() {
     var rte = new RelatedTablesExtension(geoPackage);

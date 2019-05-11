@@ -1,5 +1,6 @@
 var Verification = require('../../fixtures/verification')
   , testSetup = require('../../fixtures/testSetup')
+  , Extension = require('../../../lib/extension').Extension
   , should = require('chai').should()
   , path = require('path');
 
@@ -30,5 +31,16 @@ describe('GeoPackage Extension Dao tests', function() {
       verified.should.be.equal(true);
     });
   });
+
+  it('should return false for an extension which does not exist', function() {
+    var extensionDao = geopackage.getExtensionDao();
+    extensionDao.queryByExtensionAndTableName('no', 'nope').should.be.equal(false)
+  });
+
+  it('should set the extension name', () => {
+    var e = new Extension()
+    e.setExtensionName('author', 'name')
+    e.extension_name.should.be.equal('author_name')
+  })
 
 });

@@ -28,19 +28,15 @@ describe('GeoPackageAPI tests', function() {
 
   beforeEach(function() {
     nock(base)
-    .log(console.log)
     .get('/tile.gpkg')
     .replyWithFile(200, tilePath);
     nock(base)
-    .log(console.log)
     .get(urlPath)
     .replyWithFile(200, existingPath);
     nock(base)
-    .log(console.log)
     .get('/bad')
     .reply(404);
     nock(base)
-    .log(console.log)
     .get('/error')
     .reply(500);
     mock.setup();
@@ -294,24 +290,23 @@ describe('GeoPackageAPI tests', function() {
     function copyGeopackage(orignal, copy, callback) {
       if (typeof(process) !== 'undefined' && process.version) {
         var fsExtra = require('fs-extra');
-        fsExtra.copy(originalFilename, filename, callback);
+        fsExtra.copySync(originalFilename, filename);
+        if (callback) callback()
       } else {
         filename = originalFilename;
-        callback();
+        if (callback) callback();
       }
     }
 
-    beforeEach('should open the geopackage', function(done) {
+    beforeEach('should open the geopackage', async function() {
       filename = path.join(__dirname, 'fixtures', 'tmp', testSetup.createTempName());
-      copyGeopackage(originalFilename, filename, async function(err) {
-        try {
-          indexedGeopackage = await GeoPackage.open(filename);
-        } catch (err) {
-          should.not.exist(err);
-        }
-        should.exist(indexedGeopackage);
-        done();
-      });
+      copyGeopackage(originalFilename, filename)
+      try {
+        indexedGeopackage = await GeoPackage.open(filename);
+      } catch (err) {
+        should.not.exist(err);
+      }
+      should.exist(indexedGeopackage);
     });
 
     afterEach('should close the geopackage', function(done) {
