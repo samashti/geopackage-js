@@ -37,6 +37,7 @@ describe('Create GeoPackage samples', function() {
         await GeoPackageUtils.createRTreeSpatialIndexExtension(geopackage)
         await GeoPackageUtils.createRelatedTablesMediaExtension(geopackage)
         await GeoPackageUtils.createRelatedTablesFeaturesExtension(geopackage)
+        await GeoPackageUtils.insertExtraFeatures(geopackage)
         await GeoPackageUtils.createTiles(geopackage)
         await GeoPackageUtils.createWebPExtension(geopackage)
         await GeoPackageUtils.createAttributes(geopackage)
