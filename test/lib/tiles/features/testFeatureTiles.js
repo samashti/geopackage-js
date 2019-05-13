@@ -50,7 +50,7 @@ describe('GeoPackage FeatureTiles tests', function() {
       ft.drawTile(1, 0, 1)
       .then(function(image) {
         // fs.writeFileSync(path.join(__dirname, '..','..','..', 'fixtures','featuretiles','1_1_0.png'), image)
-        testSetup.diffImages(image, path.join(__dirname, '..','..','..', 'fixtures','featuretiles','1_1_0.png'), function(err, equal) {
+        testSetup.diffImages(image, path.join(__dirname, '..','..','..', 'fixtures','featuretiles','1_1_0.png'), 'png', function(err, equal) {
           equal.should.be.equal(true);
           done();
         });
@@ -73,7 +73,7 @@ describe('GeoPackage FeatureTiles tests', function() {
       .then(function(data) {
         should.exist(data);
         console.timeEnd('Generating non indexed tiles');
-        testSetup.diffImages(data, path.join(__dirname, '..','..','..','fixtures','featuretiles','1_1_0.png'), function(err, equal) {
+        testSetup.diffImages(data, path.join(__dirname, '..','..','..','fixtures','featuretiles','1_1_0.png'), 'png', function(err, equal) {
           equal.should.be.equal(true);
           done();
         });
@@ -88,7 +88,7 @@ describe('GeoPackage FeatureTiles tests', function() {
         should.exist(data);
         console.timeEnd('Generating non indexed tiles');
         // fs.writeFileSync(path.join(__dirname, '..','..','..', 'fixtures','featuretiles','5_8_12.png'), data)
-        testSetup.diffImages(data, path.join(__dirname, '..','..','..','fixtures','featuretiles','5_8_12.png'), function(err, equal) {
+        testSetup.diffImages(data, path.join(__dirname, '..','..','..','fixtures','featuretiles','5_8_12.png'), 'png', function(err, equal) {
           equal.should.be.equal(true);
           done();
         });
@@ -120,7 +120,7 @@ describe('GeoPackage FeatureTiles tests', function() {
       ft.drawTile(1, 0, 1)
       .then(function(imageStream) {
         // fs.writeFileSync(path.join(__dirname, '..','..','..', 'fixtures','featuretiles','1_1_0_indexed.png'), imageStream)
-        testSetup.diffImages(imageStream, path.join(__dirname, '..','..','..','fixtures','featuretiles','1_1_0_indexed.png'), function(err, equal) {
+        testSetup.diffImages(imageStream, path.join(__dirname, '..','..','..','fixtures','featuretiles','1_1_0_indexed.png'), 'png', function(err, equal) {
           equal.should.be.equal(true);
           done();
         });
@@ -134,7 +134,7 @@ describe('GeoPackage FeatureTiles tests', function() {
       .then(function(data) {
         console.timeEnd('generating indexed tile');
         should.exist(data);
-        testSetup.diffImages(data, path.join(__dirname, '..','..','..','fixtures','featuretiles','1_1_0_indexed.png'), function(err, equal) {
+        testSetup.diffImages(data, path.join(__dirname, '..','..','..','fixtures','featuretiles','1_1_0_indexed.png'), 'png', function(err, equal) {
           equal.should.be.equal(true);
           done();
         });
@@ -149,7 +149,7 @@ describe('GeoPackage FeatureTiles tests', function() {
         should.exist(data);
         console.timeEnd('generating indexed tile');
         // fs.writeFileSync(path.join(__dirname, '..','..','..', 'fixtures','featuretiles','0_0_0_indexed.png'), data)
-        testSetup.diffImages(data, path.join(__dirname, '..','..','..','fixtures','featuretiles','0_0_0_indexed.png'), function(err, equal) {
+        testSetup.diffImages(data, path.join(__dirname, '..','..','..','fixtures','featuretiles','0_0_0_indexed.png'), 'png', function(err, equal) {
           equal.should.be.equal(true);
           done();
         });
@@ -164,7 +164,7 @@ describe('GeoPackage FeatureTiles tests', function() {
         should.exist(data);
         console.timeEnd('generating indexed tile');
         // fs.writeFileSync(path.join(__dirname, '..','..','..', 'fixtures','featuretiles','5_8_12_indexed.png'), data)
-        testSetup.diffImages(data, path.join(__dirname, '..','..','..','fixtures','featuretiles','5_8_12_indexed.png'), function(err, equal) {
+        testSetup.diffImages(data, path.join(__dirname, '..','..','..','fixtures','featuretiles','5_8_12_indexed.png'), 'png', function(err, equal) {
           equal.should.be.equal(true);
           done();
         });

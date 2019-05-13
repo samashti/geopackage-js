@@ -88,10 +88,6 @@ module.exports.loadTile = function(tilePath, callback) {
   }
 }
 
-module.exports.diffImages = function(actualTile, expectedTilePath, callback) {
-  module.exports.diffImagesWithDimensions(actualTile, expectedTilePath, 256, 256, callback);
-};
-
 module.exports.diffCanvas = function(actualCanvas, expectedTilePath, callback) {
   return new Promise(function(resolve) {
     if (typeof(process) !== 'undefined' && process.version) {
@@ -140,30 +136,34 @@ module.exports.diffCanvasesContexts = function(actualCtx, expectedCtx, width, he
   return true;
 }
 
-module.exports.diffImagesWithDimensions = function(actualTile, expectedTilePath, width, height, callback) {
-  return new Promise(function(resolve) {
+module.exports.diffImages = function(actualTile, expectedTilePath, format, callback) {
+  return module.exports.diffImagesWithDimensions(actualTile, expectedTilePath, 256, 256, format, callback);
+};
+
+module.exports.diffImagesWithDimensions = function(actualTile, expectedTilePath, width, height, format, callback) {
+  let imageComparator = format === 'jpg' ? pureimage.decodeJPEGFromStream : pureimage.decodePNGFromStream
+  return new Promise(async function(resolve) {
     if (typeof(process) !== 'undefined' && process.version) {
 
       var chunkStream = new Duplex();
       chunkStream.push(actualTile);
       chunkStream.push(null);
-      pureimage.decodePNGFromStream(chunkStream).then(function(actualImage) {
-        pureimage.decodePNGFromStream(fs.createReadStream(expectedTilePath)).then(function(expectedImage) {
-          var same = true;
-          for (var x = 0; x < actualImage.width && same; x++) {
-            for (var y = 0; y < actualImage.height && same; y++) {
-              var actualRGBA = actualImage.getPixelRGBA(x,y);
-              var expectedRGBA = expectedImage.getPixelRGBA(x,y);
-              same = actualRGBA === expectedRGBA;
-              if (!same) {
-                console.log(`actualRGBA ${actualRGBA} expectedRGBA ${expectedRGBA} x ${x}, y${y}`)
-              }
-            }
+      let actualImage = await imageComparator(chunkStream);
+      let expectedImage = await imageComparator(fs.createReadStream(expectedTilePath));
+
+      var same = true;
+      for (var x = 0; x < actualImage.width && same; x++) {
+        for (var y = 0; y < actualImage.height && same; y++) {
+          var actualRGBA = actualImage.getPixelRGBA(x,y);
+          var expectedRGBA = expectedImage.getPixelRGBA(x,y);
+          same = actualRGBA === expectedRGBA;
+          if (!same) {
+            console.log(`actualRGBA ${actualRGBA} expectedRGBA ${expectedRGBA} x ${x}, y${y}`)
           }
-          if (callback) callback(null, same);
-          resolve(same)
-        });
-      });
+        }
+      }
+      if (callback) callback(null, same);
+      resolve(same)
     } else {
       if (actualTile instanceof Uint8Array) {
         var binary = '';

@@ -771,7 +771,7 @@ describe('GeoPackageAPI tests', function() {
           var result = geopackage.addTile(tileData, tableName, 0, 0, 0);
           result.should.be.equal(1);
           var tileRow = GeoPackage.getTileFromTable(geopackage, tableName, 0, 0, 0);
-          testSetup.diffImages(tileRow.getTileData(), tilePath, function(err, equal) {
+          testSetup.diffImages(tileRow.getTileData(), tilePath, 'png', function(err, equal) {
             equal.should.be.equal(true);
             done();
           });
@@ -797,7 +797,7 @@ describe('GeoPackageAPI tests', function() {
           result.should.be.equal(1);
           GeoPackage.getTileFromXYZ(geopackage, tableName, 0, 0, 0, 256, 256)
           .then(function(tile) {
-            testSetup.diffImages(tile, tilePath, function(err, equal) {
+            testSetup.diffImages(tile, tilePath, 'png', function(err, equal) {
               equal.should.be.equal(true);
               done();
             });

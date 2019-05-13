@@ -1,7 +1,8 @@
 const GeoPackageAPI = require('../../../lib').GeoPackage
   , testSetup = require('../../fixtures/testSetup')
   , should = require('chai').should()
-  , path = require('path');
+  , path = require('path')
+  , fs = require('fs');
 
 const fixturesDir = path.resolve(__dirname, '..', '..', 'fixtures');
 
@@ -185,9 +186,28 @@ describe('TileDao tests', function() {
     });
 
     it('caculates the min/max web map zoom', function() {
-
       tileDao.minWebMapZoom.should.equal(4);
       tileDao.maxWebMapZoom.should.equal(4);
+    });
+
+    it('should get the xyz tile in 3857 projection', async () => {
+      let image = await GeoPackageAPI.getTileFromXYZ(gpkg, 'imagery', 1, 4, 4, 256, 256)
+      try {
+        let same = await testSetup.diffImages(image, path.join(fixturesDir, 'wgs84_414.png'), 'png')
+        same.should.be.equal(true)
+      } catch(e) {
+        console.log('err', e)
+      }
+    });
+
+    it('should get the xyz tile in 3857 projection as jpg', async () => {
+      let image = await GeoPackageAPI.getTileFromXYZ(gpkg, 'imagery', 1, 4, 4, 256, 256, 'jpg')
+      try {
+        let same = await testSetup.diffImages(image, path.join(fixturesDir, 'wgs84_414.jpg'), 'jpg')
+        same.should.be.equal(true)
+      } catch(e) {
+        console.log('err', e)
+      }
     });
   });
 
