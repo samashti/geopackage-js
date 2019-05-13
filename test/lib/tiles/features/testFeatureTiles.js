@@ -47,6 +47,7 @@ describe('GeoPackage FeatureTiles tests', function() {
     it('should get the x: 1, y: 0, z: 1 tile', function(done) {
       this.timeout(30000);
       var ft = new FeatureTiles(featureDao);
+      ft.getFeatureDao().table_name.should.be.equal('FEATURESriversds')
       ft.drawTile(1, 0, 1)
       .then(function(image) {
         // fs.writeFileSync(path.join(__dirname, '..','..','..', 'fixtures','featuretiles','1_1_0.png'), image)

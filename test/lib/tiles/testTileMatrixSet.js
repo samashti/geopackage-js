@@ -2,6 +2,8 @@ var GeoPackageAPI = require('../../../lib').GeoPackage
   , TileMatrixSetDao = require('../../../lib/tiles/matrixset').TileMatrixSetDao
   , TileMatrixSet = require('../../../lib/tiles/matrixset').TileMatrixSet
   , BoundingBox = require('../../../lib/boundingBox').default
+  , Contents = require('../../../lib/core/contents').Contents
+  , ContentsDao = require('../../../lib/core/contents').ContentsDao
   , should = require('chai').should()
   , path = require('path');
 
@@ -53,7 +55,7 @@ describe('Tile Matrix Set tests', function() {
     should.exist(projection);
   });
 
-  it('should get the Contents from the TileMatrixSet', function(done) {
+  it('should get the Contents from the TileMatrixSet', function() {
     var tileMatrixSet = tileMatrixSetDao.queryForId('TILESosmds');
     should.exist(tileMatrixSet);
     var contents = tileMatrixSetDao.getContents(tileMatrixSet);
@@ -68,10 +70,9 @@ describe('Tile Matrix Set tests', function() {
     contents.should.have.property('max_x', 180);
     contents.should.have.property('max_y', 85.0511287798066);
     contents.should.have.property('srs_id', 4326);
-    done();
   });
 
-  it('should get the BoundingBox from the TileMatrixSet', function(done) {
+  it('should get the BoundingBox from the TileMatrixSet', function() {
     var tileMatrixSet = tileMatrixSetDao.queryForId('TILESosmds');
     should.exist(tileMatrixSet);
     var bb = tileMatrixSet.getBoundingBox();
@@ -79,10 +80,9 @@ describe('Tile Matrix Set tests', function() {
     bb.maxLongitude.should.be.equal(20037508.342789244);
     bb.minLatitude.should.be.equal(-20037508.342789244);
     bb.maxLatitude.should.be.equal(20037508.342789244);
-    done();
   });
 
-  it('should set the BoundingBox from the TileMatrixSet', function(done) {
+  it('should set the BoundingBox from the TileMatrixSet', function() {
     var tileMatrixSet = tileMatrixSetDao.queryForId('TILESosmds');
     should.exist(tileMatrixSet);
     var bb = new BoundingBox(-1, 1, -1, 1);
@@ -91,7 +91,33 @@ describe('Tile Matrix Set tests', function() {
     tileMatrixSet.should.have.property('min_y', -1);
     tileMatrixSet.should.have.property('max_x', 1);
     tileMatrixSet.should.have.property('max_y', 1);
-    done();
+  });
+
+  it('should return nothing if there is no srs', function() {
+    var tileMatrixSet = new TileMatrixSet()
+    tileMatrixSet.srs_id = 487
+    var srs = tileMatrixSetDao.getProjection(tileMatrixSet);
+    should.not.exist(srs);
+  });
+
+  it('should not set the contents if they are not tile ones', function() {
+    var tileMatrixSet = new TileMatrixSet()
+    should.not.exist(tileMatrixSet.table_name)
+    const contents = new Contents();
+    contents.table_name = 'testname';
+    contents.data_type = ContentsDao.GPKG_CDT_FEATURES_NAME;
+    tileMatrixSet.setContents(contents)
+    should.not.exist(tileMatrixSet.table_name);
+  });
+
+  it('should set the contents if they are tile ones', function() {
+    var tileMatrixSet = new TileMatrixSet()
+    should.not.exist(tileMatrixSet.table_name)
+    const contents = new Contents();
+    contents.table_name = 'testname';
+    contents.data_type = ContentsDao.GPKG_CDT_TILES_NAME;
+    tileMatrixSet.setContents(contents)
+    tileMatrixSet.table_name.should.be.equal('testname')
   });
 
 });

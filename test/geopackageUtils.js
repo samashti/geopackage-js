@@ -22,6 +22,8 @@ var GeoPackageAPI = require('../lib/index')
   , DublinCoreType = GeoPackageAPI.DublinCoreType
   , DataTypes = GeoPackageAPI.DataTypes;
 
+var EnvelopeBuilder = require('../lib/geom/envelopeBuilder').default
+
 var wkx = require('wkx')
   , path = require('path')
   , fs = require('fs')
@@ -362,6 +364,7 @@ GeoPackageUtils.createFeature = function(geopackage, geoJson, name, featureDao) 
   geometryData.setSrsId(srs.srs_id);
   var geometry = wkx.Geometry.parseGeoJSON(geoJson);
   geometryData.setGeometry(geometry);
+  geometryData.setEnvelope(EnvelopeBuilder.buildEnvelopeWithGeometry(geometry));
   featureRow.setGeometry(geometryData);
   featureRow.setValueWithColumnName('text', name);
   featureRow.setValueWithColumnName('real', Math.random() * 5000.0);

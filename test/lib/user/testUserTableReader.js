@@ -1,4 +1,5 @@
 var UserTableReader = require('../../../lib/user/userTableReader').default
+  , UserCustomColumn = require('../../../lib/user/custom/userCustomColumn').default
   , UserDao = require('../../../lib/user/userDao').default
   , GeoPackageAPI = require('../../../lib').GeoPackage
   , path = require('path')
@@ -17,6 +18,15 @@ describe('UserTableReader tests', function() {
   afterEach('close the geopackage connection', function() {
     geoPackage.close();
   });
+
+  it('should not make a usercustomcolumn without a data type', () => {
+    try {
+      new UserCustomColumn(0, 'name')
+    } catch (e) {
+      should.exist(e)
+      e.message.should.be.equal('Data type is required to create column: name')
+    }
+  })
 
   it('should read the table', function() {
     var reader = new UserTableReader('point2d');
