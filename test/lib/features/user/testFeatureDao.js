@@ -584,6 +584,7 @@ describe('FeatureDao tests', function() {
       return GeoPackageAPI.getFeaturesInBoundingBox(geopackage, 'QueryTest', -.4, -.6, 2.4, 2.6)
       .then(function(iterator) {
         for (var feature of iterator) {
+          feature.getGeometryColumnIndex().should.be.equal(1)
           feature.values.name.should.be.equal('box1');
         }
       });

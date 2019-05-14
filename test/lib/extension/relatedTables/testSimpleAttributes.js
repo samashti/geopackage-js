@@ -75,6 +75,7 @@ describe('Related Simple Attributes tests', function() {
     idColumn.dataType.should.be.equal(DataType.GPKGDataType.GPKG_DT_INTEGER);
     idColumn.notNull.should.be.equal(true);
     idColumn.primaryKey.should.be.equal(true);
+    simpleTable.getIdColumnIndex().should.be.equal(0)
 
     rte.createRelatedTable(simpleTable);
 
@@ -229,6 +230,7 @@ describe('Related Simple Attributes tests', function() {
       simpleTable = simpleDao.simpleAttributesTable;
       should.exist(simpleTable);
       validateContents(simpleTable, simpleTable.contents);
+      simpleDao.getRows(100).length.should.be.equal(0)
 
       // Insert ismple attributes table rows
       var simpleCount = 2 + Math.floor(Math.random() * 9);

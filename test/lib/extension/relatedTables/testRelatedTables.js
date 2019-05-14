@@ -4,6 +4,9 @@ var GeoPackageAPI = require('../../../../lib').GeoPackage
   , ExtendedRelation = require('../../../../lib/extension/relatedTables/extendedRelation').ExtendedRelation
   , UserMappingTable = require('../../../../lib/extension/relatedTables/userMappingTable').default
   , SetupFeatureTable = require('../../../fixtures/setupFeatureTable').default
+  , UserRelatedTable = require('../../../../lib/extension/relatedTables/userRelatedTable').default
+  , UserColumn = require('../../../../lib/user/userColumn').default
+  , DataTypes = require('../../../../lib/db/dataTypes').default
   , testSetup = require('../../../fixtures/testSetup')
   , RelatedTablesUtils = require('./relatedTablesUtils')
   , should = require('chai').should()
@@ -158,6 +161,29 @@ describe('Related Tables tests', function() {
       geoPackage.close();
       testSetup.deleteGeoPackage(filename, done);
     });
+
+    it('should create a user related table with a correct data type', () => {
+      let userRelatedTable = new UserRelatedTable('name', 'relation', 'data_type', [new UserColumn(0, 'id', DataTypes.GPKGDataType.GPKG_DT_INTEGER, null, false, null, true)])
+      try {
+        userRelatedTable.setContents({
+          data_type: 'data_type'
+        })
+      } catch (e) {
+        false.should.be.equal(true)
+      }
+    })
+
+    it('should fail to create a user related table with an incorrect data type', () => {
+      let userRelatedTable = new UserRelatedTable('name', 'relation', 'data_type', [new UserColumn(0, 'id', DataTypes.GPKGDataType.GPKG_DT_INTEGER, null, false, null, true)])
+      try {
+        userRelatedTable.setContents({
+          data_type: 'not_data_type'
+        })
+        false.should.be.equal(true)
+      } catch (e) {
+        e.message.should.be.equal('The contents of this related table must have a data type of data_type')
+      }
+    })
 
     it('should write a relationship', function() {
 
