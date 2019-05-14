@@ -39,6 +39,13 @@ describe('GeoPackage tests', function() {
     });
   });
 
+  it('should drop a table with a bad name', async function() {
+    let connection = await GeoPackageConnection(path.join(__dirname, '..', 'fixtures', 'gdal_sample.gpkg'))
+    should.exist(connection);
+    let dropped = connection.dropTable('"bad name')
+    dropped.should.be.equal(false)
+  });
+
   it('should get the features', function() {
     return GeoPackageConnection(path.join(__dirname, '..', 'fixtures', 'gdal_sample.gpkg'))
     .then(function(geoPackageConnection) {

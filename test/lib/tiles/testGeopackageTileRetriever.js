@@ -323,6 +323,32 @@ describe('GeoPackage Tile Retriever tests', function() {
         });
       });
     });
+
+    it('should get the x: 0, y: 4, z: 4 tile with srs definition', function(done) {
+      this.timeout(0);
+      tileDao.srs = {
+        definition: '+proj=longlat +datum=WGS84 +no_defs ',
+        organization: 'NONE'
+      }
+      var gpr = new GeoPackageTileRetriever(tileDao, 256, 256);
+      gpr.getTile(0, 4, 4)
+      .then(function(tile) {
+        var expectedPath;
+        if (typeof(process) !== 'undefined' && process.version) {
+          expectedPath = path.join(__dirname, '..','..','fixtures','tiles','reprojectTile.png');
+        } else {
+          expectedPath = path.join(__dirname, '..','..','fixtures','tiles','reprojectTileWeb.png');
+        }
+        testSetup.diffImages(tile, expectedPath, 'png', function (err, imagesAreSame) {
+          imagesAreSame.should.be.equal(true);
+          done(err);
+        });
+      })
+      .catch(function(err) {
+        console.log('err', err)
+        done(err)
+      });
+    });
   });
 
 });

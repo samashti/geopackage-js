@@ -532,17 +532,25 @@ describe('FeatureDao tests', function() {
         line = queryTestFeatureDao.getRow(feature);
       }
       line.setValueWithColumnName('name', 'UpdatedLine');
+      line.setValueWithColumnName('_properties_id', 'properties_update')
       var newLine;
       queryTestFeatureDao.update(line);
       for (var feature of queryTestFeatureDao.queryForEach('_feature_id', 'line')) {
         newLine = queryTestFeatureDao.getRow(feature);
       }
       newLine.getValueWithColumnName('name').should.be.equal('UpdatedLine');
+      newLine.getValueWithColumnName('_properties_id').should.be.equal('properties_update')
     });
 
     it('should count by a field', function(){
       var count = queryTestFeatureDao.count('name', 'line');
       count.should.be.equal(1);
+    });
+
+    it('should count by a field and return zero if no result comes back', function(){
+      queryTestFeatureDao.gpkgTableName = 'nope'
+      var count = queryTestFeatureDao.count('name', 'line');
+      count.should.be.equal(0);
     });
 
     it('should query for _feature_id', function() {

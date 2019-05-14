@@ -51,6 +51,23 @@ describe('GeoPackage Feature Table Index Extension tests', function() {
       indexed.should.be.equal(false);
     });
 
+    it('should return the index status of false because the table index does not exist', async function() {
+      var fti = new FeatureTableIndex(geoPackage, featureDao);
+      let e = await fti.getOrCreateExtension()
+      fti.tableIndexDao.createTable();
+      var indexed = fti.isIndexed();
+      indexed.should.be.equal(false);
+    });
+
+    it('should return the index status of false because the contents do not exist', async function() {
+      featureDao.table_name = 'nope'
+      var fti = new FeatureTableIndex(geoPackage, featureDao);
+      let e = await fti.getOrCreateExtension()
+      fti.tableIndexDao.createTable();
+      var indexed = fti.isIndexed();
+      indexed.should.be.equal(false);
+    });
+
     it('should check the index extension', function() {
       this.timeout(10000);
       var fti = featureDao.featureTableIndex;
