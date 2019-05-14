@@ -419,4 +419,35 @@ describe('TileBoundingBoxUtils tests', function() {
     tileBox.minY.should.equal(0);
     tileBox.maxY.should.equal(4095);
   });
+
+  it('should get the web mercator bounding box from the xyz tile', () => {
+    let bb = TileBoundingBoxUtils.getWebMercatorBoundingBoxFromXYZ(0, 1, 2)
+    bb.should.be.deep.equal({
+      minLongitude: -20037508.342789244,
+      maxLongitude: -10018754.171394622,
+      minLatitude: 0,
+      maxLatitude: 10018754.171394622 })
+  })
+
+  it('should get the web mercator bounding box from the xyz tile with an 8 pixel buffer on the edge of the map', () => {
+    let nobufferbb = TileBoundingBoxUtils.getWebMercatorBoundingBoxFromXYZ(0, 1, 2)
+
+    let bb = TileBoundingBoxUtils.getWebMercatorBoundingBoxFromXYZ(0, 1, 2, {buffer: 8, tileSize: 256})
+    bb.should.be.deep.equal({
+      minLongitude: nobufferbb.minLongitude,
+      maxLongitude: nobufferbb.maxLongitude + 313086.06785608194,
+      minLatitude: nobufferbb.minLatitude - 313086.06785608194,
+      maxLatitude: nobufferbb.maxLatitude + 313086.06785608194 })
+  })
+
+  it('should get the web mercator bounding box from the xyz tile with an 8 pixel buffer', () => {
+    let nobufferbb = TileBoundingBoxUtils.getWebMercatorBoundingBoxFromXYZ(1, 1, 2)
+
+    let bb = TileBoundingBoxUtils.getWebMercatorBoundingBoxFromXYZ(1, 1, 2, {buffer: 8, tileSize: 256})
+    bb.should.be.deep.equal({
+      minLongitude: nobufferbb.minLongitude - 313086.06785608194,
+      maxLongitude: nobufferbb.maxLongitude + 313086.06785608194,
+      minLatitude: nobufferbb.minLatitude - 313086.06785608194,
+      maxLatitude: nobufferbb.maxLatitude + 313086.06785608194 })
+  })
 });

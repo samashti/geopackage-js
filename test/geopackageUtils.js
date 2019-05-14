@@ -534,7 +534,7 @@ GeoPackageUtils.createRTreeSpatialIndexExtension = function(geopackage) {
   });
 }
 
-GeoPackageUtils.createRelatedTablesMediaExtension = function(geopackage) {
+GeoPackageUtils.createRelatedTablesMediaExtension = async function(geopackage) {
   console.log('Creating Related Tables Media Extension')
   var relatedTables = geopackage.getRelatedTablesExtension();
   var mediaTable = MediaTable.create('media', [UserColumn.createColumnWithIndex(MediaTable.numRequiredColumns(), 'name', DataTypes.GPKGDataType.GPKG_DT_TEXT, false)]);
@@ -543,58 +543,45 @@ GeoPackageUtils.createRelatedTablesMediaExtension = function(geopackage) {
   var mediaDao = relatedTables.getMediaDao(mediaTable);
   mediaTable = mediaDao.mediaTable;
 
+  let bitsLogoBuffer = await GeoPackageUtils.loadFile(path.join(__dirname, 'fixtures', 'BITSystems_Logo.png'))
+  console.log('Create BITS Logo')
+  var bitsLogo = mediaDao.newRow();
+  bitsLogo.setContentType('image/png');
+  bitsLogo.setData(bitsLogoBuffer);
+  var bitsRowId = mediaDao.create(bitsLogo);
+  bitsLogo = mediaDao.queryForId(bitsRowId);
 
-  return GeoPackageUtils.loadFile(path.join(__dirname, 'fixtures', 'BITSystems_Logo.png'))
-  .then(function(bitsLogoBuffer) {
-    console.log('Create BITS Logo')
-    var bitsLogo = mediaDao.newRow();
-    bitsLogo.setContentType('image/png');
-    bitsLogo.setData(bitsLogoBuffer);
-    var bitsRowId = mediaDao.create(bitsLogo);
-    bitsLogo = mediaDao.queryForId(bitsRowId);
+  var featureDao = geopackage.getFeatureDao('geometry1');
+  var rows = featureDao.queryForLike('text', 'BIT Systems%');
 
-    var featureDao = geopackage.getFeatureDao('geometry1');
-    var rows = featureDao.queryForLike('text', 'BIT Systems%');
+  for (const row of rows) {
+    var featureRow = featureDao.getRow(row);
+    await featureDao.linkMediaRow(featureRow, bitsLogo);
+  }
 
-    return rows.reduce(function(sequence, row) {
-      return sequence.then(function() {
-        var featureRow = featureDao.getRow(row);
-        return featureDao.linkMediaRow(featureRow, bitsLogo);
-      });
-    }, Promise.resolve())
-  })
-  .then(function() {
-    return GeoPackageUtils.loadFile(path.join(__dirname, 'fixtures', 'NGA_Logo.png'));
-  })
-  .then(function(ngaLogoBuffer) {
-    console.log('Create NGA Logo')
-    var ngaRowId = GeoPackage.addMedia(geopackage, 'media', ngaLogoBuffer, 'image/png', {
-      name: 'NGA Logo'
-    });
-    var ngaLogo = mediaDao.queryForId(ngaRowId);
-    should.exist(ngaLogo)
-    ngaLogo.name.should.be.equal('NGA Logo')
-    var featureDao = geopackage.getFeatureDao('geometry2');
-    var rows = featureDao.queryForLike('text', 'NGA%');
-
-    return rows.reduce(function(sequence, row) {
-      return sequence.then(function() {
-        var featureRow = featureDao.getRow(row);
-        var initialRelationships = GeoPackage.getLinkedMedia(geopackage, 'geometry2', featureRow.getId());
-        initialRelationships.length.should.be.equal(0);
-        GeoPackage.linkMedia(geopackage, 'geometry2', featureRow.getId(), 'media', ngaRowId)
-        .then(function() {
-          var relationships = GeoPackage.getLinkedMedia(geopackage, 'geometry2', featureRow.getId());
-          relationships.length.should.be.equal(1);
-          relationships[0].id.should.be.equal(ngaRowId);
-        });
-
-      });
-    }, Promise.resolve())
-  })
-  .then(function() {
-    return geopackage;
+  let ngaLogoBuffer = await GeoPackageUtils.loadFile(path.join(__dirname, 'fixtures', 'NGA_Logo.png'));
+  console.log('Create NGA Logo')
+  var ngaRowId = GeoPackage.addMedia(geopackage, 'media', ngaLogoBuffer, 'image/png', {
+    name: 'NGA Logo'
   });
+  var ngaLogo = mediaDao.queryForId(ngaRowId);
+  should.exist(ngaLogo)
+  ngaLogo.name.should.be.equal('NGA Logo')
+  featureDao = geopackage.getFeatureDao('geometry2');
+  rows = featureDao.queryForLike('text', 'NGA%');
+
+  for (const row of rows) {
+    var featureRow = featureDao.getRow(row);
+    var initialRelationships = GeoPackage.getLinkedMedia(geopackage, 'geometry2', featureRow.getId());
+    initialRelationships.length.should.be.equal(0);
+    await GeoPackage.linkMedia(geopackage, 'geometry2', featureRow.getId(), 'media', ngaRowId)
+    var relationships = GeoPackage.getLinkedMedia(geopackage, 'geometry2', featureRow.getId());
+    relationships.length.should.be.equal(1);
+    relationships[0].id.should.be.equal(ngaRowId);
+  }
+  var relations = featureDao.getRelations()
+  relations.length.should.be.equal(1)
+  return geopackage;
 }
 
 GeoPackageUtils.createRelatedTablesFeaturesExtension = function(geopackage) {

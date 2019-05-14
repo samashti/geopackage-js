@@ -1,6 +1,7 @@
 var GeoPackage = require('../../../lib/geoPackage').default
   , TableCreator = require('../../../lib/db/tableCreator').default
   , TileTable = require('../../../lib/tiles/user/tileTable').default
+  , TileColumn = require('../../../lib/tiles/user/tileColumn').default
   , TileDao = require('../../../lib/tiles/user/tileDao').default
   , SetupFeatureTable = require('../../fixtures/setupFeatureTable.js')
   , Verification = require('../../fixtures/verification')
@@ -175,6 +176,46 @@ describe('TableCreator tests', function() {
     var result = tc.createUserTable(tileTable);
     should.exist(result);
     Verification.verifyTableExists(geopackage, 'test_tiles').should.be.equal(true);
+  });
+
+  it('should create a user tile table with unique constraints on the tile_column, tile_row and zoom_level', function() {
+    var columns = TileTable.createRequiredColumns();
+    var tileTable = new TileTable('test_tiles', columns);
+    tileTable.addUniqueConstraint({
+      columns: [columns[1], columns[2], columns[3]]
+    })
+    var tc = new TableCreator(geopackage);
+    var result = tc.createUserTable(tileTable);
+    should.exist(result);
+    Verification.verifyTableExists(geopackage, 'test_tiles').should.be.equal(true);
+  });
+
+  it('should create a user tile table and not get a column that does not exist', function() {
+    var columns = TileTable.createRequiredColumns();
+    var tileTable = new TileTable('test_tiles', columns);
+    var tc = new TableCreator(geopackage);
+    var result = tc.createUserTable(tileTable);
+    should.exist(result);
+    Verification.verifyTableExists(geopackage, 'test_tiles').should.be.equal(true);
+    try {
+      let hasColumn = tileTable.hasColumn('nope')
+      hasColumn.should.be.equal(false)
+      tileTable.getColumnIndex('nope')
+      false.should.be.equal(true)
+    } catch (e) {
+      e.message.should.be.equal('Column does not exist in table \'test_tiles\', column: nope')
+    }
+  });
+
+  it('should fail to create a user tile table without the required columns', function() {
+    var columns = [];
+    columns.push(TileColumn.createIdColumn(0));
+    try {
+      var tileTable = new TileTable('test_tiles', columns);
+      false.should.be.equal(true)
+    } catch (e){
+      e.message.should.be.equal('No zoom_level column was found for table \'test_tiles\'')
+    }
   });
 
   it('should fail to create a user tile table twice', function() {

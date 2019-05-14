@@ -1,4 +1,5 @@
 const GeoPackageAPI = require('../../../lib').GeoPackage
+  , TileDao = require('../../../lib/tiles/user/tileDao').default
   , testSetup = require('../../fixtures/testSetup')
   , should = require('chai').should()
   , path = require('path')
@@ -41,10 +42,21 @@ describe('TileDao tests', function() {
       testSetup.deleteGeoPackage(filename, done);
     });
 
-    it('should get the zoom levels', function(done) {
+    it('should set the zoom levels to 0 if no matrices are passed in', () => {
+      let td = new TileDao(geoPackage, tileDao.table, tileDao.tileMatrixSet, [])
+      td.minZoom.should.be.equal(0)
+      td.maxZoom.should.be.equal(0)
+    })
+
+    it('should return an empty array if no tile grid was passed in to query by', () => {
+      let td = new TileDao(geoPackage, tileDao.table, tileDao.tileMatrixSet, [])
+      let tiles = td.queryByTileGrid()
+      tiles.length.should.be.equal(0)
+    })
+
+    it('should get the zoom levels', function() {
       tileDao.minZoom.should.be.equal(0);
       tileDao.maxZoom.should.be.equal(3);
-      done();
     });
 
     it('should calculate the min/max web map zoom', function() {
@@ -91,6 +103,9 @@ describe('TileDao tests', function() {
       tileRow.getZoomLevel().should.be.equal(0);
       tileRow.getTileColumn().should.be.equal(0);
       tileRow.getRow().should.be.equal(0);
+      tileRow.getTileColumnColumnIndex().should.be.equal(2)
+      tileRow.getRowColumnIndex().should.be.equal(3)
+      tileRow.getTileDataColumnIndex().should.be.equal(4)
       var data = tileRow.getTileData();
       should.exist(data);
     });

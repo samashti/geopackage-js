@@ -58,6 +58,16 @@ describe('GeoPackage Tile Retriever tests', function() {
       });
     });
 
+    it('should return nothing for a zoom level which does not exist', function(done) {
+      this.timeout(30000);
+      var gpr = new GeoPackageTileRetriever(tileDao, 256, 256);
+      gpr.getTile(2,1,10)
+      .then(function(tile) {
+        should.not.exist(tile)
+        done()
+      });
+    });
+
     it('should get the web mercator x: 2, y: 1, z: 2 tile', function(done) {
       this.timeout(30000);
       var gpr = new GeoPackageTileRetriever(tileDao, 256, 256);
