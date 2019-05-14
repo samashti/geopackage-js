@@ -34,7 +34,7 @@
     "@turf/line-intersect": "^6.0.2",
     "@turf/point-to-line-distance": "^6.0.0",
     "@turf/polygon-to-line": "^6.0.3",
-    "better-sqlite3": "^4.1.4",
+    "better-sqlite3": "5.4.0",
     "d3-geo": "^1.10.0",
     "file-type": "8.1.0",
     "geojson-vt": "3.2.1",

@@ -69,7 +69,7 @@ describe('RTree tests', function() {
 
     });
 
-    it.only('should query the index from the geopackage api', async function() {
+    it('should query the index from the geopackage api', async function() {
       try {
         let features = await GeoPackageAPI.getGeoJSONFeaturesInTile(geoPackage, 'line1', 0, 0, 0)
         features.length.should.be.equal(1);
