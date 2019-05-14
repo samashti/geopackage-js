@@ -276,7 +276,7 @@ describe('Related Tables tests', function() {
     });
 
     it('should add a extended relationship', async function() {
-
+      this.timeout(30000)
       var rte = new RelatedTablesExtension(geoPackage);
       rte.has().should.be.equal(false);
 

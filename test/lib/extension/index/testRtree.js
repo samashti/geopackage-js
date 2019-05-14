@@ -69,11 +69,9 @@ describe('RTree tests', function() {
 
     });
 
-    it('should query the index from the geopackage api', function() {
-      return GeoPackageAPI.getGeoJSONFeaturesInTile(geoPackage, 'line1', 0, 0, 0)
-      .then(function(features) {
-        features.length.should.be.equal(1);
-      });
+    it('should query the index from the geopackage api', async function() {
+      let features = await GeoPackageAPI.getGeoJSONFeaturesInTile(geoPackage, 'line1', 0, 0, 0)
+      features.length.should.be.equal(1);
     });
 
     it('should query the index with a geometry envelope', function() {
