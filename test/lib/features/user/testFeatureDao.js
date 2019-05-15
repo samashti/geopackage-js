@@ -119,13 +119,11 @@ describe('FeatureDao tests', function() {
       testSetup.deleteGeoPackage(filename, done);
     });
 
-    it.only('should query for indexed geometries', async function() {
+    it('should query for indexed geometries', async function() {
       var count = 0;
       var bbox = new BoundingBox(-13189576.119, -13126488.564, 6637372.21, 6607360.178);
       var iterator = await featureDao.queryIndexedFeaturesWithWebMercatorBoundingBox(bbox);
-      console.log('iterator', iterator)
       for (var row of iterator) {
-        console.log('row', row)
         count++;
         row.values.property_1.should.be.equal('Columbia');
         should.exist(row.getValueWithColumnName('geom'));
@@ -134,7 +132,6 @@ describe('FeatureDao tests', function() {
         should.exist(row.getValueWithColumnName('property_1'));
         should.exist(row.getValueWithColumnName('property_2'));
       }
-      console.log('count', count)
       count.should.be.equal(1);
     });
   });
