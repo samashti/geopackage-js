@@ -579,15 +579,14 @@ describe('FeatureDao tests', function() {
       }
     });
 
-    it('should get features in the bounding box', function() {
+    it.only('should get features in the bounding box', async function() {
       var bb = new BoundingBox(-.4, -.6, 2.4, 2.6);
-      return GeoPackageAPI.getFeaturesInBoundingBox(geopackage, 'QueryTest', -.4, -.6, 2.4, 2.6)
-      .then(function(iterator) {
-        for (var feature of iterator) {
-          feature.getGeometryColumnIndex().should.be.equal(1)
-          feature.values.name.should.be.equal('box1');
-        }
-      });
+      let iterator = await GeoPackageAPI.getFeaturesInBoundingBox(geopackage, 'QueryTest', -.4, -.6, 2.4, 2.6)
+      for (var feature of iterator) {
+        console.log('feature.getGeometryColumnIndex()', feature.getGeometryColumnIndex())
+        feature.getGeometryColumnIndex().should.be.equal(1)
+        feature.values.name.should.be.equal('box1');
+      }
     });
 
     it('should not get features in the bounding box when the table does not exist', async function() {
