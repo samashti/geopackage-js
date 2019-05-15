@@ -579,7 +579,7 @@ describe('FeatureDao tests', function() {
       }
     });
 
-    it.only('should get features in the bounding box', async function() {
+    it('should get features in the bounding box', async function() {
       var bb = new BoundingBox(-.4, -.6, 2.4, 2.6);
       let iterator = await GeoPackageAPI.getFeaturesInBoundingBox(geopackage, 'QueryTest', -.4, -.6, 2.4, 2.6)
       for (var feature of iterator) {
