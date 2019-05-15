@@ -100,8 +100,8 @@
  * @module db/tableCreator
  */
 
-const SpatialReferenceSystemDao = require('../core/srs').SpatialReferenceSystemDao;
-const DataTypes = require('./dataTypes');
+import {SpatialReferenceSystemDao} from '../core/srs'
+import DataTypes from './dataTypes'
 
 /**
  * `TableCreator` provides methods for creating the various standard tables in
@@ -110,21 +110,19 @@ const DataTypes = require('./dataTypes');
  * @class
  * @param {module:geoPackage~GeoPackage} geopackage GeoPackage object
  */
-var TableCreator = function(geopackage) {
-  this.geopackage = geopackage;
-  this.connection = geopackage.getDatabase();
-}
-
-module.exports = TableCreator;
-
-/**
- * Creates all required tables and Spatial Reference Systems, in addition to EPSG:3857
- * @return {Promise&lt;Boolean>}
- */
-TableCreator.prototype.createRequired = function () {
-  var dao = new SpatialReferenceSystemDao(this.geopackage);
-  return Promise.all([this.createSpatialReferenceSystem(), this.createContents()])
-  .then(function() {
+class TableCreator {
+  constructor(geopackage) {
+    this.geopackage = geopackage;
+    this.connection = geopackage.getDatabase();
+  }
+  /**
+   * Creates all required tables and Spatial Reference Systems, in addition to EPSG:3857
+   * @return {Promise&lt;Boolean>}
+   */
+  async createRequired() {
+    var dao = new SpatialReferenceSystemDao(this.geopackage);
+    await this.createSpatialReferenceSystem()
+    await this.createContents()
     // Create the required Spatial Reference Systems (spec Requirement 11)
     dao.createUndefinedGeographic();
     dao.createWgs84();
@@ -132,205 +130,195 @@ TableCreator.prototype.createRequired = function () {
     // not required but very common
     dao.createWebMercator();
     return true;
-  });
-};
-
-/**
- * Creates the spatial reference system tables
- * @return {Promise&lt;Boolean>}
- */
-TableCreator.prototype.createSpatialReferenceSystem = function() {
-  return this.createTable('spatial_reference_system');
-}
-
-/**
- * Creates the contents tables
- * @return {Promise&lt;Boolean>}
- */
-TableCreator.prototype.createContents = function() {
-  return this.createTable('contents');
-}
-
-/**
- * Creates the geometry columns tables
- * @return {Promise&lt;Boolean>}
- */
-TableCreator.prototype.createGeometryColumns = function() {
-  return this.createTable('geometry_columns');
-}
-
-/**
- * Creates the tile matrix set tables
- * @return {Promise&lt;Boolean>}
- */
-TableCreator.prototype.createTileMatrixSet = function() {
-  return this.createTable('tile_matrix_set');
-}
-
-/**
- * Creates the tile matrix tables
- * @return {Promise&lt;Boolean>}
- */
-TableCreator.prototype.createTileMatrix = function() {
-  return this.createTable('tile_matrix');
-}
-
-/**
- * Creates the data columns tables
- * @return {Promise&lt;Boolean>}
- */
-TableCreator.prototype.createDataColumns = function() {
-  return this.createTable('data_columns');
-}
-
-/**
- * Creates the data column constraints tables
- * @return {Promise&lt;Boolean>}
- */
-TableCreator.prototype.createDataColumnConstraints = function() {
-  return this.createTable('data_column_constraints');
-}
-
-/**
- * Creates the metadata tables
- * @return {Promise&lt;Boolean>}
- */
-TableCreator.prototype.createMetadata = function() {
-  return this.createTable('metadata');
-}
-
-/**
- * Creates the metadata reference tables
- * @return {Promise&lt;Boolean>}
- */
-TableCreator.prototype.createMetadataReference = function() {
-  return this.createTable('metadata_reference');
-}
-
-/**
- * Creates the extensions tables
- * @return {Promise&lt;Boolean>}
- */
-TableCreator.prototype.createExtensions = function() {
-  return this.createTable('extensions');
-}
-
-/**
- * Creates the table index tables
- * @return {Promise&lt;Boolean>}
- */
-TableCreator.prototype.createTableIndex = function() {
-  return this.createTable('table_index');
-}
-
-/**
- * Creates the geometry index tables
- * @return {Promise&lt;Boolean>}
- */
-TableCreator.prototype.createGeometryIndex = function() {
-  return this.createTable('geometry_index');
-}
-
-/**
- * Creates the feature tile link tables
- * @return {Promise&lt;Boolean>}
- */
-TableCreator.prototype.createFeatureTileLink = function() {
-  return this.createTable('feature_tile_link');
-}
-
-/**
- * Creates the extended relations tables
- * @return {Promise&lt;Boolean>}
- */
-TableCreator.prototype.createExtendedRelations = function() {
-  return this.createTable('extended_relations');
-}
-
-/**
- * Creates all tables necessary for the specified table creation script name in the GeoPackage
- * @param  {string} creationScriptName creation scripts to run
- * @return {Promise&lt;Boolean>}
- */
-TableCreator.prototype.createTable = function(creationScriptName) {
-  var connection = this.connection;
-
-  return tableCreationScripts[creationScriptName].reduce(function(sequence, sql) {
-    return sequence.then(function() {
+  }
+  /**
+   * Creates the spatial reference system tables
+   * @return {Promise&lt;Boolean>}
+   */
+  async createSpatialReferenceSystem() {
+    return await this.createTable('spatial_reference_system');
+  }
+  /**
+   * Creates the contents tables
+   * @return {Promise&lt;Boolean>}
+   */
+  async createContents() {
+    return await this.createTable('contents');
+  }
+  /**
+   * Creates the geometry columns tables
+   * @return {Promise&lt;Boolean>}
+   */
+  async createGeometryColumns() {
+    return await this.createTable('geometry_columns');
+  }
+  /**
+   * Creates the tile matrix set tables
+   * @return {Promise&lt;Boolean>}
+   */
+  async createTileMatrixSet() {
+    return await this.createTable('tile_matrix_set');
+  }
+  /**
+   * Creates the tile matrix tables
+   * @return {Promise&lt;Boolean>}
+   */
+  async createTileMatrix() {
+    return await this.createTable('tile_matrix');
+  }
+  /**
+   * Creates the data columns tables
+   * @return {Promise&lt;Boolean>}
+   */
+  async createDataColumns() {
+    return await this.createTable('data_columns');
+  }
+  /**
+   * Creates the data column constraints tables
+   * @return {Promise&lt;Boolean>}
+   */
+  async createDataColumnConstraints() {
+    return await this.createTable('data_column_constraints');
+  }
+  /**
+   * Creates the metadata tables
+   * @return {Promise&lt;Boolean>}
+   */
+  async createMetadata() {
+    return await this.createTable('metadata');
+  }
+  /**
+   * Creates the metadata reference tables
+   * @return {Promise&lt;Boolean>}
+   */
+  async createMetadataReference() {
+    return await this.createTable('metadata_reference');
+  }
+  /**
+   * Creates the extensions tables
+   * @return {Promise&lt;Boolean>}
+   */
+  async createExtensions() {
+    return await this.createTable('extensions');
+  }
+  /**
+   * Creates the table index tables
+   * @return {Promise&lt;Boolean>}
+   */
+  async createTableIndex() {
+    return await this.createTable('table_index');
+  }
+  /**
+   * Creates the geometry index tables
+   * @return {Promise&lt;Boolean>}
+   */
+  async createGeometryIndex() {
+    return await this.createTable('geometry_index');
+  }
+  /**
+   * Creates the feature tile link tables
+   * @return {Promise&lt;Boolean>}
+   */
+  async createFeatureTileLink() {
+    return await this.createTable('feature_tile_link');
+  }
+  /**
+   * Creates the extended relations tables
+   * @return {Promise&lt;Boolean>}
+   */
+  async createExtendedRelations() {
+    return await this.createTable('extended_relations');
+  }
+  /**
+   * Creates the contentsId
+   * @return {Promise&lt;Boolean>}
+   */
+  async createContentsId() {
+    return await this.createTable('nga_contents_id');
+  }
+  /**
+   * Creates all tables necessary for the specified table creation script name in the GeoPackage
+   * @param  {string} creationScriptName creation scripts to run
+   * @return {Promise&lt;Boolean>}
+   */
+  async createTable(creationScriptName) {
+    var connection = this.connection;
+    let success = true;
+    for (const sql of tableCreationScripts[creationScriptName]) {
       try {
-        return !!connection.run(sql);
+      success = success &amp;&amp; await !!connection.run(sql)
       } catch (error) {
         if (error.message.indexOf('already exists') === -1) {
           throw error;
         }
       }
-    });
-  }, Promise.resolve());
-}
-
-/**
- * Create the given user table.
- *
- * @param {modle:user/userTable~UserTable} userTable user table to create
- * @return {object} the result of {@link module:db/geoPackageConnection~GeoPackageConnection#run}
- * @throws {Error} if the table already exists
- */
-TableCreator.prototype.createUserTable = function (userTable) {
-  var connection = this.connection;
-  var result = connection.tableExists(userTable.table_name);
-  if (result) {
-    throw new Error('Table already exists and cannot be created: ' + userTable.table_name);
+    }
+    return success
   }
-  var check = '';
-
-  var sql = 'create table \'' + userTable.table_name + '\' (';
-  for (var i = 0; i &lt; userTable.columns.length; i++) {
-    var tc = userTable.columns[i];
-    if (i) {
-      sql += ', ';
+  /**
+   * Create the given user table.
+   *
+   * @param {modle:user/userTable~UserTable} userTable user table to create
+   * @return {object} the result of {@link module:db/geoPackageConnection~GeoPackageConnection#run}
+   * @throws {Error} if the table already exists
+   */
+  createUserTable(userTable) {
+    var connection = this.connection;
+    var result = connection.tableExists(userTable.table_name);
+    if (result) {
+      throw new Error('Table already exists and cannot be created: ' + userTable.table_name);
     }
-    sql += '\n\'' + tc.name + '\' ' + tc.getTypeName();
-    if (tc.max != null) {
-      sql += '(' + tc.max + ')';
-      if (check.length) {
-        check += ' AND\n';
-      }
-      check += '\tlength("'+tc.name+'") &lt;= ' + tc.max;
-    }
-    if (tc.notNull) {
-      sql += ' not null'
-    }
-    if (tc.primaryKey) {
-      sql += ' primary key autoincrement';
-    }
-    if (tc.defaultValue) {
-      if (tc.dataType === DataTypes.GPKGDataType.GPKG_DT_TEXT) {
-        sql += ' default \'' + tc.defaultValue + '\'';
-      } else {
-        sql += ' default ' + tc.defaultValue;
-      }
-    }
-  }
-  for (var i = 0; i &lt; userTable.uniqueConstraints.length; i++) {
-    var uniqueConstraint = userTable.uniqueConstraints[i];
-    sql += ',\n unique (';
-    for (var j = 0; j &lt; uniqueConstraint.columns.length; j++) {
-      var uniqueColumn = uniqueConstraint.columns[j];
-      if (j) {
+    var check = '';
+    var sql = 'create table \'' + userTable.table_name + '\' (';
+    for (var i = 0; i &lt; userTable.columns.length; i++) {
+      var tc = userTable.columns[i];
+      if (i) {
         sql += ', ';
       }
-      sql += uniqueColumn.name;
+      sql += '\n\'' + tc.name + '\' ' + tc.getTypeName();
+      if (tc.max != null) {
+        sql += '(' + tc.max + ')';
+        if (check.length) {
+          check += ' AND\n';
+        }
+        check += '\tlength("' + tc.name + '") &lt;= ' + tc.max;
+      }
+      if (tc.notNull) {
+        sql += ' not null';
+      }
+      if (tc.primaryKey) {
+        sql += ' primary key autoincrement';
+      }
+      if (tc.defaultValue) {
+        if (tc.dataType === DataTypes.GPKGDataType.GPKG_DT_TEXT) {
+          sql += ' default \'' + tc.defaultValue + '\'';
+        }
+        else {
+          sql += ' default ' + tc.defaultValue;
+        }
+      }
     }
-    sql += ')';
+    for (var i = 0; i &lt; userTable.uniqueConstraints.length; i++) {
+      var uniqueConstraint = userTable.uniqueConstraints[i];
+      sql += ',\n unique (';
+      for (var j = 0; j &lt; uniqueConstraint.columns.length; j++) {
+        var uniqueColumn = uniqueConstraint.columns[j];
+        if (j) {
+          sql += ', ';
+        }
+        sql += uniqueColumn.name;
+      }
+      sql += ')';
+    }
+    if (check.length) {
+      sql += '\nCHECK(\n' + check + '\n)';
+    }
+    sql += '\n);';
+    return connection.run(sql);
   }
+}
 
-  if (check.length) {
-    sql += '\nCHECK(\n' + check + '\n)';
-  }
-
-  sql += '\n);';
-  return connection.run(sql);
-};
+export default TableCreator;
 
 var tableCreationScripts = {
   spatial_reference_system: [
@@ -752,6 +740,14 @@ var tableCreationScripts = {
     '  relation_name TEXT NOT NULL,' +
     '  mapping_table_name TEXT NOT NULL UNIQUE' +
     ')'
+  ],
+  nga_contents_id: [
+    'CREATE TABLE nga_contents_id (' +
+    '  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,' +
+    '  table_name TEXT NOT NULL,' +
+    '  CONSTRAINT uk_nci_table_name UNIQUE (table_name),' +
+    '  CONSTRAINT fk_nci_gc_tn FOREIGN KEY (table_name) REFERENCES gpkg_contents(table_name)' +
+    ')'
   ]
 };
 </code></pre>
@@ -761,7 +757,7 @@ var tableCreationScripts = {
 	</div>
 	<footer>
 				<div class="footer-option"><span class="site-footer-owner"><a href="https://github.com/ngageoint/GeoPackage">GeoPackage</a> is maintained by:</span><br><a href="https://github.com/ngageoint"><img src="http://ngageoint.github.io/GeoPackage/images/NGA_Logo.png" align="middle" height="60">National Geospatial-Intelligence Agency</a><a style="padding-left: 30px;" href="http://www.bit-sys.com/"><img src="http://ngageoint.github.io/GeoPackage/images/BITSystems_Logo.png" align="middle" height="40"></a><br></div>
-			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 28th Feb 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
+			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 15th May 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
 	</footer>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>

@@ -130,7 +130,7 @@
     "report": "nyc report",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "predoc": "rm -rf docs/jsdoc/*; ./docs/tutorials/createTutorials.js",
-    "doc": "jsdoc --verbose -c jsdoc.conf",
+    "doc": "cross-env NODE_OPTIONS=--max-old-space-size=8192 jsdoc --verbose -c jsdoc.conf",
     "prepublishold": "mkdir dist; browserify -t browserify-css index.js --standalone geopackage --exclude sqlite3 --exclude inquirer -o dist/geopackage.js && uglifyjs dist/geopackage.js > dist/geopackage.min.js",
     "typescript-build": "rm -rf dist && tsc",
     "typescript-browser": "rm -rf dist.browser && tsc -p tsconfig.browser.json && cross-env NODE_OPTIONS=--max-old-space-size=8192 rollup -c rollup.tsc.config.js",

@@ -19,12 +19,13 @@ describe('GeoPackage Attribute table create tests', function() {
   var tableName = 'test_attributes.test';
   var geopackage;
 
-  beforeEach(function(done) {
+  beforeEach(async function() {
+    try {
     testGeoPackage = path.join(testPath, testSetup.createTempName());
-    testSetup.createGeoPackage(testGeoPackage, function(err, gp) {
-      geopackage = gp;
-      done();
-    });
+    geopackage = await testSetup.createGeoPackage(testGeoPackage)
+    } catch (err) {
+      console.log('err', err)
+    }
   });
 
   afterEach(function(done) {
@@ -32,7 +33,8 @@ describe('GeoPackage Attribute table create tests', function() {
     testSetup.deleteGeoPackage(testGeoPackage, done);
   });
 
-  it('should create an attribute table', function() {
+  it('should create an attribute table', async function() {
+    try {
     var columns = [];
 
     columns.push(UserColumn.createPrimaryKeyColumnWithIndexAndName(0, 'id'));
@@ -43,13 +45,14 @@ describe('GeoPackage Attribute table create tests', function() {
     columns.push(UserColumn.createColumnWithIndex(3, 'test_boolean.test', DataTypes.GPKGDataType.GPKG_DT_BOOLEAN, false, null));
     columns.push(UserColumn.createColumnWithIndex(4, 'test_blob.test', DataTypes.GPKGDataType.GPKG_DT_BLOB, false, null));
     columns.push(UserColumn.createColumnWithIndex(5, 'test_integer.test', DataTypes.GPKGDataType.GPKG_DT_INTEGER, false, ""));
-    return geopackage.createAttributeTable(tableName, columns)
-    .then(function(result) {
-      var contentsVerified = Verification.verifyContentsForTable(geopackage, tableName);
-      contentsVerified.should.be.equal(true);
-      var attributesTableExists = Verification.verifyTableExists(geopackage, tableName);
-      attributesTableExists.should.be.equal(true);
-    });
+    await geopackage.createAttributeTable(tableName, columns)
+    var contentsVerified = Verification.verifyContentsForTable(geopackage, tableName);
+    contentsVerified.should.be.equal(true);
+    var attributesTableExists = Verification.verifyTableExists(geopackage, tableName);
+    attributesTableExists.should.be.equal(true);
+    } catch (err) {
+      console.log('err', err)
+    }
   });
 
   it('should create an attribute table from properties', function() {

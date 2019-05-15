@@ -100,18 +100,83 @@
  * @module user/userTableReader
  */
 
-var UserColumn = require('./userColumn')
-  , UserTable = require('./userTable')
-  , DataTypes = require('../db/dataTypes');
+import UserColumn from './userColumn'
+import UserTable from './userTable'
+import DataTypes from '../db/dataTypes'
 
 /**
  * @class
  * @param  {string} tableName       name of the table
  * @param  {string[]} requiredColumns array of required column names
  */
-var UserTableReader = function(tableName, requiredColumns) {
-  this.table_name = tableName;
-  this.requiredColumns = requiredColumns;
+class UserTableReader {
+  constructor(tableName, requiredColumns) {
+    this.table_name = tableName;
+    this.requiredColumns = requiredColumns;
+  }
+  /**
+   * Read the table
+   * @param  {object} db db connection
+   * @return {module:user/userTable~UserTable}
+   */
+  readTable(db) {
+    var columnList = [];
+    var results = db.all('PRAGMA table_info(\'' + this.table_name + '\')');
+    for (var i = 0; i &lt; results.length; i++) {
+      var result = results[i];
+      var index = result[GPKG_UTR_CID];
+      var name = result[GPKG_UTR_NAME];
+      var type = result[GPKG_UTR_TYPE];
+      var notNull = result[GPKG_UTR_NOT_NULL] === 1;
+      var primarykey = result[GPKG_UTR_PK] === 1;
+      var max = undefined;
+      if (type &amp;&amp; type.lastIndexOf(')') === type.length - 1) {
+        var maxStart = type.indexOf('(');
+        if (maxStart > -1) {
+          var maxString = type.substring(maxStart + 1, type.length - 1);
+          if (maxString !== '') {
+            max = parseInt(maxString);
+            type = type.substring(0, maxStart);
+          }
+        }
+      }
+      var defaultValue = undefined;
+      if (result[GPKG_UTR_DFLT_VALUE]) {
+        defaultValue = result[GPKG_UTR_DFLT_VALUE].replace(/\\'/g, '');
+      }
+      var column = this.createColumnWithResults(result, index, name, type, max, notNull, defaultValue, primarykey);
+      columnList.push(column);
+    }
+    if (columnList.length === 0) {
+      throw new Error('Table does not exist: ' + this.table_name);
+    }
+    return this.createTable(this.table_name, columnList, this.requiredColumns);
+  }
+  /**
+   * Creates a user column
+   * @param {Object} result
+   * @param {Number} index        column index
+   * @param {string} name         column name
+   * @param {module:db/dataTypes~GPKGDataType} type         data type
+   * @param {Number} max max value
+   * @param {Boolean} notNull      not null
+   * @param {Object} defaultValue default value or nil
+   * @param {Boolean} primaryKey primary key
+   * @return {module:user/custom~UserCustomColumn}
+   */
+  createColumnWithResults(result, index, name, type, max, notNull, defaultValue, primaryKey) {
+    var dataType = DataTypes.fromName(type);
+    return new UserColumn(index, name, dataType, max, notNull, defaultValue, primaryKey);
+  }
+  /**
+   * Create the table
+   * @param  {string} tableName table name
+   * @param  {module:dao/columnValues~ColumnValues[]} columns   columns
+   * @return {module:user/userTable~UserTable}           the user table
+   */
+  createTable(tableName, columns) {
+    return new UserTable(tableName, columns);
+  }
 }
 
 var GPKG_UTR_CID = "cid";
@@ -121,76 +186,7 @@ var GPKG_UTR_NOT_NULL = "notnull";
 var GPKG_UTR_PK = "pk";
 var GPKG_UTR_DFLT_VALUE = "dflt_value";
 
-/**
- * Read the table
- * @param  {object} db db connection
- * @return {module:user/userTable~UserTable}
- */
-UserTableReader.prototype.readTable = function (db) {
-  var columnList = [];
-  var results = db.all('PRAGMA table_info(\''+this.table_name+'\')');
-  for (var i =0; i &lt; results.length; i++) {
-    var result = results[i];
-    var index = result[GPKG_UTR_CID];
-    var name = result[GPKG_UTR_NAME];
-    var type = result[GPKG_UTR_TYPE];
-    var notNull = result[GPKG_UTR_NOT_NULL] === 1;
-    var primarykey = result[GPKG_UTR_PK] === 1;
-    var max = undefined;
-    if (type &amp;&amp; type.lastIndexOf(')') === type.length-1) {
-      var maxStart = type.indexOf('(');
-      if (maxStart > -1) {
-        var maxString = type.substring(maxStart + 1, type.length - 1);
-        if (maxString !== '') {
-          max = parseInt(maxString);
-          type = type.substring(0, maxStart);
-        }
-      }
-    }
-    var defaultValue = undefined;
-    if (result[GPKG_UTR_DFLT_VALUE]) {
-      defaultValue = result[GPKG_UTR_DFLT_VALUE].replace(/\\'/g, '');
-    }
-    var column = this.createColumnWithResults(result, index, name, type, max, notNull, defaultValue, primarykey);
-
-    columnList.push(column);
-  }
-
-  if (columnList.length === 0) {
-    throw new Error('Table does not exist: ' + this.table_name);
-  }
-  return this.createTable(this.table_name, columnList, this.requiredColumns);
-};
-
-/**
- * Creates a user column
- * @param {Object} result
- * @param {Number} index        column index
- * @param {string} name         column name
- * @param {module:db/dataTypes~GPKGDataType} type         data type
- * @param {Number} max max value
- * @param {Boolean} notNull      not null
- * @param {Object} defaultValue default value or nil
- * @param {Boolean} primaryKey primary key
- * @return {module:user/custom~UserCustomColumn}
- */
-UserTableReader.prototype.createColumnWithResults = function(result, index, name, type, max, notNull, defaultValue, primaryKey) {
-
-  var dataType = DataTypes.fromName(type);
-  return new UserColumn(index, name, dataType, max, notNull, defaultValue, primaryKey);
-}
-
-/**
- * Create the table
- * @param  {string} tableName table name
- * @param  {module:dao/columnValues~ColumnValues[]} columns   columns
- * @return {module:user/userTable~UserTable}           the user table
- */
-UserTableReader.prototype.createTable = function (tableName, columns) {
-  return new UserTable(tableName, columns);
-};
-
-module.exports = UserTableReader;
+export default UserTableReader
 </code></pre>
 		</section>
 			</div>
@@ -198,7 +194,7 @@ module.exports = UserTableReader;
 	</div>
 	<footer>
 				<div class="footer-option"><span class="site-footer-owner"><a href="https://github.com/ngageoint/GeoPackage">GeoPackage</a> is maintained by:</span><br><a href="https://github.com/ngageoint"><img src="http://ngageoint.github.io/GeoPackage/images/NGA_Logo.png" align="middle" height="60">National Geospatial-Intelligence Agency</a><a style="padding-left: 30px;" href="http://www.bit-sys.com/"><img src="http://ngageoint.github.io/GeoPackage/images/BITSystems_Logo.png" align="middle" height="40"></a><br></div>
-			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 28th Feb 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
+			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 15th May 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
 	</footer>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>

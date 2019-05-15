@@ -99,98 +99,92 @@
  * @module features/user/featureColumn
  */
 
-const UserColumn = require('../../user/userColumn');
-const DataTypes = require('../../db/dataTypes');
-const util = require('util');
+import UserColumn from '../../user/userColumn'
+import DataTypes from '../../db/dataTypes'
 
 /**
  * Represents a user feature column
  * @class
  * @extends {module:user/userColumn~UserColumn}
  */
-const FeatureColumn = module.exports = function(index, name, dataType, max, notNull, defaultValue, primaryKey, geometryType) {
-  UserColumn.call(this, index, name, dataType, max, notNull, defaultValue, primaryKey);
-  this.geometryType = geometryType;
-
-  if (!geometryType &amp;&amp; dataType === DataTypes.GPKGDataType.GPKG_DT_GEOMETRY) {
-    throw new Error('Data or Geometry Type is required to create column: ' + name);
+class FeatureColumn extends UserColumn {
+  constructor(index, name, dataType, max, notNull, defaultValue, primaryKey, geometryType) {
+    super(index, name, dataType, max, notNull, defaultValue, primaryKey);
+    this.geometryType = geometryType;
+    if (!geometryType &amp;&amp; dataType === DataTypes.GPKGDataType.GPKG_DT_GEOMETRY) {
+      throw new Error('Data or Geometry Type is required to create column: ' + name);
+    }
+  }
+  getTypeName() {
+    if (this.isGeometry()) {
+      return this.geometryType;
+    }
+    return this.dataType !== undefined &amp;&amp; DataTypes.name(this.dataType);
+  }
+  /**
+   * Determine if this column is a geometry
+   * @return {Boolean} true if a geometry column
+   */
+  isGeometry() {
+    return this.geometryType !== undefined;
+  }
+  /**
+   *  Create a new primary key column
+   *
+   *  @param {Number} index column index
+   *  @param {string} name  column name
+   *
+   *  @return feature column
+   */
+  static createPrimaryKeyColumnWithIndexAndName(index, name) {
+    return new FeatureColumn(index, name, DataTypes.GPKGDataType.GPKG_DT_INTEGER, undefined, true, undefined, true);
+  }
+  /**
+   *  Create a new geometry column
+   *
+   *  @param {Number} index        column index
+   *  @param {string} name         column name
+   *  @param {WKBGeometryType} type         geometry type
+   *  @param {Boolean} notNull      not null
+   *  @param {Object} defaultValue default value or nil
+   *
+   *  @return feature column
+   */
+  static createGeometryColumn(index, name, type, notNull, defaultValue) {
+    return new FeatureColumn(index, name, type, undefined, notNull, defaultValue, false, type);
+  }
+  /**
+   *  Create a new column
+   *
+   *  @param {Number} index column index
+   *  @param {string} name column name
+   *  @param {module:db/dataTypes~GPKGDataType} type         data type
+   *  @param {Boolean} notNull not null
+   *  @param {Object} defaultValue default value or nil
+   *
+   *  @return feature column
+   */
+  static createColumnWithIndex(index, name, type, notNull, defaultValue) {
+    return FeatureColumn.createColumnWithIndexAndMax(index, name, type, undefined, notNull, defaultValue);
+  }
+  /**
+   *  Create a new column
+   *
+   *  @param {Number} index        column index
+   *  @param {string} name         column name
+   *  @param {module:db/dataTypes~GPKGDataType} type         data type
+   *  @param {Number} max max value
+   *  @param {Boolean} notNull      not null
+   *  @param {Object} defaultValue default value or nil
+   *
+   *  @return feature column
+   */
+  static createColumnWithIndexAndMax(index, name, type, max, notNull, defaultValue) {
+    return new FeatureColumn(index, name, type, max, notNull, defaultValue, false);
   }
 }
 
-util.inherits(FeatureColumn, UserColumn);
-
-FeatureColumn.prototype.getTypeName = function () {
-  if (this.isGeometry()) {
-    return DataTypes.name(DataTypes.GPKGDataType.GPKG_DT_GEOMETRY);
-  }
-  return this.dataType !== undefined &amp;&amp; DataTypes.name(this.dataType);
-};
-
-/**
- *  Create a new primary key column
- *
- *  @param {Number} index column index
- *  @param {string} name  column name
- *
- *  @return feature column
- */
-FeatureColumn.createPrimaryKeyColumnWithIndexAndName = function(index, name) {
-  return new FeatureColumn(index, name, DataTypes.GPKGDataType.GPKG_DT_INTEGER, undefined, true, undefined, true);
-}
-
-/**
- *  Create a new geometry column
- *
- *  @param {Number} index        column index
- *  @param {string} name         column name
- *  @param {WKBGeometryType} type         geometry type
- *  @param {Boolean} notNull      not null
- *  @param {Object} defaultValue default value or nil
- *
- *  @return feature column
- */
-FeatureColumn.createGeometryColumn = function(index, name, type, notNull, defaultValue) {
-  return new FeatureColumn(index, name, type, undefined, notNull, defaultValue, false, type);
-}
-
-/**
- *  Create a new column
- *
- *  @param {Number} index column index
- *  @param {string} name column name
- *  @param {module:db/dataTypes~GPKGDataType} type         data type
- *  @param {Boolean} notNull not null
- *  @param {Object} defaultValue default value or nil
- *
- *  @return feature column
- */
-FeatureColumn.createColumnWithIndex = function(index, name, type, notNull, defaultValue) {
-  return FeatureColumn.createColumnWithIndexAndMax(index, name, type, undefined, notNull, defaultValue);
-}
-
-/**
- *  Create a new column
- *
- *  @param {Number} index        column index
- *  @param {string} name         column name
- *  @param {module:db/dataTypes~GPKGDataType} type         data type
- *  @param {Number} max max value
- *  @param {Boolean} notNull      not null
- *  @param {Object} defaultValue default value or nil
- *
- *  @return feature column
- */
-FeatureColumn.createColumnWithIndexAndMax = function(index, name, type, max, notNull, defaultValue) {
-  return new FeatureColumn(index, name, type, max, notNull, defaultValue, false);
-}
-
-/**
- * Determine if this column is a geometry
- * @return {Boolean} true if a geometry column
- */
-FeatureColumn.prototype.isGeometry = function () {
-  return this.geometryType !== undefined;
-};
+export default FeatureColumn
 </code></pre>
 		</section>
 			</div>
@@ -198,7 +192,7 @@ FeatureColumn.prototype.isGeometry = function () {
 	</div>
 	<footer>
 				<div class="footer-option"><span class="site-footer-owner"><a href="https://github.com/ngageoint/GeoPackage">GeoPackage</a> is maintained by:</span><br><a href="https://github.com/ngageoint"><img src="http://ngageoint.github.io/GeoPackage/images/NGA_Logo.png" align="middle" height="60">National Geospatial-Intelligence Agency</a><a style="padding-left: 30px;" href="http://www.bit-sys.com/"><img src="http://ngageoint.github.io/GeoPackage/images/BITSystems_Logo.png" align="middle" height="40"></a><br></div>
-			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 28th Feb 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
+			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 15th May 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
 	</footer>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>

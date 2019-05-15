@@ -100,11 +100,7 @@
  * @see module:dao/dao
  */
 
-var Dao = require('../../dao/dao')
-  // , ContentsDao = require('../../core/contents').ContentsDao
-  , TileMatrixSetDao = require('../matrixset').TileMatrixSetDao;
-
-var util = require('util');
+import Dao from '../../dao/dao'
 
 /**
  * Tile Matrix object. Documents the structure of the tile matrix at each zoom
@@ -114,86 +110,74 @@ var util = require('util');
  * 2, irregular intervals, or regular intervals other than factors of 2.
  * @class TileMatrix
  */
-var TileMatrix = function() {
-
-  /**
-   * Tile Pyramid User Data Table Name
-   * @member {string}
-   */
-  this.table_name;
-
-  /**
-   * 0 ⇐ zoom_level ⇐ max_level for table_name
-   * @member {Number}
-   */
-  this.zoom_level;
-
-  /**
-   * Number of columns (>= 1) in tile matrix at this zoom level
-   * @member {Number}
-   */
-  this.matrix_width;
-
-  /**
-   * Number of rows (>= 1) in tile matrix at this zoom level
-   * @member {Number}
-   */
-  this.matrix_height;
-
-  /**
-   * Tile width in pixels (>= 1)for this zoom level
-   * @member {Number}
-   */
-  this.tile_width;
-
-  /**
-   * Tile height in pixels (>= 1)for this zoom level
-   * @member {Number}
-   */
-  this.tile_height;
-
-  /**
-   * In t_table_name srid units or default meters for srid 0 (>0)
-   * @member {Number}
-   */
-  this.pixel_x_size;
-
-  /**
-   * In t_table_name srid units or default meters for srid 0 (>0)
-   * @member {Number}
-   */
-  this.pixel_y_size;
-};
+class TileMatrix {
+  constructor() {
+    /**
+     * Tile Pyramid User Data Table Name
+     * @member {string}
+     */
+    this.table_name;
+    /**
+     * 0 ⇐ zoom_level ⇐ max_level for table_name
+     * @member {Number}
+     */
+    this.zoom_level;
+    /**
+     * Number of columns (>= 1) in tile matrix at this zoom level
+     * @member {Number}
+     */
+    this.matrix_width;
+    /**
+     * Number of rows (>= 1) in tile matrix at this zoom level
+     * @member {Number}
+     */
+    this.matrix_height;
+    /**
+     * Tile width in pixels (>= 1)for this zoom level
+     * @member {Number}
+     */
+    this.tile_width;
+    /**
+     * Tile height in pixels (>= 1)for this zoom level
+     * @member {Number}
+     */
+    this.tile_height;
+    /**
+     * In t_table_name srid units or default meters for srid 0 (>0)
+     * @member {Number}
+     */
+    this.pixel_x_size;
+    /**
+     * In t_table_name srid units or default meters for srid 0 (>0)
+     * @member {Number}
+     */
+    this.pixel_y_size;
+  }
+}
 
 /**
  * Tile Matrix Set Data Access Object
  * @class TileMatrixDao
  * @extends {module:dao/dao~Dao}
  */
-var TileMatrixDao = function(geoPackage) {
-  Dao.call(this, geoPackage);
+class TileMatrixDao extends Dao {
+  createObject() {
+    return new TileMatrix();
+  }
+  /**
+   * get the Contents of the Tile matrix
+   * @param  {tileMatrix} tileMatrix the tile matrix
+   * @param  {Function} callback returns the contents
+   */
+  getContents(tileMatrix) {
+    var dao = this.geoPackage.getContentsDao();
+    return dao.queryForId(tileMatrix.table_name);
+  }
+  getTileMatrixSet(tileMatrix) {
+    var dao = this.geoPackage.getTileMatrixSetDao();
+    return dao.queryForId(tileMatrix.table_name);
+  }
 }
-
-util.inherits(TileMatrixDao, Dao);
-
-TileMatrixDao.prototype.createObject = function () {
-  return new TileMatrix();
-};
-
-/**
- * get the Contents of the Tile matrix
- * @param  {tileMatrix} tileMatrix the tile matrix
- * @param  {Function} callback returns the contents
- */
-TileMatrixDao.prototype.getContents = function (tileMatrix) {
-  var dao = this.geoPackage.getContentsDao();
-  return dao.queryForId(tileMatrix.table_name);
-};
-
-TileMatrixDao.prototype.getTileMatrixSet = function (tileMatrix) {
-  var dao = this.geoPackage.getTileMatrixSetDao();
-  return dao.queryForId(tileMatrix.table_name);
-};
 
 TileMatrixDao.TABLE_NAME = "gpkg_tile_matrix";
 TileMatrixDao.COLUMN_PK1 = "table_name";
@@ -221,8 +205,10 @@ TileMatrixDao.prototype.gpkgTableName = 'gpkg_tile_matrix';
 TileMatrixDao.prototype.idColumns = [TileMatrixDao.COLUMN_PK1, TileMatrixDao.COLUMN_PK2];
 TileMatrixDao.prototype.columns = [TileMatrixDao.COLUMN_TABLE_NAME, TileMatrixDao.COLUMN_ZOOM_LEVEL, TileMatrixDao.COLUMN_MATRIX_WIDTH, TileMatrixDao.COLUMN_MATRIX_HEIGHT, TileMatrixDao.COLUMN_TILE_WIDTH, TileMatrixDao.COLUMN_TILE_HEIGHT, TileMatrixDao.COLUMN_PIXEL_X_SIZE, TileMatrixDao.COLUMN_PIXEL_Y_SIZE];
 
-module.exports.TileMatrixDao = TileMatrixDao;
-module.exports.TileMatrix = TileMatrix;
+export {
+  TileMatrixDao,
+  TileMatrix
+};
 </code></pre>
 		</section>
 			</div>
@@ -230,7 +216,7 @@ module.exports.TileMatrix = TileMatrix;
 	</div>
 	<footer>
 				<div class="footer-option"><span class="site-footer-owner"><a href="https://github.com/ngageoint/GeoPackage">GeoPackage</a> is maintained by:</span><br><a href="https://github.com/ngageoint"><img src="http://ngageoint.github.io/GeoPackage/images/NGA_Logo.png" align="middle" height="60">National Geospatial-Intelligence Agency</a><a style="padding-left: 30px;" href="http://www.bit-sys.com/"><img src="http://ngageoint.github.io/GeoPackage/images/BITSystems_Logo.png" align="middle" height="40"></a><br></div>
-			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 28th Feb 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
+			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 15th May 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
 	</footer>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>

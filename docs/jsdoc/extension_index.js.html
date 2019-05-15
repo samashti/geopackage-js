@@ -101,11 +101,10 @@
  * @see module:dao/dao
  */
 
-var Dao = require('../dao/dao')
-  , ColumnValues = require('../dao/columnValues')
-  , TableCreator = require('../db/tableCreator');
 
-var util = require('util');
+import Dao from '../dao/dao'
+import ColumnValues from '../dao/columnValues'
+import TableCreator from '../db/tableCreator'
 
 /**
   * Indicates that a particular extension applies to a GeoPackage, a table in a
@@ -116,43 +115,58 @@ var util = require('util');
   * error message if it does not.
  * @class Extension
  */
-var Extension = function() {
-
-  /**
-   * Name of the table that requires the extension. When NULL, the extension
-   * is required for the entire GeoPackage. SHALL NOT be NULL when the
-   * column_name is not NULL.
-   * @member {String}
-   */
-  this.table_name;
-
-  /**
-   * Name of the column that requires the extension. When NULL, the extension
-   * is required for the entire table.
-   * @member {String}
-   */
-  this.column_name;
-
-  /**
-   * The case sensitive name of the extension that is required, in the form
-   * &lt;author>_&lt;extension_name>.
-   * @member {String}
-   */
-  this.extension_name;
-
-  /**
-   * Definition of the extension in the form specfied by the template in
-   * GeoPackage Extension Template (Normative) or reference thereto.
-   * @member {String}
-   */
-  this.definition;
-
-  /**
-   * Indicates scope of extension effects on readers / writers: read-write or
-   * write-only in lowercase.
-   * @member {String}
-   */
-  this.scope;
+class Extension {
+  constructor() {
+    /**
+     * Name of the table that requires the extension. When NULL, the extension
+     * is required for the entire GeoPackage. SHALL NOT be NULL when the
+     * column_name is not NULL.
+     * @member {String}
+     */
+    this.table_name;
+    /**
+     * Name of the column that requires the extension. When NULL, the extension
+     * is required for the entire table.
+     * @member {String}
+     */
+    this.column_name;
+    /**
+     * The case sensitive name of the extension that is required, in the form
+     * &lt;author>_&lt;extension_name>.
+     * @member {String}
+     */
+    this.extension_name;
+    /**
+     * Definition of the extension in the form specfied by the template in
+     * GeoPackage Extension Template (Normative) or reference thereto.
+     * @member {String}
+     */
+    this.definition;
+    /**
+     * Indicates scope of extension effects on readers / writers: read-write or
+     * write-only in lowercase.
+     * @member {String}
+     */
+    this.scope;
+  }
+  setExtensionName(author, extensionName) {
+    this.extension_name = Extension.buildExtensionName(author, extensionName);
+  }
+  getAuthor() {
+    return Extension.getAuthorWithExtensionName(this.extension_name);
+  }
+  getExtensionNameNoAuthor() {
+    return Extension.getExtensionNameNoAuthor(this.extension_name);
+  }
+  static buildExtensionName(author, extensionName) {
+    return author + Extension.EXTENSION_NAME_DIVIDER + extensionName;
+  }
+  static getAuthorWithExtensionName(extensionName) {
+    return extensionName.split(Extension.EXTENSION_NAME_DIVIDER)[0];
+  }
+  static getExtensionNameNoAuthor(extensionName) {
+    return extensionName.slice(extensionName.indexOf(Extension.EXTENSION_NAME_DIVIDER) + 1);
+  }
 }
 
 Extension.EXTENSION_NAME_DIVIDER = "_";
@@ -160,104 +174,73 @@ Extension.EXTENSION_NAME_DIVIDER = "_";
 Extension.READ_WRITE = "read-write";
 Extension.WRITE_ONLY = "write-only";
 
-Extension.prototype.setExtensionName = function(author, extensionName) {
-  this.extension_name = Extension.buildExtensionName(author, extensionName);
-};
-
-Extension.prototype.getAuthor = function() {
-  return Extension.getAuthorWithExtensionName(this.extension_name);
-}
-
-Extension.prototype.getExtensionNameNoAuthor = function() {
-  return Extension.getExtensionNameNoAuthor(this.extension_name);
-}
-
-Extension.buildExtensionName = function(author, extensionName) {
-  return author + Extension.EXTENSION_NAME_DIVIDER + extensionName;
-}
-
-Extension.getAuthorWithExtensionName = function(extensionName) {
-  return extensionName.split(Extension.EXTENSION_NAME_DIVIDER)[0];
-}
-
-Extension.getExtensionNameNoAuthor = function(extensionName) {
-  return extensionName.slice(extensionName.indexOf(Extension.EXTENSION_NAME_DIVIDER)+1);
-}
-
 /**
  * Extension Data Access Object
  * @class
  * @extends {module:dao/dao~Dao}
  */
-var ExtensionDao = function(geoPackage) {
-  Dao.call(this, geoPackage);
-};
+class ExtensionDao extends Dao {
 
-util.inherits(ExtensionDao, Dao);
-
-ExtensionDao.prototype.createObject = function(row) {
-  var e = new Extension();
-  for (var key in row) {
-    e[key] = row[key];
+  createObject(row) {
+    var e = new Extension();
+    for (var key in row) {
+      e[key] = row[key];
+    }
+    return e;
   }
-  return e;
-};
-
-ExtensionDao.prototype.queryByExtension = function(extensionName) {
-  var results = this.queryForAllEq(ExtensionDao.COLUMN_EXTENSION_NAME, extensionName);
-  var e = this.createObject(results[0]);
-  return e;
-}
-
-ExtensionDao.prototype.queryByExtensionAndTableName = function(extensionName, tableName) {
-  var values = new ColumnValues();
-  values.addColumn(ExtensionDao.COLUMN_EXTENSION_NAME, extensionName);
-  values.addColumn(ExtensionDao.COLUMN_TABLE_NAME, tableName);
-  var extensions = [];
-  for (var row of this.queryForFieldValues(values)) {
-    var e = this.createObject(row);
-    extensions.push(e);
+  queryByExtension(extensionName) {
+    var results = this.queryForAllEq(ExtensionDao.COLUMN_EXTENSION_NAME, extensionName);
+    var e = this.createObject(results[0]);
+    return e;
   }
-  if (extensions.length) {
-    return extensions;
-  } else {
-    return false;
+  queryByExtensionAndTableName(extensionName, tableName) {
+    var values = new ColumnValues();
+    values.addColumn(ExtensionDao.COLUMN_EXTENSION_NAME, extensionName);
+    values.addColumn(ExtensionDao.COLUMN_TABLE_NAME, tableName);
+    var extensions = [];
+    for (var row of this.queryForFieldValues(values)) {
+      var e = this.createObject(row);
+      extensions.push(e);
+    }
+    if (extensions.length) {
+      return extensions;
+    }
+    else {
+      return false;
+    }
   }
-}
-
-ExtensionDao.prototype.queryByExtensionAndTableNameAndColumnName = function (extensionName, tableName, columnName) {
-  var values = new ColumnValues();
-  values.addColumn(ExtensionDao.COLUMN_EXTENSION_NAME, extensionName);
-  values.addColumn(ExtensionDao.COLUMN_TABLE_NAME, tableName);
-  values.addColumn(ExtensionDao.COLUMN_COLUMN_NAME, columnName);
-  var extensions = [];
-  for (var row of this.queryForFieldValues(values)) {
-    var e = this.createObject(row);
-    extensions.push(e);
+  queryByExtensionAndTableNameAndColumnName(extensionName, tableName, columnName) {
+    var values = new ColumnValues();
+    values.addColumn(ExtensionDao.COLUMN_EXTENSION_NAME, extensionName);
+    values.addColumn(ExtensionDao.COLUMN_TABLE_NAME, tableName);
+    values.addColumn(ExtensionDao.COLUMN_COLUMN_NAME, columnName);
+    var extensions = [];
+    for (var row of this.queryForFieldValues(values)) {
+      var e = this.createObject(row);
+      extensions.push(e);
+    }
+    if (extensions.length) {
+      return extensions;
+    }
+    else {
+      return false;
+    }
   }
-  if (extensions.length) {
-    return extensions;
-  } else {
-    return false;
+  createTable() {
+    var tc = new TableCreator(this.geoPackage);
+    return tc.createExtensions();
   }
-};
-
-ExtensionDao.prototype.createTable = function() {
-  var tc = new TableCreator(this.geoPackage);
-  return tc.createExtensions();
-}
-
-ExtensionDao.prototype.deleteByExtension = function(extensionName) {
-  var values = new ColumnValues();
-  values.addColumn(ExtensionDao.COLUMN_EXTENSION_NAME, extensionName);
-  this.deleteWhere(this.buildWhere(values, '='), this.buildWhereArgs(values));
-}
-
-ExtensionDao.prototype.deleteByExtensionAndTableName = function(extensionName, tableName) {
-  var values = new ColumnValues();
-  values.addColumn(ExtensionDao.COLUMN_EXTENSION_NAME, extensionName);
-  values.addColumn(ExtensionDao.COLUMN_TABLE_NAME, tableName);
-  this.deleteWhere(this.buildWhere(values, 'and'), this.buildWhereArgs(values));
+  deleteByExtension(extensionName) {
+    var values = new ColumnValues();
+    values.addColumn(ExtensionDao.COLUMN_EXTENSION_NAME, extensionName);
+    this.deleteWhere(this.buildWhere(values, '='), this.buildWhereArgs(values));
+  }
+  deleteByExtensionAndTableName(extensionName, tableName) {
+    var values = new ColumnValues();
+    values.addColumn(ExtensionDao.COLUMN_EXTENSION_NAME, extensionName);
+    values.addColumn(ExtensionDao.COLUMN_TABLE_NAME, tableName);
+    this.deleteWhere(this.buildWhere(values, 'and'), this.buildWhereArgs(values));
+  }
 }
 
 ExtensionDao.TABLE_NAME = "gpkg_extensions";
@@ -270,8 +253,10 @@ ExtensionDao.COLUMN_SCOPE = "scope";
 ExtensionDao.prototype.gpkgTableName = ExtensionDao.TABLE_NAME;
 ExtensionDao.prototype.idColumns = [ExtensionDao.COLUMN_TABLE_NAME, ExtensionDao.COLUMN_COLUMN_NAME, ExtensionDao.COLUMN_EXTENSION_NAME];
 
-module.exports.ExtensionDao = ExtensionDao;
-module.exports.Extension = Extension;
+export {
+  ExtensionDao,
+  Extension
+}
 </code></pre>
 		</section>
 			</div>
@@ -279,7 +264,7 @@ module.exports.Extension = Extension;
 	</div>
 	<footer>
 				<div class="footer-option"><span class="site-footer-owner"><a href="https://github.com/ngageoint/GeoPackage">GeoPackage</a> is maintained by:</span><br><a href="https://github.com/ngageoint"><img src="http://ngageoint.github.io/GeoPackage/images/NGA_Logo.png" align="middle" height="60">National Geospatial-Intelligence Agency</a><a style="padding-left: 30px;" href="http://www.bit-sys.com/"><img src="http://ngageoint.github.io/GeoPackage/images/BITSystems_Logo.png" align="middle" height="40"></a><br></div>
-			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 28th Feb 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
+			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 15th May 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
 	</footer>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>

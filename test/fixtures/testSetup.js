@@ -14,23 +14,18 @@ module.exports.createTempName = function() {
   return 'gp_'+crypto.randomBytes(4).readUInt32LE(0)+'.gpkg';
 }
 
-module.exports.createGeoPackage = function(gppath, callback) {
-  return new Promise(function(resolve) {
-    if (typeof(process) !== 'undefined' && process.version) {
-      fs.mkdir(path.dirname(gppath), function() {
-        fs.open(gppath, 'w', function() {
-          GeoPackageAPI.create(gppath)
-          .then(function(geopackage) {
-            resolve(geopackage)
-            if (callback) callback(null, geopackage);
-          });
-        });
-      });
-    } else {
-      resolve()
-      if (callback) callback();
-    }
-  })
+module.exports.createGeoPackage = async function(gppath, callback) {
+  if (typeof(process) !== 'undefined' && process.version) {
+    try {
+    fs.mkdirSync(path.dirname(gppath))
+    } catch (e) {}
+    fs.openSync(gppath, 'w')
+    let geopackage = await GeoPackageAPI.create(gppath)
+    if (callback) callback(null, geopackage);
+    return geopackage;
+  } else {
+    if (callback) callback();
+  }
 }
 
 module.exports.createBareGeoPackage = function(gppath, callback) {

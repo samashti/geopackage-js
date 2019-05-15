@@ -99,13 +99,8 @@
  * @module tiles/matrixset
  * @see module:dao/dao
  */
-
-var Dao = require('../../dao/dao')
-  , BoundingBox = require('../../boundingBox')
-  , SpatialReferenceSystemDao = require('../../core/srs').SpatialReferenceSystemDao;
-  // , ContentsDao = require('../../core/contents').ContentsDao;
-
-var util = require('util');
+import Dao from '../../dao/dao'
+import BoundingBox from '../../boundingBox'
 
 /**
  * `TileMatrixSet` models the [`gpkg_tile_matrix_set`](https://www.geopackage.org/spec121/index.html#_tile_matrix_set)
@@ -124,60 +119,53 @@ var util = require('util');
  *
  * @class TileMatrixSet
  */
-var TileMatrixSet = function() {
-
-  /**
-   * Name of the [tile pyramid user data table](https://www.geopackage.org/spec121/index.html#tiles_user_tables)
-   * that stores the tiles
-   * @member {string}
-   */
-  this.table_name;
-
-  /**
-   * Unique identifier for each Spatial Reference System within a GeoPackage
-   * @member {SRSRef}
-   */
-  this.srs_id;
-
-  /**
-   * Bounding box minimum easting or longitude for all content in table_name
-   * @member {Number}
-   */
-  this.min_x;
-
-  /**
-   * Bounding box minimum northing or latitude for all content in table_name
-   * @member {Number}
-   */
-  this.min_y;
-
-  /**
-   * Bounding box maximum easting or longitude for all content in table_name
-   * @member {Number}
-   */
-  this.max_x;
-
-  /**
-   * Bounding box maximum northing or latitude for all content in table_name
-   * @member {Number}
-   */
-  this.max_y;
-};
-
-TileMatrixSet.prototype.setBoundingBox = function (boundingBox) {
-  this.min_x = boundingBox.minLongitude;
-  this.max_x = boundingBox.maxLongitude;
-  this.min_y = boundingBox.minLatitude;
-  this.max_y = boundingBox.maxLatitude;
-};
-
-TileMatrixSet.prototype.getBoundingBox = function () {
-  return new BoundingBox(this.min_x, this.max_x, this.min_y, this.max_y);
-};
-
-TileMatrixSet.prototype.setContents = function(contents) {
-  if (contents &amp;&amp; contents.data_type === 'tiles') {
-    this.table_name = contents.table_name;
+class TileMatrixSet {
+  constructor() {
+    /**
+     * Name of the [tile pyramid user data table](https://www.geopackage.org/spec121/index.html#tiles_user_tables)
+     * that stores the tiles
+     * @member {string}
+     */
+    this.table_name;
+    /**
+     * Unique identifier for each Spatial Reference System within a GeoPackage
+     * @member {SRSRef}
+     */
+    this.srs_id;
+    /**
+     * Bounding box minimum easting or longitude for all content in table_name
+     * @member {Number}
+     */
+    this.min_x;
+    /**
+     * Bounding box minimum northing or latitude for all content in table_name
+     * @member {Number}
+     */
+    this.min_y;
+    /**
+     * Bounding box maximum easting or longitude for all content in table_name
+     * @member {Number}
+     */
+    this.max_x;
+    /**
+     * Bounding box maximum northing or latitude for all content in table_name
+     * @member {Number}
+     */
+    this.max_y;
+  }
+  setBoundingBox(boundingBox) {
+    this.min_x = boundingBox.minLongitude;
+    this.max_x = boundingBox.maxLongitude;
+    this.min_y = boundingBox.minLatitude;
+    this.max_y = boundingBox.maxLatitude;
+  }
+  getBoundingBox() {
+    return new BoundingBox(this.min_x, this.max_x, this.min_y, this.max_y);
+  }
+  setContents(contents) {
+    if (contents &amp;&amp; contents.data_type === 'tiles') {
+      this.table_name = contents.table_name;
+    }
   }
 }
 
@@ -186,50 +174,43 @@ TileMatrixSet.prototype.setContents = function(contents) {
  * @class TileMatrixSetDao
  * @extends {module:dao/dao~Dao}
  */
-var TileMatrixSetDao = function(geoPackage) {
-  Dao.call(this, geoPackage);
-}
-
-util.inherits(TileMatrixSetDao, Dao);
-
-TileMatrixSetDao.prototype.createObject = function () {
-  return new TileMatrixSet();
-};
-
-/**
- * Return an array of names of [tile tables]{@link module:tiles/user/tileTable~TileTable}
- * in this DAO's [GeoPackage]{@link module:tiles/matrixset~TileMatrixSetDao#geoPackage}.
- *
- * @returns {string[]} array of table names
- */
-TileMatrixSetDao.prototype.getTileTables = function () {
-  var tableNames = [];
-  for (var result of this.connection.each('select ' + TileMatrixSetDao.COLUMN_TABLE_NAME + ' from ' + TileMatrixSetDao.TABLE_NAME)) {
-    tableNames.push(result[TileMatrixSetDao.COLUMN_TABLE_NAME]);
+class TileMatrixSetDao extends Dao {
+  createObject() {
+    return new TileMatrixSet();
   }
-  return tableNames;
-};
-
-TileMatrixSetDao.prototype.getProjection = function (tileMatrixSet) {
-  var srs = this.getSrs(tileMatrixSet);
-  if (!srs) return;
-  var srsDao = this.geoPackage.getSpatialReferenceSystemDao();
-  return srsDao.getProjection(srs);
-};
-
-/**
- * Get the Spatial Reference System of the Tile Matrix set
- * @param  {TileMatrixSet}   tileMatrixSet tile matrix set
- */
-TileMatrixSetDao.prototype.getSrs = function (tileMatrixSet) {
-  var dao = this.geoPackage.getSpatialReferenceSystemDao();
-  return dao.queryForId(tileMatrixSet.srs_id);
-};
-
-TileMatrixSetDao.prototype.getContents = function (tileMatrixSet) {
-  var dao = this.geoPackage.getContentsDao();
-  return dao.queryForId(tileMatrixSet.table_name);
-};
+  /**
+   * Return an array of names of [tile tables]{@link module:tiles/user/tileTable~TileTable}
+   * in this DAO's [GeoPackage]{@link module:tiles/matrixset~TileMatrixSetDao#geoPackage}.
+   *
+   * @returns {string[]} array of table names
+   */
+  getTileTables() {
+    var tableNames = [];
+    for (var result of this.connection.each('select ' + TileMatrixSetDao.COLUMN_TABLE_NAME + ' from ' + TileMatrixSetDao.TABLE_NAME)) {
+      tableNames.push(result[TileMatrixSetDao.COLUMN_TABLE_NAME]);
+    }
+    return tableNames;
+  }
+  getProjection(tileMatrixSet) {
+    var srs = this.getSrs(tileMatrixSet);
+    if (!srs)
+      return;
+    var srsDao = this.geoPackage.getSpatialReferenceSystemDao();
+    return srsDao.getProjection(srs);
+  }
+  /**
+   * Get the Spatial Reference System of the Tile Matrix set
+   * @param  {TileMatrixSet}   tileMatrixSet tile matrix set
+   */
+  getSrs(tileMatrixSet) {
+    var dao = this.geoPackage.getSpatialReferenceSystemDao();
+    return dao.queryForId(tileMatrixSet.srs_id);
+  }
+  getContents(tileMatrixSet) {
+    var dao = this.geoPackage.getContentsDao();
+    return dao.queryForId(tileMatrixSet.table_name);
+  }
+}
 
 TileMatrixSet.TABLE_NAME = "tableName";
 TileMatrixSet.MIN_X = "minX";
@@ -259,8 +240,10 @@ TileMatrixSetDao.prototype.columnToPropertyMap[TileMatrixSetDao.COLUMN_MIN_Y] = 
 TileMatrixSetDao.prototype.columnToPropertyMap[TileMatrixSetDao.COLUMN_MAX_X] = TileMatrixSet.MAX_X;
 TileMatrixSetDao.prototype.columnToPropertyMap[TileMatrixSetDao.COLUMN_MAX_Y] = TileMatrixSet.MAX_Y;
 
-module.exports.TileMatrixSetDao = TileMatrixSetDao;
-module.exports.TileMatrixSet = TileMatrixSet;
+export {
+  TileMatrixSetDao,
+  TileMatrixSet
+}
 </code></pre>
 		</section>
 			</div>
@@ -268,7 +251,7 @@ module.exports.TileMatrixSet = TileMatrixSet;
 	</div>
 	<footer>
 				<div class="footer-option"><span class="site-footer-owner"><a href="https://github.com/ngageoint/GeoPackage">GeoPackage</a> is maintained by:</span><br><a href="https://github.com/ngageoint"><img src="http://ngageoint.github.io/GeoPackage/images/NGA_Logo.png" align="middle" height="60">National Geospatial-Intelligence Agency</a><a style="padding-left: 30px;" href="http://www.bit-sys.com/"><img src="http://ngageoint.github.io/GeoPackage/images/BITSystems_Logo.png" align="middle" height="40"></a><br></div>
-			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 28th Feb 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
+			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 15th May 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
 	</footer>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>

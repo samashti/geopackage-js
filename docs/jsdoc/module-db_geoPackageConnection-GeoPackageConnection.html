@@ -104,7 +104,7 @@
 </dt>
 <dd class="symbol-details class" style="max-height: 9999px;">
 	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Creates a connection to the SQLite file and when connected, returns a promise that resolves the connection.
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description classdesc"><p>Creates a connection to the SQLite file and when connected, returns a promise that resolves the connection.
 			This will create a {module:db/sqliteAdapter~Adapter} if running in node and the FORCE_SQLJS environment variable is not set.
 			This will create a {module:db/sqljsAdapter~Adapter} if running in the browser or the FORCE_SQLJS environment variable is set</p></div>
 			</div>			<div class="callout callout-info">
@@ -156,7 +156,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-25">line 25</a></p>
+									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-31">line 31</a></p>
 								</div>
 							</div>
 			
@@ -226,33 +226,20 @@
 </dd>
 											<hr/>
 											<dt class="symbol-title function public">
-			<h4 id="export" class="function public"><span class="name">export</span><span class="signature-params">( <span class="signature-param">callback</span>&nbsp;)</span><span class="signature-type"></span></h4>
+			<h4 id="export" class="function public"><span class="name">export</span><span class="signature-params">()</span><span class="signature-type"> &rarr;&nbsp;{Buffer}</span></h4>
 		</dt>
 <dd class="symbol-details function public">
 	<div class="symbol-details-inner">
 			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>exports the GeoPackage as a file</p></div>
-			</div>			<div class="callout callout-info">
-				<h5>Parameters</h5>
-				<table class="params table table-striped">
-					<thead>
-					<tr>
-							<th>Name</th>
-						<th>Type</th>
-						<th class="last">Description</th>
-					</tr>
-					</thead>
-					<tbody>
-						<tr>
-								<td><code>callback</code></td>
-							<td><span class="param-type">function</span></td>
-							<td class="last">
-									<p>called with an err and the buffer containing the contents of the file</p>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			</div>			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">Buffer</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description"><p>buffer containing the contents of the file</p></div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
 			
 			
 			
@@ -272,7 +259,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-57">line 57</a></p>
+									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-56">line 56</a></p>
 								</div>
 							</div>
 			
@@ -317,7 +304,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-65">line 65</a></p>
+									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-63">line 63</a></p>
 								</div>
 							</div>
 			
@@ -383,7 +370,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-74">line 74</a></p>
+									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-71">line 71</a></p>
 								</div>
 							</div>
 			
@@ -456,7 +443,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-84">line 84</a></p>
+									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-80">line 80</a></p>
 								</div>
 							</div>
 			
@@ -532,7 +519,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-95">line 95</a></p>
+									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-90">line 90</a></p>
 								</div>
 							</div>
 			
@@ -608,7 +595,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-105">line 105</a></p>
+									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-99">line 99</a></p>
 								</div>
 							</div>
 			
@@ -684,7 +671,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-115">line 115</a></p>
+									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-108">line 108</a></p>
 								</div>
 							</div>
 			
@@ -760,7 +747,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-125">line 125</a></p>
+									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-117">line 117</a></p>
 								</div>
 							</div>
 			
@@ -852,7 +839,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-137">line 137</a></p>
+									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-128">line 128</a></p>
 								</div>
 							</div>
 			
@@ -944,7 +931,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-157">line 157</a></p>
+									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-147">line 147</a></p>
 								</div>
 							</div>
 			
@@ -1028,7 +1015,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-176">line 176</a></p>
+									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-165">line 165</a></p>
 								</div>
 							</div>
 			
@@ -1102,7 +1089,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-187">line 187</a></p>
+									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-175">line 175</a></p>
 								</div>
 							</div>
 			
@@ -1186,7 +1173,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-198">line 198</a></p>
+									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-185">line 185</a></p>
 								</div>
 							</div>
 			
@@ -1252,7 +1239,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-213">line 213</a></p>
+									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-197">line 197</a></p>
 								</div>
 							</div>
 			
@@ -1318,7 +1305,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-222">line 222</a></p>
+									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-205">line 205</a></p>
 								</div>
 							</div>
 			
@@ -1391,7 +1378,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-232">line 232</a></p>
+									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-214">line 214</a></p>
 								</div>
 							</div>
 			
@@ -1428,7 +1415,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-245">line 245</a></p>
+									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-226">line 226</a></p>
 								</div>
 							</div>
 			
@@ -1473,150 +1460,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-256">line 256</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title function public">
-			<h4 id=".connect" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">connect</span><span class="signature-params">( <span class="signature-param">filePath</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Promise}</span></h4>
-		</dt>
-<dd class="symbol-details function public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Convenience method</p></div>
-			</div>			<div class="callout callout-info">
-				<h5>Parameters</h5>
-				<table class="params table table-striped">
-					<thead>
-					<tr>
-							<th>Name</th>
-						<th>Type</th>
-						<th class="last">Description</th>
-					</tr>
-					</thead>
-					<tbody>
-						<tr>
-								<td><code>filePath</code></td>
-							<td><span class="param-type">string</span> | <span class="param-type">Buffer</span></td>
-							<td class="last">
-									<p>string path to an existing file or a path to where a new file will be created or a Buffer containing the contents of the file, if undefined, an in memory database is created</p>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
-							<div class="form-group">
-								<label class="col-sm-3 control-label returns-type"><span class="param-type">Promise</span></label>
-								<div class="col-sm-9">
-									<div class="form-control-static returns-description"><p>that resolves</p></div>
-								</div>
-							</div>
-					</form>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-270">line 270</a></p>
-								</div>
-							</div>
-			
-			
-							<!-- see -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">See</label>
-								<div class="col-sm-9">
-										<ul class="form-control-static">
-												<li>{<a href="module-db_geoPackageConnection-GeoPackageConnection.html">module:db/geoPackageConnection~GeoPackageConnection</a>}</li>
-												<li>{<a href="module-db_sqliteAdapter-Adapter.html">module:db/sqliteAdapter~Adapter</a>}</li>
-												<li>{<a href="module-db_sqljsAdapter-Adapter.html">module:db/sqljsAdapter~Adapter</a>}</li>
-										</ul>
-								</div>
-							</div>
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title function public">
-			<h4 id=".connectWithDatabase" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">connectWithDatabase</span><span class="signature-params">( <span class="signature-param">db</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{Promise}</span></h4>
-		</dt>
-<dd class="symbol-details function public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description"><p>Convenience method</p></div>
-			</div>			<div class="callout callout-info">
-				<h5>Parameters</h5>
-				<table class="params table table-striped">
-					<thead>
-					<tr>
-							<th>Name</th>
-						<th>Type</th>
-						<th class="last">Description</th>
-					</tr>
-					</thead>
-					<tbody>
-						<tr>
-								<td><code>db</code></td>
-							<td><span class="param-type">Object</span></td>
-							<td class="last">
-									<p>open database to connect to</p>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
-							<div class="form-group">
-								<label class="col-sm-3 control-label returns-type"><span class="param-type">Promise</span></label>
-								<div class="col-sm-9">
-									<div class="form-control-static returns-description"></div>
-								</div>
-							</div>
-					</form>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-279">line 279</a></p>
+									<p class="form-control-static"><a href="db_geoPackageConnection.js.html">db/geoPackageConnection.js</a>, <a href="db_geoPackageConnection.js.html#line-236">line 236</a></p>
 								</div>
 							</div>
 			
@@ -1637,7 +1481,7 @@
 	</div>
 	<footer>
 				<div class="footer-option"><span class="site-footer-owner"><a href="https://github.com/ngageoint/GeoPackage">GeoPackage</a> is maintained by:</span><br><a href="https://github.com/ngageoint"><img src="http://ngageoint.github.io/GeoPackage/images/NGA_Logo.png" align="middle" height="60">National Geospatial-Intelligence Agency</a><a style="padding-left: 30px;" href="http://www.bit-sys.com/"><img src="http://ngageoint.github.io/GeoPackage/images/BITSystems_Logo.png" align="middle" height="40"></a><br></div>
-			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 28th Feb 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
+			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 15th May 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
 	</footer>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>

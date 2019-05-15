@@ -100,81 +100,69 @@
  * @module extension/index
  */
 
-var Dao = require('../../dao/dao')
-  , TableIndexDao = require('./tableIndex').TableIndexDao
-  , TableCreator = require('../../db/tableCreator');
-
-var util = require('util');
+import Dao from '../../dao/dao'
+import TableCreator from '../../db/tableCreator'
 
 /**
  * Geometry Index object, for indexing data within user tables
  * @class
  */
-var GeometryIndex = function() {
-
-  /**
-   * Name of the table
-   * @member {String}
-   */
-  this.table_name;
-
-  /**
-   * Geometry Id column
-   * @member {Number}
-   */
-  this.geom_id;
-
-  /**
-   * Min X
-   * @member {Number}
-   */
-  this.min_x;
-
-  /**
-   * Max X
-   * @member {Number}
-   */
-  this.max_x;
-
-  /**
-   * Min Y
-   * @member {Number}
-   */
-  this.min_y;
-
-  /**
-   * Max Y
-   * @member {Number}
-   */
-  this.max_y;
-
-  /**
-   * Min Z
-   * @member {Number}
-   */
-  this.min_z;
-
-  /**
-   * Max Z
-   * @member {Number}
-   */
-  this.max_z;
-
-  /**
-   * Min M
-   * @member {Number}
-   */
-  this.min_m;
-
-  /**
-   * Max M
-   * @member {Number}
-   */
-  this.max_m;
-}
-
-GeometryIndex.prototype.setTableIndex = function(tableIndex) {
-  this.table_name = tableIndex.table_name;
+class GeometryIndex {
+  constructor() {
+    /**
+     * Name of the table
+     * @member {String}
+     */
+    this.table_name;
+    /**
+     * Geometry Id column
+     * @member {Number}
+     */
+    this.geom_id;
+    /**
+     * Min X
+     * @member {Number}
+     */
+    this.min_x;
+    /**
+     * Max X
+     * @member {Number}
+     */
+    this.max_x;
+    /**
+     * Min Y
+     * @member {Number}
+     */
+    this.min_y;
+    /**
+     * Max Y
+     * @member {Number}
+     */
+    this.max_y;
+    /**
+     * Min Z
+     * @member {Number}
+     */
+    this.min_z;
+    /**
+     * Max Z
+     * @member {Number}
+     */
+    this.max_z;
+    /**
+     * Min M
+     * @member {Number}
+     */
+    this.min_m;
+    /**
+     * Max M
+     * @member {Number}
+     */
+    this.max_m;
+  }
+  setTableIndex(tableIndex) {
+    this.table_name = tableIndex.table_name;
+  }
 }
 
 /**
@@ -182,158 +170,148 @@ GeometryIndex.prototype.setTableIndex = function(tableIndex) {
  * @class
  * @extends {module:dao/dao~Dao}
  */
-var GeometryIndexDao = function(geoPackage, featureDao) {
-  Dao.call(this, geoPackage);
-  this.featureDao = featureDao;
-};
-
-util.inherits(GeometryIndexDao, Dao);
-
-GeometryIndexDao.prototype.createObject = function() {
-  return new GeometryIndex();
-};
-
-/**
- * Get the Table Index of the Geometry Index
- *
- * @param {module:extension/index~GeometryIndex} geometryIndex geometry index
- * @return {module:extension/index~TableIndex}
- */
-GeometryIndexDao.prototype.getTableIndex = function(geometryIndex) {
-  var dao = this.geoPackage.getTableIndexDao();
-  return dao.queryForId(geometryIndex.tableName);
-};
-
-/**
- * Query by table name
- * @param  {string} tableName table name
- * @return {Iterable}
- */
-GeometryIndexDao.prototype.queryForTableName = function(tableName) {
-  return this.queryForEach(GeometryIndexDao.COLUMN_TABLE_NAME, tableName);
-};
-
-/**
- *  Count by table name
- *
- *  @param tableName table name
- *
- *  @return count
- */
-/**
- * Count by table name
- * @param  {string}   tableName table name
- * @return {Number}
- */
-GeometryIndexDao.prototype.countByTableName = function(tableName) {
-  return this.count(GeometryIndexDao.COLUMN_TABLE_NAME, tableName);
-};
-
-/**
- *  Populate a new geometry index from an envelope
- *
- *  @param tableIndex table index
- *  @param geomId     geometry id
- *  @param envelope   geometry envelope
- *  @param callback called with results of the populate
- */
-/**
- * Populate a new goemetry index from an envelope
- * @param  {module:extension/index~TableIndex} tableIndex TableIndex
- * @param  {Number} geometryId id of the geometry
- * @param  {Object} envelope   envelope to store
- * @return {module:extension/index~GeometryIndex}
- */
-GeometryIndexDao.prototype.populate = function(tableIndex, geometryId, envelope) {
-  var geometryIndex  = new GeometryIndex();
-  geometryIndex.setTableIndex(tableIndex);
-  geometryIndex.geom_id = geometryId;
-  geometryIndex.min_x = envelope.minX;
-  geometryIndex.min_y = envelope.minY;
-  geometryIndex.max_x = envelope.maxX;
-  geometryIndex.max_y = envelope.maxY;
-  if (envelope.hasZ) {
-    geometryIndex.min_z = envelope.minZ;
-    geometryIndex.max_z = envelope.maxZ;
+class GeometryIndexDao extends Dao {
+  constructor(geoPackage, featureDao) {
+    super(geoPackage);
+    this.featureDao = featureDao;
   }
-
-  if (envelope.hasM) {
-    geometryIndex.min_m = envelope.minM;
-    geometryIndex.max_m = envelope.maxM;
+  createObject() {
+    return new GeometryIndex();
   }
-  return geometryIndex;
-};
-
-/**
- * Create the GeometryIndex table
- * @return {Promise}
- */
-GeometryIndexDao.prototype.createTable = function() {
-  var exists = this.isTableExists();
-  if (exists) return Promise.resolve(true);
-  var tc = new TableCreator(this.geoPackage);
-  return tc.createGeometryIndex();
-}
-
-/**
- * Query the index with an envelope
- * @param  {Object} envelope envelope
- * @param  {Number} envelope.minX min x
- * @param  {Number} envelope.maxX max x
- * @param  {Number} envelope.minY min y
- * @param  {Number} envelope.maxY max y
- * @return {Iterable}
- */
-GeometryIndexDao.prototype.queryWithGeometryEnvelope = function(envelope) {
-  var tableName = this.featureDao.gpkgTableName;
-  var where = '';
-  where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_TABLE_NAME, tableName);
-  where += ' and ';
-  var minXLessThanMaxX = envelope.minX &lt; envelope.maxX;
-  if (minXLessThanMaxX) {
-    where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MIN_X, envelope.maxX, '&lt;=');
+  /**
+   * Get the Table Index of the Geometry Index
+   *
+   * @param {module:extension/index~GeometryIndex} geometryIndex geometry index
+   * @return {module:extension/index~TableIndex}
+   */
+  getTableIndex(geometryIndex) {
+    var dao = this.geoPackage.getTableIndexDao();
+    return dao.queryForId(geometryIndex.table_name);
+  }
+  /**
+   * Query by table name
+   * @param  {string} tableName table name
+   * @return {Iterable}
+   */
+  queryForTableName(tableName) {
+    return this.queryForEach(GeometryIndexDao.COLUMN_TABLE_NAME, tableName);
+  }
+  /**
+   *  Count by table name
+   *
+   *  @param tableName table name
+   *
+   *  @return count
+   */
+  /**
+   * Count by table name
+   * @param  {string}   tableName table name
+   * @return {Number}
+   */
+  countByTableName(tableName) {
+    return this.count(GeometryIndexDao.COLUMN_TABLE_NAME, tableName);
+  }
+  /**
+   *  Populate a new geometry index from an envelope
+   *
+   *  @param tableIndex table index
+   *  @param geomId     geometry id
+   *  @param envelope   geometry envelope
+   *  @param callback called with results of the populate
+   */
+  /**
+   * Populate a new goemetry index from an envelope
+   * @param  {module:extension/index~TableIndex} tableIndex TableIndex
+   * @param  {Number} geometryId id of the geometry
+   * @param  {Object} envelope   envelope to store
+   * @return {module:extension/index~GeometryIndex}
+   */
+  populate(tableIndex, geometryId, envelope) {
+    var geometryIndex = new GeometryIndex();
+    geometryIndex.setTableIndex(tableIndex);
+    geometryIndex.geom_id = geometryId;
+    geometryIndex.min_x = envelope.minX;
+    geometryIndex.min_y = envelope.minY;
+    geometryIndex.max_x = envelope.maxX;
+    geometryIndex.max_y = envelope.maxY;
+    if (envelope.hasZ) {
+      geometryIndex.min_z = envelope.minZ;
+      geometryIndex.max_z = envelope.maxZ;
+    }
+    if (envelope.hasM) {
+      geometryIndex.min_m = envelope.minM;
+      geometryIndex.max_m = envelope.maxM;
+    }
+    return geometryIndex;
+  }
+  /**
+   * Create the GeometryIndex table
+   * @return {Promise}
+   */
+  async createTable() {
+    var exists = this.isTableExists();
+    if (exists)
+      return true
+    var tc = new TableCreator(this.geoPackage);
+    return await tc.createGeometryIndex();
+  }
+  /**
+   * Query the index with an envelope
+   * @param  {Object} envelope envelope
+   * @param  {Number} envelope.minX min x
+   * @param  {Number} envelope.maxX max x
+   * @param  {Number} envelope.minY min y
+   * @param  {Number} envelope.maxY max y
+   * @return {Iterable}
+   */
+  queryWithGeometryEnvelope(envelope) {
+    var tableName = this.featureDao.gpkgTableName;
+    var where = '';
+    where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_TABLE_NAME, tableName);
     where += ' and ';
-    where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MAX_X, envelope.minX, '>=');
-  } else {
-    where += '(';
-    where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MIN_X, envelope.maxX, '&lt;=');
-    where += ' or ';
-    where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MAX_X, envelope.minX, '>=');
-    where += ' or ';
-    where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MIN_X, envelope.minX, '>=');
-    where += ' or ';
-    where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MAX_X, envelope.maxX, '&lt;=');
-    where += ')';
-  }
-
-  where += ' and ';
-  where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MIN_Y, envelope.maxY, '&lt;=');
-  where += ' and ';
-  where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MAX_Y, envelope.minY, '>=');
-
-  var whereArgs = [tableName, envelope.maxX, envelope.minX];
-  if (!minXLessThanMaxX) {
-    whereArgs.push(envelope.minX, envelope.maxX);
-  }
-  whereArgs.push(envelope.maxY, envelope.minY);
-  if (envelope.hasZ) {
+    var minXLessThanMaxX = envelope.minX &lt; envelope.maxX;
+    if (minXLessThanMaxX) {
+      where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MIN_X, envelope.maxX, '&lt;=');
+      where += ' and ';
+      where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MAX_X, envelope.minX, '>=');
+    }
+    else {
+      where += '(';
+      where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MIN_X, envelope.maxX, '&lt;=');
+      where += ' or ';
+      where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MAX_X, envelope.minX, '>=');
+      where += ' or ';
+      where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MIN_X, envelope.minX, '>=');
+      where += ' or ';
+      where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MAX_X, envelope.maxX, '&lt;=');
+      where += ')';
+    }
     where += ' and ';
-    where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MIN_Z, envelope.minZ, '&lt;=');
+    where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MIN_Y, envelope.maxY, '&lt;=');
     where += ' and ';
-    where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MAX_Z, envelope.maxZ, '>=');
-    whereArgs.push(envelope.maxZ, envelope.minZ);
+    where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MAX_Y, envelope.minY, '>=');
+    var whereArgs = [tableName, envelope.maxX, envelope.minX];
+    if (!minXLessThanMaxX) {
+      whereArgs.push(envelope.minX, envelope.maxX);
+    }
+    whereArgs.push(envelope.maxY, envelope.minY);
+    if (envelope.hasZ) {
+      where += ' and ';
+      where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MIN_Z, envelope.minZ, '&lt;=');
+      where += ' and ';
+      where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MAX_Z, envelope.maxZ, '>=');
+      whereArgs.push(envelope.maxZ, envelope.minZ);
+    }
+    if (envelope.hasM) {
+      where += ' and ';
+      where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MIN_M, envelope.minM, '&lt;=');
+      where += ' and ';
+      where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MAX_M, envelope.maxM, '>=');
+      whereArgs.push(envelope.maxM, envelope.minM);
+    }
+    var join = 'inner join "' + tableName + '" on "' + tableName + '".' + this.featureDao.idColumns[0] + ' = ' + GeometryIndexDao.COLUMN_GEOM_ID;
+    return this.queryJoinWhereWithArgs(join, where, whereArgs, ['"' + tableName + '".*']);
   }
-
-  if (envelope.hasM) {
-    where += ' and ';
-    where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MIN_M, envelope.minM, '&lt;=');
-    where += ' and ';
-    where += this.buildWhereWithFieldAndValue(GeometryIndexDao.COLUMN_MAX_M, envelope.maxM, '>=');
-    whereArgs.push(envelope.maxM, envelope.minM);
-  }
-
-  var join = 'inner join "' + tableName + '" on "' + tableName + '".' + this.featureDao.idColumns[0] + ' = ' + GeometryIndexDao.COLUMN_GEOM_ID;
-  return this.queryJoinWhereWithArgs(join, where, whereArgs, ['"' + tableName + '".*']);
 }
 
 GeometryIndexDao.TABLE_NAME = "nga_geometry_index";
@@ -351,8 +329,10 @@ GeometryIndexDao.COLUMN_MAX_M = GeometryIndexDao.TABLE_NAME + ".max_m";
 GeometryIndexDao.prototype.gpkgTableName = GeometryIndexDao.TABLE_NAME;
 GeometryIndexDao.prototype.idColumns = ['table_name', 'geom_id'];
 
-module.exports.GeometryIndexDao = GeometryIndexDao;
-module.exports.GeometryIndex = GeometryIndex;
+export {
+  GeometryIndexDao,
+  GeometryIndex
+}
 </code></pre>
 		</section>
 			</div>
@@ -360,7 +340,7 @@ module.exports.GeometryIndex = GeometryIndex;
 	</div>
 	<footer>
 				<div class="footer-option"><span class="site-footer-owner"><a href="https://github.com/ngageoint/GeoPackage">GeoPackage</a> is maintained by:</span><br><a href="https://github.com/ngageoint"><img src="http://ngageoint.github.io/GeoPackage/images/NGA_Logo.png" align="middle" height="60">National Geospatial-Intelligence Agency</a><a style="padding-left: 30px;" href="http://www.bit-sys.com/"><img src="http://ngageoint.github.io/GeoPackage/images/BITSystems_Logo.png" align="middle" height="40"></a><br></div>
-			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 28th Feb 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
+			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 15th May 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
 	</footer>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>

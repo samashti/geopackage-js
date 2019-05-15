@@ -100,74 +100,71 @@
  * @module extension/baseExtension
  */
 
-var Extension = require('./index').Extension
-  , ExtensionDao = require('./index').ExtensionDao;
+import {Extension} from './index'
+
 /**
  * Abstract base GeoPackage extension
  * @class
  */
-var BaseExtension = function(geoPackage) {
-  this.geoPackage = geoPackage;
-  this.connection = geoPackage.connection;
-  this.extensionsDao = geoPackage.getExtensionDao();
+class BaseExtension {
+  constructor(geoPackage) {
+    this.geoPackage = geoPackage;
+    this.connection = geoPackage.connection;
+    this.extensionsDao = geoPackage.getExtensionDao();
+  }
+  /**
+   * Get the extension or create as needed
+   * @param  {String}   extensionName extension name
+   * @param  {String}   tableName     table name
+   * @param  {String}   columnName    column name
+   * @param  {String}   definition    extension definition
+   * @param  {String}   scopeType     extension scope type
+   * @return {Promise&lt;module:extension/baseExtension~BaseExtension>}
+   */
+  async getOrCreate(extensionName, tableName, columnName, definition, scopeType) {
+    var extension = this.getExtension(extensionName, tableName, columnName);
+    if (extension) {
+      return extension;
+    }
+    await this.extensionsDao.createTable()
+    await this.createExtension(extensionName, tableName, columnName, definition, scopeType);
+    return this.getExtension(extensionName, tableName, columnName)[0];
+  }
+  /**
+   * Get the extension for the name, table name and column name
+   * @param  {String}   extensionName extension name
+   * @param  {String}   tableName     table name
+   * @param  {String}   columnName    column name
+   * @param  {Function} callback      Called with err if one occurred and the extension
+   */
+  getExtension(extensionName, tableName, columnName) {
+    if (!this.extensionsDao.isTableExists()) {
+      return false;
+    }
+    return this.extensionsDao.queryByExtensionAndTableNameAndColumnName(extensionName, tableName, columnName);
+  }
+  /**
+   * Determine if the GeoPackage has the extension
+   * @param  {String}   extensionName extension name
+   * @param  {String}   tableName     table name
+   * @param  {String}   columnName    column name
+   */
+  hasExtension(extensionName, tableName, columnName) {
+    var exists = this.getExtension(extensionName, tableName, columnName);
+    return !!this.getExtension(extensionName, tableName, columnName).length;
+  }
+  createExtension(extensionName, tableName, columnName, definition, scopeType) {
+    var extension = new Extension();
+    extension.table_name = tableName;
+    extension.column_name = columnName;
+    extension.extension_name = extensionName;
+    extension.definition = definition;
+    extension.scope = scopeType;
+    return this.extensionsDao.create(extension);
+  }
 }
 
-module.exports = BaseExtension;
-
-/**
- * Get the extension or create as needed
- * @param  {String}   extensionName extension name
- * @param  {String}   tableName     table name
- * @param  {String}   columnName    column name
- * @param  {String}   definition    extension definition
- * @param  {String}   scopeType     extension scope type
- * @return {Promise&lt;module:extension/baseExtension~BaseExtension>}
- */
-BaseExtension.prototype.getOrCreate = function(extensionName, tableName, columnName, definition, scopeType) {
-  var extension = this.getExtension(extensionName, tableName, columnName);
-  if (extension) {
-    return Promise.resolve(extension);
-  }
-  return this.extensionsDao.createTable()
-  .then(function() {
-    return this.createExtension(extensionName, tableName, columnName, definition, scopeType);
-  }.bind(this));
-};
-
-/**
- * Get the extension for the name, table name and column name
- * @param  {String}   extensionName extension name
- * @param  {String}   tableName     table name
- * @param  {String}   columnName    column name
- * @param  {Function} callback      Called with err if one occurred and the extension
- */
-BaseExtension.prototype.getExtension = function(extensionName, tableName, columnName) {
-  if (!this.extensionsDao.isTableExists()) {
-    return false;
-  }
-  return this.extensionsDao.queryByExtensionAndTableNameAndColumnName(extensionName, tableName, columnName);
-};
-
-/**
- * Determine if the GeoPackage has the extension
- * @param  {String}   extensionName extension name
- * @param  {String}   tableName     table name
- * @param  {String}   columnName    column name
- */
-BaseExtension.prototype.hasExtension = function(extensionName, tableName, columnName) {
-  var exists = this.getExtension(extensionName, tableName, columnName);
-  return !!this.getExtension(extensionName, tableName, columnName).length;
-};
-
-BaseExtension.prototype.createExtension = function(extensionName, tableName, columnName, definition, scopeType) {
-  var extension = new Extension();
-  extension.table_name = tableName;
-  extension.column_name = columnName;
-  extension.extension_name = extensionName;
-  extension.definition = definition;
-  extension.scope = scopeType;
-  return this.extensionsDao.create(extension);
-};
+export default BaseExtension
 </code></pre>
 		</section>
 			</div>
@@ -175,7 +172,7 @@ BaseExtension.prototype.createExtension = function(extensionName, tableName, col
 	</div>
 	<footer>
 				<div class="footer-option"><span class="site-footer-owner"><a href="https://github.com/ngageoint/GeoPackage">GeoPackage</a> is maintained by:</span><br><a href="https://github.com/ngageoint"><img src="http://ngageoint.github.io/GeoPackage/images/NGA_Logo.png" align="middle" height="60">National Geospatial-Intelligence Agency</a><a style="padding-left: 30px;" href="http://www.bit-sys.com/"><img src="http://ngageoint.github.io/GeoPackage/images/BITSystems_Logo.png" align="middle" height="40"></a><br></div>
-			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 28th Feb 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
+			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on 15th May 2019 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
 	</footer>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
