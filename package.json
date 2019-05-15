@@ -43,7 +43,6 @@
     "pureimage": "0.1.6",
     "rbush": "2.0.2",
     "reproject": "1.2.2",
-    "sql.js": "https://github.com/danielbarela/sql.js.git",
     "vt-pbf": "^3.1.1",
     "wkx": "file:vendor/wkx-esm"
   },
@@ -85,6 +84,7 @@
     "xhr-mock": "^2.4.1"
   },
   "optionalDependencies": {
+    "sql.js": "https://github.com/danielbarela/sql.js.git",
     "chalk": "^1.1.3",
     "inquirer": "^1.0.2"
   },
